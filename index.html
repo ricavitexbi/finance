@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de Gestão Financeira VitexAI - Powered by Supabase">
-    <title>Sistema de Gestão Financeira VitexAI | Cloud</title>
+    <meta name="description" content="Sistema de Gestão Financeira VitexAI - Seguro e Protegido">
+    <title>Sistema VitexAI | Login Seguro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
     <style>
         * {
             margin: 0;
@@ -44,24 +44,172 @@
             margin-bottom: 10px;
         }
         
-        .header::after {
-            content: '☁️ Powered by Supabase';
+        .user-info {
             position: absolute;
-            top: 10px;
+            top: 15px;
             right: 20px;
-            font-size: 12px;
-            opacity: 0.8;
             background: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 15px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: none;
         }
         
         .auth-section {
-            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .auth-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2em;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .auth-tab.active {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4facfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .setup-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
             padding: 25px;
             border-radius: 15px;
-            margin: 25px;
-            border-left: 5px solid #4CAF50;
+            margin-bottom: 25px;
         }
         
         .content {
@@ -106,15 +254,6 @@
             display: block;
         }
         
-        .setup-section {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-        }
-        
         .quick-add-section {
             background: linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 100%);
             padding: 25px;
@@ -137,97 +276,13 @@
             margin-bottom: 20px;
         }
         
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .input-group label {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        
-        .input-group input, .input-group select {
+        .input-group select {
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
             background: white;
-        }
-        
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 5px rgba(79, 172, 254, 0.3);
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
-            margin: 5px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #fd7e14);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-        }
-        
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-        
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .status-online {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-offline {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-connecting {
-            background: #fff3cd;
-            color: #856404;
         }
         
         .metrics-grid {
@@ -313,7 +368,8 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-bottom: 30px;
-            min-height: 300px;
+            height: 400px;
+            position: relative;
         }
         
         .chart-container h4 {
@@ -323,86 +379,9 @@
             text-align: center;
         }
         
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            animation: slideIn 0.5s ease;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        
-        .alert-warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-        }
-        
-        .alert-danger {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        
-        .alert-info {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4facfe;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            border-top: 1px solid #eee;
-            background: #f8f9fa;
-        }
-        
-        .transaction-row {
-            transition: all 0.3s ease;
-        }
-        
-        .transaction-row.receita {
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .transaction-row.despesa {
-            border-left: 4px solid #f44336;
-        }
-        
-        .value-positive {
-            color: #4CAF50;
-            font-weight: 600;
-        }
-        
-        .value-negative {
-            color: #f44336;
-            font-weight: 600;
+        .chart-container canvas {
+            max-height: 320px !important;
+            width: 100% !important;
         }
         
         .summary-cards {
@@ -431,29 +410,34 @@
             font-weight: 700;
         }
         
-        .code-block {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            margin: 15px 0;
-            white-space: pre-wrap;
+        .transaction-row {
+            transition: all 0.3s ease;
         }
         
-        .step {
-            margin-bottom: 25px;
+        .transaction-row.receita {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .transaction-row.despesa {
+            border-left: 4px solid #f44336;
+        }
+        
+        .value-positive {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+        
+        .value-negative {
+            color: #f44336;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
             padding: 20px;
-            border-left: 4px solid #4facfe;
+            color: #666;
+            border-top: 1px solid #eee;
             background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .step h4 {
-            color: #4facfe;
-            margin-bottom: 10px;
         }
         
         @media (max-width: 768px) {
@@ -491,117 +475,98 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Tela de Login/Cadastro -->
+    <div id="authContainer" class="container">
         <div class="header">
-            <h1>☁️ Sistema de Gestão Financeira VitexAI</h1>
-            <p>Plataforma Cloud com Supabase - Dados Seguros e Sincronizados</p>
-            <div id="connectionStatus" class="status-indicator status-offline" style="position: absolute; top: 50px; right: 20px;">
-                🔴 Configurar Conexão
-            </div>
+            <h1>🔐 VitexAI | Sistema Seguro</h1>
+            <p>Acesso Protegido - Gestão Financeira Empresarial</p>
         </div>
         
-        <!-- Configuração do Supabase -->
-        <div id="setupSection" class="setup-section">
-            <h3>🔧 Configuração do Supabase</h3>
-            <p><strong>Primeira vez?</strong> Configure a conexão com seu banco de dados Supabase para começar a usar o sistema.</p>
+        <div class="auth-section">
+            <h2>Acesso Seguro</h2>
             
-            <div class="input-grid" style="margin-top: 20px;">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="showAuthTab('register')">Cadastrar</button>
+            </div>
+            
+            <div id="authAlerts"></div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha segura" required>
+                </div>
+                <button class="btn" onclick="loginUser()" id="loginBtn">
+                    🔐 Entrar no Sistema
+                </button>
+                <button class="btn btn-secondary" onclick="resetPassword()">
+                    📧 Esqueci minha senha
+                </button>
+            </div>
+            
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 8 caracteres" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirmar Senha</label>
+                    <input type="password" id="confirmPassword" placeholder="Digite novamente" required>
+                </div>
+                <button class="btn" onclick="registerUser()" id="registerBtn">
+                    🚀 Criar Conta VitexAI
+                </button>
+            </div>
+            
+            <!-- Configuração Inicial -->
+            <div id="setupForm" class="auth-form">
+                <h3>⚙️ Configuração Inicial</h3>
+                <p>Configure a conexão com seu banco de dados:</p>
+                
                 <div class="input-group">
                     <label>URL do Supabase</label>
-                    <input type="text" id="supabaseUrl" placeholder="https://seuprojeto.supabase.co">
+                    <input type="text" id="setupSupabaseUrl" placeholder="https://seuprojeto.supabase.co">
                 </div>
                 <div class="input-group">
                     <label>API Key (anon/public)</label>
-                    <input type="password" id="supabaseKey" placeholder="sua-api-key-aqui">
+                    <input type="password" id="setupSupabaseKey" placeholder="sua-api-key-aqui">
                 </div>
-                <div class="input-group" style="display: flex; align-items: end;">
-                    <button class="btn" onclick="conectarSupabase()">🔗 Conectar</button>
-                    <button class="btn btn-warning" onclick="mostrarInstrucoes()">📖 Ver Instruções</button>
-                </div>
+                <button class="btn" onclick="setupConnection()">
+                    🔗 Configurar e Conectar
+                </button>
             </div>
-            
-            <!-- Instruções de Setup -->
-            <div id="instrucoes" style="display: none; margin-top: 25px;">
-                <h4>📋 Passo a Passo - Configuração Supabase</h4>
-                
-                <div class="step">
-                    <h4>1️⃣ Criar Conta no Supabase</h4>
-                    <p>1. Acesse <a href="https://supabase.com" target="_blank">supabase.com</a><br>
-                    2. Clique em <strong>"Start your project"</strong><br>
-                    3. Faça login com GitHub/Google<br>
-                    4. Clique <strong>"New Project"</strong></p>
-                </div>
-                
-                <div class="step">
-                    <h4>2️⃣ Configurar Projeto</h4>
-                    <p>1. Nome: <strong>"vitexai-financeiro"</strong><br>
-                    2. Senha do banco: <strong>crie uma segura</strong><br>
-                    3. Região: <strong>South America (São Paulo)</strong><br>
-                    4. Clique <strong>"Create new project"</strong><br>
-                    5. Aguarde ~2 minutos</p>
-                </div>
-                
-                <div class="step">
-                    <h4>3️⃣ Criar Tabelas</h4>
-                    <p>1. Vá em <strong>SQL Editor</strong><br>
-                    2. Cole o script abaixo:<br></p>
-                    <div class="code-block">-- Tabela de transações financeiras
-CREATE TABLE transactions (
-  id BIGSERIAL PRIMARY KEY,
-  data DATE NOT NULL,
-  tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
-  categoria VARCHAR(50) NOT NULL,
-  valor DECIMAL(12,2) NOT NULL CHECK (valor > 0),
-  descricao TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-
--- Tabela de categorias personalizadas
-CREATE TABLE categories (
-  id BIGSERIAL PRIMARY KEY,
-  nome VARCHAR(50) NOT NULL,
-  tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
-  UNIQUE(nome, tipo)
-);
-
--- Inserir categorias padrão
-INSERT INTO categories (nome, tipo) VALUES
-  ('Consultoria', 'receita'),
-  ('Desenvolvimento', 'receita'),
-  ('Licenciamento', 'receita'),
-  ('Outras', 'receita'),
-  ('Pró-labore', 'despesa'),
-  ('Impostos', 'despesa'),
-  ('Terceiros', 'despesa'),
-  ('Desenvolvedores', 'despesa'),
-  ('Assinaturas', 'despesa'),
-  ('Marketing', 'despesa'),
-  ('Outras', 'despesa');
-
--- Políticas de segurança (Row Level Security)
-ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
-
--- Permitir acesso total (para demo - customize depois)
-CREATE POLICY "Enable all operations for everyone" ON transactions FOR ALL USING (true);
-CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (true);</div>
-                    <p>3. Clique <strong>"Run"</strong></p>
-                </div>
-                
-                <div class="step">
-                    <h4>4️⃣ Obter Credenciais</h4>
-                    <p>1. Vá em <strong>Settings → API</strong><br>
-                    2. Copie <strong>Project URL</strong><br>
-                    3. Copie <strong>anon/public key</strong><br>
-                    4. Cole nos campos acima<br>
-                    5. Clique <strong>"Conectar"</strong></p>
-                </div>
+        </div>
+    </div>
+    
+    <!-- Sistema Principal (após login) -->
+    <div id="mainContainer" class="container" style="display: none;">
+        <div class="header">
+            <h1>💼 Sistema VitexAI</h1>
+            <p>Gestão Financeira Segura e Protegida</p>
+            <div class="user-info" id="userInfo">
+                👤 <span id="userEmail"></span>
+                <button onclick="logoutUser()" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 15px; margin-left: 10px; cursor: pointer;">
+                    🚪 Sair
+                </button>
             </div>
         </div>
         
-        <div class="content" id="mainContent" style="display: none;">
+        <div class="content">
             <div class="tabs">
                 <button class="tab active" onclick="showTab('lancamentos')">💰 Lançamentos</button>
                 <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
@@ -612,7 +577,6 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             
             <!-- Tab 1: Lançamentos -->
             <div id="lancamentos" class="tab-content active">
-                <!-- Lançamento Rápido -->
                 <div class="quick-add-section">
                     <h3>⚡ Lançamento Rápido</h3>
                     <div class="input-grid">
@@ -642,21 +606,17 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                             <input type="text" id="quickDescricao" placeholder="Descrição do lançamento">
                         </div>
                         <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn btn-success" onclick="adicionarLancamento()" id="btnAdicionar">
+                            <button class="btn" onclick="adicionarLancamento()" id="btnAdicionar">
                                 ➕ Adicionar
                             </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Histórico de Lançamentos -->
                 <div class="table-container">
-                    <h3 style="padding: 20px 20px 0;">📝 Histórico de Lançamentos</h3>
+                    <h3 style="padding: 20px 20px 0;">📝 Seus Lançamentos</h3>
                     <div style="padding: 0 20px 20px;">
-                        <button class="btn btn-small" onclick="filtrarPorMes('atual')">Mês Atual</button>
-                        <button class="btn btn-small" onclick="filtrarPorMes('anterior')">Mês Anterior</button>
-                        <button class="btn btn-small" onclick="filtrarPorMes('todos')">Todos</button>
-                        <button class="btn btn-small btn-warning" onclick="sincronizarDados()">🔄 Sincronizar</button>
+                        <button class="btn" onclick="sincronizarDados()" style="padding: 8px 16px; width: auto;">🔄 Sincronizar</button>
                     </div>
                     <table id="transactionsTable">
                         <thead>
@@ -677,9 +637,6 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             
             <!-- Tab 2: Dashboard -->
             <div id="dashboard" class="tab-content">
-                <div id="alertsContainer"></div>
-                
-                <!-- Cards de Resumo -->
                 <div class="summary-cards">
                     <div class="summary-card">
                         <h4>Receitas do Mês</h4>
@@ -699,267 +656,161 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                     </div>
                 </div>
                 
-                <h3>📊 Indicadores Agregados - VitexAI</h3>
+                <h3>📊 Indicadores VitexAI</h3>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-title">Receita Acumulada</div>
                         <div class="metric-value" id="receitaAcumulada">R$ 0,00</div>
-                        <div class="metric-trend">Sincronizado com Supabase</div>
+                        <div class="metric-trend">Dados seguros e protegidos</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Despesas Acumuladas</div>
                         <div class="metric-value" id="despesasAcumuladas">R$ 0,00</div>
-                        <div class="metric-trend">Dados em tempo real</div>
+                        <div class="metric-trend">Backup automático</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Resultado Acumulado</div>
                         <div class="metric-value" id="resultadoAcumulado">R$ 0,00</div>
-                        <div class="metric-trend">Backup automático</div>
+                        <div class="metric-trend">Criptografia avançada</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Margem Média</div>
-                        <div class="metric-value" id="margemMedia">0%</div>
-                        <div class="metric-trend">Histórico completo</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Ticket Médio</div>
+                        <div class="metric-title">Ticket Médio Receita</div>
                         <div class="metric-value" id="ticketMedio">R$ 0,00</div>
-                        <div class="metric-trend">Por lançamento</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Transações</div>
-                        <div class="metric-value" id="totalTransacoes">0</div>
-                        <div class="metric-trend">Total registrado</div>
+                        <div class="metric-trend">Por transação de receita</div>
                     </div>
                 </div>
             </div>
             
             <!-- Tab 3: Gráficos -->
             <div id="charts" class="tab-content">
-                <h3>📈 Visualizações - VitexAI Cloud</h3>
+                <h3>📈 Visualizações Seguras - VitexAI</h3>
                 
                 <div class="alert alert-info">
-                    ☁️ <strong>Dados em Tempo Real:</strong> Gráficos sincronizados automaticamente com Supabase. Acesse de qualquer dispositivo!
+                    🔐 <strong>Dados Protegidos:</strong> Suas informações financeiras estão criptografadas e seguras. Apenas você tem acesso.
                 </div>
                 
-                <!-- Evolução Temporal -->
                 <div class="chart-container">
-                    <h4>📈 Evolução Mensal - Receitas vs Despesas</h4>
+                    <h4>📈 Evolução Mensal</h4>
                     <canvas id="evolutionChart" width="400" height="150"></canvas>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                    <!-- Mix de Receitas -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
                     <div class="chart-container">
                         <h4>🍰 Distribuição de Receitas</h4>
                         <canvas id="revenueChart" width="400" height="200"></canvas>
                     </div>
                     
-                    <!-- Mix de Despesas -->
                     <div class="chart-container">
                         <h4>💸 Distribuição de Despesas</h4>
                         <canvas id="expenseChart" width="400" height="200"></canvas>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                    <!-- Comparativo Barras -->
-                    <div class="chart-container">
-                        <h4>📊 Comparativo Mensal</h4>
-                        <canvas id="barChart" width="400" height="200"></canvas>
-                    </div>
-                    
-                    <!-- Margem por Mês -->
-                    <div class="chart-container">
-                        <h4>📏 Evolução da Margem</h4>
-                        <canvas id="marginChart" width="400" height="200"></canvas>
                     </div>
                 </div>
             </div>
             
             <!-- Tab 4: Relatórios -->
             <div id="relatorios" class="tab-content">
-                <h3>📋 Relatórios e Análises</h3>
+                <h3>📋 Relatórios Seguros</h3>
                 
                 <div class="input-section">
                     <h4>📥 Exportar Dados</h4>
                     <button class="btn" onclick="exportarCSV()">📄 Exportar CSV</button>
                     <button class="btn" onclick="exportarJSON()">💾 Backup Local</button>
-                    <button class="btn btn-warning" onclick="gerarRelatorioMensal()">📊 Relatório Mensal</button>
-                </div>
-                
-                <!-- Análise por Período -->
-                <div class="input-section">
-                    <h4>📅 Análise por Período</h4>
-                    <div class="input-grid">
-                        <div class="input-group">
-                            <label>Data Início</label>
-                            <input type="date" id="dataInicio">
-                        </div>
-                        <div class="input-group">
-                            <label>Data Fim</label>
-                            <input type="date" id="dataFim">
-                        </div>
-                        <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn" onclick="analisarPeriodo()">🔍 Analisar</button>
-                        </div>
-                    </div>
-                    <div id="analiseResultado"></div>
-                </div>
-                
-                <!-- Top Categorias -->
-                <div class="table-container">
-                    <h4 style="padding: 20px 20px 0;">🏆 Top Categorias</h4>
-                    <table id="topCategoriasTable">
-                        <thead>
-                            <tr>
-                                <th>Categoria</th>
-                                <th>Tipo</th>
-                                <th>Total</th>
-                                <th>Quantidade</th>
-                                <th>Média</th>
-                            </tr>
-                        </thead>
-                        <tbody id="topCategoriasBody">
-                        </tbody>
-                    </table>
                 </div>
             </div>
             
             <!-- Tab 5: Configurações -->
             <div id="configuracoes" class="tab-content">
-                <h3>⚙️ Configurações do Sistema</h3>
+                <h3>⚙️ Configurações de Segurança</h3>
                 
-                <!-- Status da Conexão -->
                 <div class="input-section">
-                    <h4>☁️ Status da Conexão Supabase</h4>
-                    <div id="connectionDetails">
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-title">Status</div>
-                                <div class="metric-value" id="statusConnection">Offline</div>
-                                <div class="metric-trend" id="statusDetails">Não conectado</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-title">Último Sync</div>
-                                <div class="metric-value" id="lastSync">Nunca</div>
-                                <div class="metric-trend">Sincronização automática</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-title">Dados Locais</div>
-                                <div class="metric-value" id="localDataCount">0</div>
-                                <div class="metric-trend">Cache local</div>
-                            </div>
+                    <h4>👤 Perfil do Usuário</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">Email</div>
+                            <div class="metric-value" id="profileEmail" style="font-size: 18px;">-</div>
+                            <div class="metric-trend">Usuário autenticado</div>
                         </div>
-                    </div>
-                    <button class="btn btn-warning" onclick="reconectar()">🔄 Reconectar</button>
-                    <button class="btn btn-danger" onclick="desconectar()">🔌 Desconectar</button>
-                </div>
-                
-                <!-- Categorias Personalizadas -->
-                <div class="input-section">
-                    <h4>🏷️ Gerenciar Categorias</h4>
-                    <div class="input-grid">
-                        <div class="input-group">
-                            <label>Nova Categoria</label>
-                            <input type="text" id="novaCategoria" placeholder="Nome da categoria">
+                        <div class="metric-card">
+                            <div class="metric-title">Status</div>
+                            <div class="metric-value" style="color: #4CAF50;">🟢 Online</div>
+                            <div class="metric-trend">Sessão ativa e segura</div>
                         </div>
-                        <div class="input-group">
-                            <label>Tipo</label>
-                            <select id="tipoCategoria">
-                                <option value="receita">Receita</option>
-                                <option value="despesa">Despesa</option>
-                            </select>
-                        </div>
-                        <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn" onclick="adicionarCategoria()">➕ Adicionar</button>
+                        <div class="metric-card">
+                            <div class="metric-title">Dados</div>
+                            <div class="metric-value" id="userDataCount">0</div>
+                            <div class="metric-trend">Transações registradas</div>
                         </div>
                     </div>
                     
-                    <div id="categoriasLista" style="margin-top: 20px;"></div>
-                </div>
-                
-                <!-- Dados de Exemplo -->
-                <div class="input-section">
-                    <h4>🎲 Dados de Exemplo</h4>
-                    <button class="btn" onclick="carregarDadosExemplo()">📊 Carregar Dados VitexAI</button>
-                    <button class="btn btn-danger" onclick="limparTodosDados()">🗑️ Limpar Dados do Supabase</button>
+                    <button class="btn btn-danger" onclick="logoutUser()">
+                        🚪 Sair do Sistema
+                    </button>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>☁️ <strong>VitexAI Sistema de Gestão Financeira</strong> | Powered by Supabase | Dados Seguros na Nuvem</p>
-            <p style="font-size: 12px; margin-top: 5px;">Acesse de qualquer dispositivo - Sincronização automática - Backup em tempo real</p>
+            <p>🔐 <strong>VitexAI Sistema Seguro</strong> | Dados protegidos com criptografia | Acesso controlado</p>
+            <p style="font-size: 12px; margin-top: 5px;">Autenticação Supabase | Backup automático | Segurança enterprise</p>
         </div>
     </div>
 
     <script>
         // Variáveis globais
         let supabase = null;
+        let currentUser = null;
         let transactions = [];
         let categories = {
             receita: ['Consultoria', 'Desenvolvimento', 'Licenciamento', 'Outras'],
             despesa: ['Pró-labore', 'Impostos', 'Terceiros', 'Desenvolvedores', 'Assinaturas', 'Marketing', 'Outras']
         };
         let charts = {};
-        let isOnline = false;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            checkStoredCredentials();
             setupDefaults();
-            carregarCredenciais();
-            setupAutoSync();
         });
 
-        // Configuração inicial
-        function setupDefaults() {
-            const today = new Date();
-            document.getElementById('quickDate').value = today.toISOString().split('T')[0];
-            document.getElementById('dataInicio').value = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-            document.getElementById('dataFim').value = today.toISOString().split('T')[0];
-        }
-
-        // Carregar credenciais salvas
-        function carregarCredenciais() {
+        // Verificar credenciais armazenadas
+        function checkStoredCredentials() {
             const url = localStorage.getItem('vitexai_supabase_url');
             const key = localStorage.getItem('vitexai_supabase_key');
             
             if (url && key) {
-                document.getElementById('supabaseUrl').value = url;
-                document.getElementById('supabaseKey').value = key;
-                
-                // Tentar conectar automaticamente
-                setTimeout(() => {
-                    conectarSupabase();
-                }, 1000);
+                document.getElementById('setupSupabaseUrl').value = url;
+                document.getElementById('setupSupabaseKey').value = key;
+                initializeSupabase(url, key);
+            } else {
+                showAuthTab('setup');
             }
         }
 
-        // Mostrar/ocultar instruções
-        function mostrarInstrucoes() {
-            const instrucoes = document.getElementById('instrucoes');
-            instrucoes.style.display = instrucoes.style.display === 'none' ? 'block' : 'none';
+        // Configuração inicial
+        function setupDefaults() {
+            const today = new Date();
+            const quickDate = document.getElementById('quickDate');
+            if (quickDate) {
+                quickDate.value = today.toISOString().split('T')[0];
+            }
         }
 
-        // Conectar ao Supabase
-        async function conectarSupabase() {
-            const url = document.getElementById('supabaseUrl').value.trim();
-            const key = document.getElementById('supabaseKey').value.trim();
+        // Configurar conexão inicial
+        async function setupConnection() {
+            const url = document.getElementById('setupSupabaseUrl').value.trim();
+            const key = document.getElementById('setupSupabaseKey').value.trim();
             
             if (!url || !key) {
-                showNotification('❌ Preencha a URL e API Key do Supabase', 'danger');
+                showAuthAlert('❌ Preencha a URL e API Key do Supabase', 'danger');
                 return;
             }
             
             try {
-                updateConnectionStatus('connecting', 'Conectando...');
-                
-                // Criar cliente Supabase
-                supabase = window.supabase.createClient(url, key);
+                showAuthAlert('🔄 Testando conexão...', 'info');
                 
                 // Testar conexão
-                const { data, error } = await supabase.from('transactions').select('count', { count: 'exact', head: true });
+                const testSupabase = window.supabase.createClient(url, key);
+                const { data, error } = await testSupabase.from('transactions').select('count', { count: 'exact', head: true });
                 
                 if (error) {
                     throw new Error(`Erro na conexão: ${error.message}`);
@@ -969,59 +820,260 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 localStorage.setItem('vitexai_supabase_url', url);
                 localStorage.setItem('vitexai_supabase_key', key);
                 
-                isOnline = true;
-                updateConnectionStatus('online', 'Conectado ao Supabase');
-                
-                // Ocultar seção de setup
-                document.getElementById('setupSection').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-                
-                // Carregar dados
-                await carregarCategorias();
-                await sincronizarDados();
-                updateCategories();
-                
-                showNotification('✅ Conectado ao Supabase com sucesso!', 'success');
+                initializeSupabase(url, key);
+                showAuthAlert('✅ Conexão configurada! Agora faça login.', 'success');
+                showAuthTab('login');
                 
             } catch (error) {
-                console.error('Erro ao conectar:', error);
-                isOnline = false;
-                updateConnectionStatus('offline', error.message);
-                showNotification(`❌ Erro: ${error.message}`, 'danger');
+                console.error('Erro ao configurar:', error);
+                showAuthAlert(`❌ Erro: ${error.message}`, 'danger');
             }
         }
 
-        // Atualizar status da conexão
-        function updateConnectionStatus(status, message) {
-            const statusEl = document.getElementById('connectionStatus');
-            const statusConnection = document.getElementById('statusConnection');
-            const statusDetails = document.getElementById('statusDetails');
-            
-            statusEl.className = `status-indicator status-${status}`;
-            
-            switch (status) {
-                case 'online':
-                    statusEl.innerHTML = '🟢 Online';
-                    if (statusConnection) statusConnection.textContent = 'Online';
-                    if (statusDetails) statusDetails.textContent = message;
-                    break;
-                case 'connecting':
-                    statusEl.innerHTML = '🟡 Conectando...';
-                    if (statusConnection) statusConnection.textContent = 'Conectando';
-                    if (statusDetails) statusDetails.textContent = message;
-                    break;
-                case 'offline':
-                default:
-                    statusEl.innerHTML = '🔴 Offline';
-                    if (statusConnection) statusConnection.textContent = 'Offline';
-                    if (statusDetails) statusDetails.textContent = message;
-                    break;
+        // Inicializar Supabase
+        async function initializeSupabase(url, key) {
+            try {
+                supabase = window.supabase.createClient(url, key);
+                
+                // Verificar sessão existente
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    currentUser = session.user;
+                    showMainApp();
+                }
+                
+                // Escutar mudanças de autenticação
+                supabase.auth.onAuthStateChange((event, session) => {
+                    if (event === 'SIGNED_IN') {
+                        currentUser = session.user;
+                        showMainApp();
+                    } else if (event === 'SIGNED_OUT') {
+                        currentUser = null;
+                        showAuthApp();
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Erro ao inicializar Supabase:', error);
+                showAuthAlert('❌ Erro na inicialização', 'danger');
             }
         }
 
-        // Carregar categorias do Supabase
-        async function carregarCategorias() {
-            if (!supabase) return;
+        // Gerenciar abas de autenticação
+        function showAuthTab(tabName) {
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+            
+            if (tabName !== 'setup') {
+                const tabButton = document.querySelector(`.auth-tab[onclick="showAuthTab('${tabName}')"]`);
+                if (tabButton) tabButton.classList.add('active');
+            }
+            
+            const form = document.getElementById(tabName === 'login' ? 'loginForm' : 
+                                               tabName === 'register' ? 'registerForm' : 'setupForm');
+            if (form) form.classList.add('active');
+        }
+
+        // Login do usuário
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showAuthAlert('❌ Preencha email e senha', 'danger');
+                return;
+            }
+            
+            if (!supabase) {
+                showAuthAlert('❌ Configure a conexão primeiro', 'danger');
+                showAuthTab('setup');
+                return;
+            }
+            
+            try {
+                const btn = document.getElementById('loginBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loading"></span> Entrando...';
+                
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+                
+                if (error) throw error;
+                
+                showAuthAlert('✅ Login realizado com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showAuthAlert(`❌ ${error.message}`, 'danger');
+            } finally {
+                const btn = document.getElementById('loginBtn');
+                btn.disabled = false;
+                btn.innerHTML = '🔐 Entrar no Sistema';
+            }
+        }
+
+        // Cadastro do usuário
+        async function registerUser() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showAuthAlert('❌ Preencha todos os campos', 'danger');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAuthAlert('❌ Senhas não coincidem', 'danger');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showAuthAlert('❌ Senha deve ter pelo menos 8 caracteres', 'danger');
+                return;
+            }
+            
+            if (!supabase) {
+                showAuthAlert('❌ Configure a conexão primeiro', 'danger');
+                showAuthTab('setup');
+                return;
+            }
+            
+            try {
+                const btn = document.getElementById('registerBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loading"></span> Criando conta...';
+                
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: name,
+                        }
+                    }
+                });
+                
+                if (error) throw error;
+                
+                if (data.user && !data.session) {
+                    showAuthAlert('📧 Verifique seu email para confirmar a conta', 'info');
+                    showAuthTab('login');
+                } else {
+                    showAuthAlert('✅ Conta criada com sucesso!', 'success');
+                }
+                
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                showAuthAlert(`❌ ${error.message}`, 'danger');
+            } finally {
+                const btn = document.getElementById('registerBtn');
+                btn.disabled = false;
+                btn.innerHTML = '🚀 Criar Conta VitexAI';
+            }
+        }
+
+        // Reset de senha
+        async function resetPassword() {
+            const email = document.getElementById('loginEmail').value.trim();
+            
+            if (!email) {
+                showAuthAlert('❌ Digite seu email primeiro', 'danger');
+                return;
+            }
+            
+            if (!supabase) {
+                showAuthAlert('❌ Configure a conexão primeiro', 'danger');
+                return;
+            }
+            
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email);
+                
+                if (error) throw error;
+                
+                showAuthAlert('📧 Email de recuperação enviado!', 'success');
+                
+            } catch (error) {
+                console.error('Erro no reset:', error);
+                showAuthAlert(`❌ ${error.message}`, 'danger');
+            }
+        }
+
+        // Logout do usuário
+        async function logoutUser() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                try {
+                    const { error } = await supabase.auth.signOut();
+                    if (error) throw error;
+                    
+                    showNotification('👋 Logout realizado com sucesso!', 'info');
+                    
+                } catch (error) {
+                    console.error('Erro no logout:', error);
+                    showNotification(`❌ Erro: ${error.message}`, 'danger');
+                }
+            }
+        }
+
+        // Mostrar app principal
+        function showMainApp() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            // Atualizar info do usuário
+            const userInfo = document.getElementById('userInfo');
+            const userEmail = document.getElementById('userEmail');
+            const profileEmail = document.getElementById('profileEmail');
+            
+            if (currentUser) {
+                userEmail.textContent = currentUser.email;
+                profileEmail.textContent = currentUser.email;
+                userInfo.style.display = 'block';
+            }
+            
+            // Carregar dados
+            loadCategories();
+            sincronizarDados();
+            updateCategories();
+        }
+
+        // Mostrar app de autenticação
+        function showAuthApp() {
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('mainContainer').style.display = 'none';
+            
+            // Limpar formulários
+            clearAuthForms();
+        }
+
+        // Limpar formulários de auth
+        function clearAuthForms() {
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('authAlerts').innerHTML = '';
+        }
+
+        // Mostrar alertas de auth
+        function showAuthAlert(message, type) {
+            const container = document.getElementById('authAlerts');
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Carregar categorias
+        async function loadCategories() {
+            if (!supabase || !currentUser) return;
             
             try {
                 const { data, error } = await supabase
@@ -1031,25 +1083,19 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 
                 if (error) throw error;
                 
-                // Resetar categorias
                 categories = { receita: [], despesa: [] };
-                
                 data.forEach(cat => {
                     categories[cat.tipo].push(cat.nome);
                 });
                 
             } catch (error) {
                 console.error('Erro ao carregar categorias:', error);
-                showNotification('⚠️ Erro ao carregar categorias, usando padrões', 'warning');
             }
         }
 
         // Sincronizar dados
         async function sincronizarDados() {
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
-                return;
-            }
+            if (!supabase || !currentUser) return;
             
             try {
                 showNotification('🔄 Sincronizando dados...', 'info');
@@ -1065,90 +1111,18 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 updateTransactionsTable();
                 updateDashboard();
                 
-                // Atualizar último sync
-                const now = new Date().toLocaleString('pt-BR');
-                document.getElementById('lastSync').textContent = now;
-                localStorage.setItem('vitexai_last_sync', now);
+                // Atualizar contador
+                const userDataCount = document.getElementById('userDataCount');
+                if (userDataCount) {
+                    userDataCount.textContent = transactions.length;
+                }
                 
-                showNotification(`✅ Sincronizado! ${transactions.length} registros carregados`, 'success');
+                showNotification(`✅ ${transactions.length} registros sincronizados`, 'success');
                 
             } catch (error) {
                 console.error('Erro na sincronização:', error);
-                showNotification(`❌ Erro na sincronização: ${error.message}`, 'danger');
+                showNotification(`❌ Erro: ${error.message}`, 'danger');
             }
-        }
-
-        // Reconectar
-        function reconectar() {
-            conectarSupabase();
-        }
-
-        // Desconectar
-        function desconectar() {
-            if (confirm('Tem certeza que deseja desconectar? Você perderá acesso aos dados na nuvem.')) {
-                supabase = null;
-                isOnline = false;
-                
-                // Limpar credenciais
-                localStorage.removeItem('vitexai_supabase_url');
-                localStorage.removeItem('vitexai_supabase_key');
-                
-                // Mostrar setup novamente
-                document.getElementById('setupSection').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'none';
-                
-                updateConnectionStatus('offline', 'Desconectado');
-                showNotification('🔌 Desconectado do Supabase', 'warning');
-            }
-        }
-
-        // Auto-sync setup
-        function setupAutoSync() {
-            // Sincronizar a cada 30 segundos se estiver online
-            setInterval(() => {
-                if (isOnline && supabase) {
-                    sincronizarDados();
-                }
-            }, 30000);
-        }
-
-        // Gerenciamento de abas
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (tabName === 'charts') {
-                setTimeout(createCharts, 100);
-            } else if (tabName === 'relatorios') {
-                updateReports();
-            } else if (tabName === 'configuracoes') {
-                updateConfigStats();
-            }
-        }
-
-        // Atualizar categorias no select
-        function updateCategories() {
-            const tipoSelect = document.getElementById('quickTipo');
-            const categoriaSelect = document.getElementById('quickCategoria');
-            
-            function populateCategories() {
-                const tipo = tipoSelect.value;
-                categoriaSelect.innerHTML = '';
-                categories[tipo].forEach(cat => {
-                    const option = document.createElement('option');
-                    option.value = cat;
-                    option.textContent = cat;
-                    categoriaSelect.appendChild(option);
-                });
-            }
-            
-            tipoSelect.addEventListener('change', populateCategories);
-            populateCategories();
-            
-            updateCategoriesList();
         }
 
         // Adicionar lançamento
@@ -1169,13 +1143,12 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 return;
             }
             
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
+            if (!supabase || !currentUser) {
+                showNotification('❌ Usuário não autenticado', 'danger');
                 return;
             }
             
             try {
-                // Desabilitar botão
                 const btn = document.getElementById('btnAdicionar');
                 btn.disabled = true;
                 btn.innerHTML = '<span class="loading"></span> Salvando...';
@@ -1194,30 +1167,21 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 
                 if (error) throw error;
                 
-                // Adicionar à lista local
                 transactions.unshift(newTransaction);
-                
                 updateTransactionsTable();
                 updateDashboard();
                 clearQuickForm();
                 
-                showNotification('✅ Lançamento salvo no Supabase!', 'success');
+                showNotification('✅ Lançamento salvo com segurança!', 'success');
                 
             } catch (error) {
                 console.error('Erro ao adicionar:', error);
                 showNotification(`❌ Erro: ${error.message}`, 'danger');
             } finally {
-                // Reabilitar botão
                 const btn = document.getElementById('btnAdicionar');
                 btn.disabled = false;
                 btn.innerHTML = '➕ Adicionar';
             }
-        }
-
-        // Limpar formulário rápido
-        function clearQuickForm() {
-            document.getElementById('quickValor').value = '';
-            document.getElementById('quickDescricao').value = '';
         }
 
         // Remover lançamento
@@ -1226,8 +1190,8 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 return;
             }
             
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
+            if (!supabase || !currentUser) {
+                showNotification('❌ Usuário não autenticado', 'danger');
                 return;
             }
             
@@ -1239,9 +1203,7 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 
                 if (error) throw error;
                 
-                // Remover da lista local
                 transactions = transactions.filter(t => t.id !== id);
-                
                 updateTransactionsTable();
                 updateDashboard();
                 
@@ -1253,9 +1215,55 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             }
         }
 
+        // Gerenciar abas
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'charts') {
+                setTimeout(createCharts, 100);
+            }
+        }
+
+        // Atualizar categorias no select
+        function updateCategories() {
+            const tipoSelect = document.getElementById('quickTipo');
+            const categoriaSelect = document.getElementById('quickCategoria');
+            
+            if (!tipoSelect || !categoriaSelect) return;
+            
+            function populateCategories() {
+                const tipo = tipoSelect.value;
+                categoriaSelect.innerHTML = '';
+                categories[tipo].forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    categoriaSelect.appendChild(option);
+                });
+            }
+            
+            tipoSelect.addEventListener('change', populateCategories);
+            populateCategories();
+        }
+
+        // Limpar formulário rápido
+        function clearQuickForm() {
+            const valor = document.getElementById('quickValor');
+            const descricao = document.getElementById('quickDescricao');
+            
+            if (valor) valor.value = '';
+            if (descricao) descricao.value = '';
+        }
+
         // Atualizar tabela de transações
         function updateTransactionsTable() {
             const tbody = document.getElementById('transactionsBody');
+            if (!tbody) return;
+            
             tbody.innerHTML = '';
             
             const sortedTransactions = [...transactions].sort((a, b) => new Date(b.data) - new Date(a.data));
@@ -1276,66 +1284,8 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                     <td>${transaction.descricao}</td>
                     <td class="${valorClass}">${valorFormatado}</td>
                     <td>
-                        <button class="btn btn-small btn-danger" onclick="removerLancamento(${transaction.id})">
-                            🗑️ Remover
-                        </button>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Filtros da tabela
-        function filtrarPorMes(periodo) {
-            const hoje = new Date();
-            let dataInicio, dataFim;
-            
-            if (periodo === 'atual') {
-                dataInicio = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-                dataFim = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
-            } else if (periodo === 'anterior') {
-                dataInicio = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
-                dataFim = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
-            }
-            
-            if (periodo !== 'todos') {
-                const filtered = transactions.filter(t => {
-                    const transactionDate = new Date(t.data);
-                    return transactionDate >= dataInicio && transactionDate <= dataFim;
-                });
-                
-                displayFilteredTransactions(filtered);
-                showNotification(`📅 Filtro aplicado: ${filtered.length} lançamentos encontrados`, 'info');
-            } else {
-                updateTransactionsTable();
-                showNotification('📋 Mostrando todos os lançamentos', 'info');
-            }
-        }
-
-        function displayFilteredTransactions(filtered) {
-            const tbody = document.getElementById('transactionsBody');
-            tbody.innerHTML = '';
-            
-            const sortedFiltered = [...filtered].sort((a, b) => new Date(b.data) - new Date(a.data));
-            
-            sortedFiltered.forEach(transaction => {
-                const row = document.createElement('tr');
-                row.className = `transaction-row ${transaction.tipo}`;
-                
-                const dataFormatada = new Date(transaction.data).toLocaleDateString('pt-BR');
-                const valorFormatado = formatCurrency(transaction.valor);
-                const valorClass = transaction.tipo === 'receita' ? 'value-positive' : 'value-negative';
-                const tipoIcon = transaction.tipo === 'receita' ? '💰' : '💸';
-                
-                row.innerHTML = `
-                    <td>${dataFormatada}</td>
-                    <td>${tipoIcon} ${transaction.tipo.charAt(0).toUpperCase() + transaction.tipo.slice(1)}</td>
-                    <td>${transaction.categoria}</td>
-                    <td>${transaction.descricao}</td>
-                    <td class="${valorClass}">${valorFormatado}</td>
-                    <td>
-                        <button class="btn btn-small btn-danger" onclick="removerLancamento(${transaction.id})">
+                        <button class="btn btn-danger" onclick="removerLancamento(${transaction.id})" 
+                                style="padding: 5px 10px; font-size: 12px; width: auto;">
                             🗑️ Remover
                         </button>
                     </td>
@@ -1366,72 +1316,30 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const resultadoTotal = totalReceitas - totalDespesas;
-            const margemTotal = totalReceitas > 0 ? (resultadoTotal / totalReceitas) * 100 : 0;
             
-            // Atualizar cards do mês
-            document.getElementById('receitasMes').textContent = formatCurrency(receitasMes);
-            document.getElementById('despesasMes').textContent = formatCurrency(despesasMes);
-            document.getElementById('resultadoMes').textContent = formatCurrency(resultadoMes);
-            document.getElementById('resultadoMes').style.color = resultadoMes >= 0 ? '#4CAF50' : '#f44336';
-            document.getElementById('margemMes').textContent = margemMes.toFixed(1) + '%';
+            // Ticket médio por receita
+            const receitasCount = transactions.filter(t => t.tipo === 'receita').length;
+            const ticketMedio = receitasCount > 0 ? totalReceitas / receitasCount : 0;
             
-            // Atualizar métricas agregadas
-            document.getElementById('receitaAcumulada').textContent = formatCurrency(totalReceitas);
-            document.getElementById('despesasAcumuladas').textContent = formatCurrency(totalDespesas);
-            document.getElementById('resultadoAcumulado').textContent = formatCurrency(resultadoTotal);
-            document.getElementById('resultadoAcumulado').style.color = resultadoTotal >= 0 ? '#4CAF50' : '#f44336';
-            document.getElementById('margemMedia').textContent = margemTotal.toFixed(1) + '%';
+            // Atualizar elementos
+            updateElement('receitasMes', formatCurrency(receitasMes));
+            updateElement('despesasMes', formatCurrency(despesasMes));
+            updateElement('resultadoMes', formatCurrency(resultadoMes));
+            updateElement('margemMes', margemMes.toFixed(1) + '%');
+            updateElement('receitaAcumulada', formatCurrency(totalReceitas));
+            updateElement('despesasAcumuladas', formatCurrency(totalDespesas));
+            updateElement('resultadoAcumulado', formatCurrency(resultadoTotal));
+            updateElement('ticketMedio', formatCurrency(ticketMedio));
             
-            const ticketMedio = transactions.length > 0 ? (totalReceitas + totalDespesas) / transactions.length : 0;
-            document.getElementById('ticketMedio').textContent = formatCurrency(ticketMedio);
-            document.getElementById('totalTransacoes').textContent = transactions.length;
-            
-            // Alertas
-            updateAlerts(resultadoMes, margemMes, receitasMes, despesasMes);
+            // Cores
+            setElementColor('resultadoMes', resultadoMes >= 0 ? '#4CAF50' : '#f44336');
+            setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? '#4CAF50' : '#f44336');
         }
 
-        // Sistema de alertas
-        function updateAlerts(resultadoMes, margemMes, receitasMes, despesasMes) {
-            const alertsContainer = document.getElementById('alertsContainer');
-            alertsContainer.innerHTML = '';
-            
-            if (!isOnline) {
-                alertsContainer.innerHTML += `
-                    <div class="alert alert-warning">
-                        ⚠️ <strong>Modo Offline:</strong> Conecte ao Supabase para sincronizar dados em tempo real
-                    </div>
-                `;
-            }
-            
-            if (resultadoMes < 0) {
-                alertsContainer.innerHTML += `
-                    <div class="alert alert-danger">
-                        ⚠️ <strong>Atenção:</strong> O resultado do mês está negativo em ${formatCurrency(Math.abs(resultadoMes))}
-                    </div>
-                `;
-            }
-            
-            if (margemMes < 20 && receitasMes > 0) {
-                alertsContainer.innerHTML += `
-                    <div class="alert alert-warning">
-                        📊 <strong>Margem Baixa:</strong> Margem do mês de ${margemMes.toFixed(1)}% está abaixo do ideal (20%+)
-                    </div>
-                `;
-            }
-            
-            if (resultadoMes > 0 && margemMes >= 20) {
-                alertsContainer.innerHTML += `
-                    <div class="alert alert-success">
-                        ✅ <strong>Excelente Performance:</strong> VitexAI com resultado positivo e margem saudável de ${margemMes.toFixed(1)}%
-                    </div>
-                `;
-            }
-        }
-
-        // Criação de gráficos
+        // Criar gráficos
         function createCharts() {
             if (transactions.length === 0) {
-                showNotification('📊 Sincronize dados para visualizar os gráficos', 'info');
+                showNotification('📊 Adicione lançamentos para visualizar os gráficos', 'info');
                 return;
             }
             
@@ -1443,14 +1351,13 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             createEvolutionChart();
             createRevenueChart();
             createExpenseChart();
-            createBarChart();
-            createMarginChart();
         }
 
         function createEvolutionChart() {
-            const ctx = document.getElementById('evolutionChart').getContext('2d');
-            const monthlyData = getMonthlyData();
+            const ctx = document.getElementById('evolutionChart')?.getContext('2d');
+            if (!ctx) return;
             
+            const monthlyData = getMonthlyData();
             if (monthlyData.length === 0) return;
             
             const labels = monthlyData.map(data => 
@@ -1480,122 +1387,6 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                         }
                     ]
                 },
-                options: getChartOptions()
-            });
-        }
-
-        function createRevenueChart() {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            const revenueByCategory = getCategoryData('receita');
-            
-            if (Object.keys(revenueByCategory).length === 0) return;
-            
-            const labels = Object.keys(revenueByCategory);
-            const data = Object.values(revenueByCategory);
-            const colors = generateColors(labels.length);
-            
-            charts.revenue = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: getPieChartOptions()
-            });
-        }
-
-        function createExpenseChart() {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            const expenseByCategory = getCategoryData('despesa');
-            
-            if (Object.keys(expenseByCategory).length === 0) return;
-            
-            const labels = Object.keys(expenseByCategory);
-            const data = Object.values(expenseByCategory);
-            const colors = generateColors(labels.length, 'red');
-            
-            charts.expense = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: getPieChartOptions()
-            });
-        }
-
-        function createBarChart() {
-            const ctx = document.getElementById('barChart').getContext('2d');
-            const monthlyData = getMonthlyData();
-            
-            if (monthlyData.length === 0) return;
-            
-            const labels = monthlyData.map(data => 
-                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
-            );
-            
-            charts.bar = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Receitas',
-                            data: monthlyData.map(data => data.receitas),
-                            backgroundColor: '#4CAF5080',
-                            borderColor: '#4CAF50',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Despesas',
-                            data: monthlyData.map(data => data.despesas),
-                            backgroundColor: '#f4433680',
-                            borderColor: '#f44336',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: getChartOptions()
-            });
-        }
-
-        function createMarginChart() {
-            const ctx = document.getElementById('marginChart').getContext('2d');
-            const monthlyData = getMonthlyData();
-            
-            if (monthlyData.length === 0) return;
-            
-            const labels = monthlyData.map(data => 
-                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
-            );
-            
-            const margins = monthlyData.map(data => 
-                data.receitas > 0 ? ((data.receitas - data.despesas) / data.receitas) * 100 : 0
-            );
-            
-            charts.margin = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Margem (%)',
-                        data: margins,
-                        borderColor: '#4facfe',
-                        backgroundColor: '#4facfe20',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -1603,7 +1394,7 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return 'Margem: ' + context.parsed.y.toFixed(1) + '%';
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
                                 }
                             }
                         }
@@ -1612,7 +1403,93 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                         y: {
                             ticks: {
                                 callback: function(value) {
-                                    return value.toFixed(1) + '%';
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const revenueByCategory = getCategoryData('receita');
+            if (Object.keys(revenueByCategory).length === 0) return;
+            
+            const labels = Object.keys(revenueByCategory);
+            const data = Object.values(revenueByCategory);
+            const colors = ['#4facfe', '#00f2fe', '#4CAF50', '#2196f3', '#9c27b0', '#ff9800'];
+            
+            charts.revenue = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createExpenseChart() {
+            const ctx = document.getElementById('expenseChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const expenseByCategory = getCategoryData('despesa');
+            if (Object.keys(expenseByCategory).length === 0) return;
+            
+            const labels = Object.keys(expenseByCategory);
+            const data = Object.values(expenseByCategory);
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'];
+            
+            charts.expense = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
                                 }
                             }
                         }
@@ -1661,158 +1538,6 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
             return categoryMap;
         }
 
-        // Configurações de gráficos
-        function getChartOptions() {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: function(value) {
-                                return formatCurrency(value);
-                            }
-                        }
-                    }
-                }
-            };
-        }
-
-        function getPieChartOptions() {
-            return {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
-                                const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
-                            }
-                        }
-                    }
-                }
-            };
-        }
-
-        function generateColors(count, type = 'blue') {
-            const baseColors = type === 'red' ? 
-                ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'] :
-                ['#4facfe', '#00f2fe', '#4CAF50', '#2196f3', '#9c27b0', '#ff9800'];
-            
-            const colors = [];
-            for (let i = 0; i < count; i++) {
-                colors.push(baseColors[i % baseColors.length]);
-            }
-            return colors;
-        }
-
-        // Relatórios
-        function updateReports() {
-            updateTopCategories();
-        }
-
-        function updateTopCategories() {
-            const categoryStats = {};
-            
-            transactions.forEach(transaction => {
-                const key = `${transaction.categoria}-${transaction.tipo}`;
-                if (!categoryStats[key]) {
-                    categoryStats[key] = {
-                        categoria: transaction.categoria,
-                        tipo: transaction.tipo,
-                        total: 0,
-                        quantidade: 0
-                    };
-                }
-                categoryStats[key].total += parseFloat(transaction.valor);
-                categoryStats[key].quantidade += 1;
-            });
-            
-            const sortedStats = Object.values(categoryStats)
-                .sort((a, b) => b.total - a.total)
-                .slice(0, 10);
-            
-            const tbody = document.getElementById('topCategoriasBody');
-            tbody.innerHTML = '';
-            
-            sortedStats.forEach(stat => {
-                const row = document.createElement('tr');
-                const tipoIcon = stat.tipo === 'receita' ? '💰' : '💸';
-                const tipoClass = stat.tipo === 'receita' ? 'value-positive' : 'value-negative';
-                const media = stat.total / stat.quantidade;
-                
-                row.innerHTML = `
-                    <td>${stat.categoria}</td>
-                    <td>${tipoIcon} ${stat.tipo.charAt(0).toUpperCase() + stat.tipo.slice(1)}</td>
-                    <td class="${tipoClass}">${formatCurrency(stat.total)}</td>
-                    <td>${stat.quantidade}</td>
-                    <td>${formatCurrency(media)}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        function analisarPeriodo() {
-            const dataInicio = new Date(document.getElementById('dataInicio').value);
-            const dataFim = new Date(document.getElementById('dataFim').value);
-            
-            if (dataInicio > dataFim) {
-                showNotification('❌ Data de início deve ser anterior à data fim', 'danger');
-                return;
-            }
-            
-            const transacoesPeriodo = transactions.filter(t => {
-                const transactionDate = new Date(t.data);
-                return transactionDate >= dataInicio && transactionDate <= dataFim;
-            });
-            
-            const receitas = transacoesPeriodo.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const despesas = transacoesPeriodo.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const resultado = receitas - despesas;
-            const margem = receitas > 0 ? (resultado / receitas) * 100 : 0;
-            
-            const resultadoDiv = document.getElementById('analiseResultado');
-            resultadoDiv.innerHTML = `
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-title">Receitas do Período</div>
-                        <div class="metric-value">${formatCurrency(receitas)}</div>
-                        <div class="metric-trend">${transacoesPeriodo.filter(t => t.tipo === 'receita').length} lançamentos</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Despesas do Período</div>
-                        <div class="metric-value">${formatCurrency(despesas)}</div>
-                        <div class="metric-trend">${transacoesPeriodo.filter(t => t.tipo === 'despesa').length} lançamentos</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Resultado</div>
-                        <div class="metric-value" style="color: ${resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(resultado)}</div>
-                        <div class="metric-trend">Margem: ${margem.toFixed(1)}%</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Total de Lançamentos</div>
-                        <div class="metric-value">${transacoesPeriodo.length}</div>
-                        <div class="metric-trend">No período selecionado</div>
-                    </div>
-                </div>
-            `;
-        }
-
         // Exportação
         function exportarCSV() {
             if (transactions.length === 0) {
@@ -1832,262 +1557,23 @@ CREATE POLICY "Enable all operations for everyone" ON categories FOR ALL USING (
                 ].join(','))
             ].join('\n');
             
-            downloadFile(csvContent, 'vitexai_financeiro_supabase.csv', 'text/csv');
-            showNotification('📄 Dados exportados em CSV!', 'success');
+            downloadFile(csvContent, 'vitexai_financeiro_seguro.csv', 'text/csv');
+            showNotification('📄 Dados exportados com segurança!', 'success');
         }
 
         function exportarJSON() {
             const dataToExport = {
+                user: currentUser?.email,
                 transactions,
                 categories,
                 exportDate: new Date().toISOString(),
-                source: 'supabase',
-                version: '2.0'
+                source: 'vitexai_secure',
+                version: '3.0'
             };
             
             const jsonContent = JSON.stringify(dataToExport, null, 2);
-            downloadFile(jsonContent, 'vitexai_backup_supabase.json', 'application/json');
-            showNotification('💾 Backup local criado!', 'success');
-        }
-
-        function gerarRelatorioMensal() {
-            const hoje = new Date();
-            const mesAtual = hoje.getMonth();
-            const anoAtual = hoje.getFullYear();
-            const nomeDoMes = hoje.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-            
-            const transacoesMes = transactions.filter(t => {
-                const transactionDate = new Date(t.data);
-                return transactionDate.getMonth() === mesAtual && transactionDate.getFullYear() === anoAtual;
-            });
-            
-            if (transacoesMes.length === 0) {
-                showNotification('❌ Nenhum lançamento encontrado para o mês atual', 'danger');
-                return;
-            }
-            
-            const receitas = transacoesMes.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const despesas = transacoesMes.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const resultado = receitas - despesas;
-            
-            const relatorio = `
-RELATÓRIO MENSAL VITEXAI - ${nomeDoMes.toUpperCase()}
-================================================================
-
-RESUMO FINANCEIRO:
-• Receitas: ${formatCurrency(receitas)}
-• Despesas: ${formatCurrency(despesas)}  
-• Resultado: ${formatCurrency(resultado)}
-• Margem: ${receitas > 0 ? ((resultado/receitas)*100).toFixed(1) : 0}%
-• Lançamentos: ${transacoesMes.length}
-
-DETALHAMENTO:
-${transacoesMes.map(t => 
-    `${new Date(t.data).toLocaleDateString('pt-BR')} | ${t.tipo.toUpperCase()} | ${t.categoria} | ${t.descricao} | ${formatCurrency(parseFloat(t.valor))}`
-).join('\n')}
-
-================================================================
-Relatório gerado em: ${new Date().toLocaleString('pt-BR')}
-Sistema VitexAI - Powered by Supabase
-Dados sincronizados em tempo real
-            `.trim();
-            
-            downloadFile(relatorio, `vitexai_relatorio_${hoje.getFullYear()}_${String(hoje.getMonth() + 1).padStart(2, '0')}.txt`, 'text/plain');
-            showNotification('📊 Relatório mensal gerado!', 'success');
-        }
-
-        // Configurações
-        async function adicionarCategoria() {
-            const nome = document.getElementById('novaCategoria').value.trim();
-            const tipo = document.getElementById('tipoCategoria').value;
-            
-            if (!nome) {
-                showNotification('❌ Digite o nome da categoria', 'danger');
-                return;
-            }
-            
-            if (categories[tipo].includes(nome)) {
-                showNotification('❌ Categoria já existe', 'danger');
-                return;
-            }
-            
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('categories')
-                    .insert({ nome, tipo });
-                
-                if (error) throw error;
-                
-                categories[tipo].push(nome);
-                updateCategories();
-                document.getElementById('novaCategoria').value = '';
-                showNotification('✅ Categoria adicionada!', 'success');
-                
-            } catch (error) {
-                console.error('Erro ao adicionar categoria:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'danger');
-            }
-        }
-
-        async function removerCategoria(categoria, tipo) {
-            if (!confirm(`Tem certeza que deseja remover a categoria "${categoria}"?`)) {
-                return;
-            }
-            
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('categories')
-                    .delete()
-                    .eq('nome', categoria)
-                    .eq('tipo', tipo);
-                
-                if (error) throw error;
-                
-                categories[tipo] = categories[tipo].filter(c => c !== categoria);
-                updateCategories();
-                showNotification('🗑️ Categoria removida!', 'warning');
-                
-            } catch (error) {
-                console.error('Erro ao remover categoria:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'danger');
-            }
-        }
-
-        function updateCategoriesList() {
-            const container = document.getElementById('categoriasLista');
-            container.innerHTML = '';
-            
-            ['receita', 'despesa'].forEach(tipo => {
-                const section = document.createElement('div');
-                section.style.marginBottom = '20px';
-                
-                const title = document.createElement('h5');
-                title.textContent = `${tipo === 'receita' ? '💰' : '💸'} ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}s`;
-                section.appendChild(title);
-                
-                const list = document.createElement('div');
-                list.style.display = 'flex';
-                list.style.flexWrap = 'wrap';
-                list.style.gap = '10px';
-                
-                categories[tipo].forEach(categoria => {
-                    const item = document.createElement('span');
-                    item.style.background = '#f8f9fa';
-                    item.style.padding = '5px 10px';
-                    item.style.borderRadius = '15px';
-                    item.style.fontSize = '14px';
-                    item.style.display = 'flex';
-                    item.style.alignItems = 'center';
-                    item.style.gap = '5px';
-                    
-                    item.innerHTML = `
-                        ${categoria}
-                        <button onclick="removerCategoria('${categoria}', '${tipo}')" 
-                                style="background: #dc3545; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer;">×</button>
-                    `;
-                    
-                    list.appendChild(item);
-                });
-                
-                section.appendChild(list);
-                container.appendChild(section);
-            });
-        }
-
-        async function carregarDadosExemplo() {
-            if (transactions.length > 0) {
-                if (!confirm('Isso adicionará dados de exemplo aos existentes. Continuar?')) {
-                    return;
-                }
-            }
-            
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
-                return;
-            }
-            
-            const dadosExemplo = [
-                { data: '2025-05-01', tipo: 'receita', categoria: 'Consultoria', valor: 15000, descricao: 'Projeto Cliente A - IA Predictiva' },
-                { data: '2025-05-15', tipo: 'receita', categoria: 'Desenvolvimento', valor: 8500, descricao: 'App Mobile - VitexAI Assistant' },
-                { data: '2025-05-03', tipo: 'despesa', categoria: 'Pró-labore', valor: 6000, descricao: 'Salários Maio' },
-                { data: '2025-05-10', tipo: 'despesa', categoria: 'Impostos', valor: 2800, descricao: 'DAS e Impostos Maio' },
-                { data: '2025-05-20', tipo: 'despesa', categoria: 'Terceiros', valor: 3200, descricao: 'Freelancer UX/UI' },
-                { data: '2025-06-01', tipo: 'receita', categoria: 'Consultoria', valor: 12000, descricao: 'Consultoria BI - Cliente B' },
-                { data: '2025-06-10', tipo: 'receita', categoria: 'Licenciamento', valor: 5000, descricao: 'Licença Software VitexAI' },
-                { data: '2025-06-05', tipo: 'despesa', categoria: 'Pró-labore', valor: 6000, descricao: 'Salários Junho' },
-                { data: '2025-06-15', tipo: 'despesa', categoria: 'Assinaturas', valor: 800, descricao: 'AWS + Ferramentas' },
-                { data: '2025-06-18', tipo: 'despesa', categoria: 'Marketing', valor: 1500, descricao: 'Google Ads + LinkedIn' }
-            ];
-            
-            try {
-                showNotification('📊 Carregando dados de exemplo...', 'info');
-                
-                const { data, error } = await supabase
-                    .from('transactions')
-                    .insert(dadosExemplo)
-                    .select();
-                
-                if (error) throw error;
-                
-                await sincronizarDados();
-                showNotification('🎲 Dados de exemplo da VitexAI carregados no Supabase!', 'success');
-                
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'danger');
-            }
-        }
-
-        async function limparTodosDados() {
-            if (!confirm('⚠️ ATENÇÃO: Isso removerá TODOS os dados do Supabase permanentemente. Tem certeza?')) {
-                return;
-            }
-            
-            if (!supabase) {
-                showNotification('❌ Não conectado ao Supabase', 'danger');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('transactions')
-                    .delete()
-                    .neq('id', 0); // Deletar todos os registros
-                
-                if (error) throw error;
-                
-                transactions = [];
-                updateTransactionsTable();
-                updateDashboard();
-                showNotification('🗑️ Todos os dados foram removidos do Supabase', 'warning');
-                
-            } catch (error) {
-                console.error('Erro ao limpar dados:', error);
-                showNotification(`❌ Erro: ${error.message}`, 'danger');
-            }
-        }
-
-        function updateConfigStats() {
-            const localDataCount = document.getElementById('localDataCount');
-            if (localDataCount) {
-                localDataCount.textContent = transactions.length;
-            }
-            
-            const lastSync = localStorage.getItem('vitexai_last_sync');
-            const lastSyncEl = document.getElementById('lastSync');
-            if (lastSyncEl && lastSync) {
-                lastSyncEl.textContent = lastSync;
-            }
+            downloadFile(jsonContent, 'vitexai_backup_seguro.json', 'application/json');
+            showNotification('💾 Backup seguro criado!', 'success');
         }
 
         // Utilitários
@@ -2124,6 +1610,16 @@ Dados sincronizados em tempo real
             link.download = filename;
             link.click();
             URL.revokeObjectURL(url);
+        }
+
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+
+        function setElementColor(id, color) {
+            const element = document.getElementById(id);
+            if (element) element.style.color = color;
         }
     </script>
 </body>
