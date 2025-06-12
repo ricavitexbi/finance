@@ -571,6 +571,7 @@
                 <button class="tab active" onclick="showTab('lancamentos')">💰 Lançamentos</button>
                 <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
                 <button class="tab" onclick="showTab('charts')">📈 Gráficos</button>
+                <button class="tab" onclick="showTab('tendencias')">📊 Tendências</button>
                 <button class="tab" onclick="showTab('relatorios')">📋 Relatórios</button>
                 <button class="tab" onclick="showTab('configuracoes')">⚙️ Configurações</button>
             </div>
@@ -674,9 +675,115 @@
                         <div class="metric-trend">Criptografia avançada</div>
                     </div>
                     <div class="metric-card">
+                        <div class="metric-title">Margem Média</div>
+                        <div class="metric-value" id="margemMedia">0%</div>
+                        <div class="metric-trend">Rentabilidade geral</div>
+                    </div>
+                    <div class="metric-card">
                         <div class="metric-title">Ticket Médio Receita</div>
                         <div class="metric-value" id="ticketMedio">R$ 0,00</div>
                         <div class="metric-trend">Por transação de receita</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Total Transações</div>
+                        <div class="metric-value" id="totalTransacoes">0</div>
+                        <div class="metric-trend">Total registrado</div>
+                    </div>
+                </div>
+
+                <h3>🏢 Mix de Receitas (Acumulado)</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Consultoria</div>
+                        <div class="metric-value" id="mixConsultoria">0%</div>
+                        <div class="metric-trend" id="consultoriaValue"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Desenvolvimento</div>
+                        <div class="metric-value" id="mixDesenvolvimento">0%</div>
+                        <div class="metric-trend" id="desenvolvimentoValue"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Licenciamento</div>
+                        <div class="metric-value" id="mixLicenciamento">0%</div>
+                        <div class="metric-trend" id="licenciamentoValue"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Outras Receitas</div>
+                        <div class="metric-value" id="mixOutras">0%</div>
+                        <div class="metric-trend" id="outrasValue"></div>
+                    </div>
+                </div>
+
+                <h3>💰 Eficiência Operacional</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">ROI Acumulado</div>
+                        <div class="metric-value" id="roiAcumulado">0%</div>
+                        <div class="metric-trend">Receita/Despesa Total</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Carga Tributária Média</div>
+                        <div class="metric-value" id="cargaTributaria">0%</div>
+                        <div class="metric-trend">Impostos/Receita</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">% Custos Fixos</div>
+                        <div class="metric-value" id="custosFixes">0%</div>
+                        <div class="metric-trend">Pró-labore + Assinaturas</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Burnrate Médio</div>
+                        <div class="metric-value" id="burnrateMedia">R$ 0,00</div>
+                        <div class="metric-trend">Despesa mensal média</div>
+                    </div>
+                </div>
+
+                <h3>📈 Tendências e Padrões</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Crescimento MoM Médio</div>
+                        <div class="metric-value" id="crescimentoMedio">0%</div>
+                        <div class="metric-trend">Receita mensal</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Volatilidade Receita</div>
+                        <div class="metric-value" id="volatilidadeReceita">0%</div>
+                        <div class="metric-trend">Coeficiente de Variação</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Meses Positivos</div>
+                        <div class="metric-value" id="mesesPositivos">0</div>
+                        <div class="metric-trend" id="percentualPositivos"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Maior Resultado</div>
+                        <div class="metric-value" id="maiorResultado">R$ 0,00</div>
+                        <div class="metric-trend" id="maiorResultadoMes"></div>
+                    </div>
+                </div>
+
+                <h3>🎯 Projeções e Metas</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Receita Projetada (Próx. Mês)</div>
+                        <div class="metric-value" id="receitaProjetada">R$ 0,00</div>
+                        <div class="metric-trend">Baseado na média</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Break-even Mensal</div>
+                        <div class="metric-value" id="breakEven">R$ 0,00</div>
+                        <div class="metric-trend">Despesa média mensal</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Runway (Meses)</div>
+                        <div class="metric-value" id="runway">0</div>
+                        <div class="metric-trend" id="runwayTrend">Com resultado médio</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Meta Margem</div>
+                        <div class="metric-value">20%</div>
+                        <div class="metric-trend" id="metaMargem">Meta recomendada</div>
                     </div>
                 </div>
             </div>
@@ -707,7 +814,83 @@
                 </div>
             </div>
             
-            <!-- Tab 4: Relatórios -->
+            <!-- Tab 4: Tendências -->
+            <div id="tendencias" class="tab-content">
+                <h3>📈 Análise de Tendências Segura - VitexAI</h3>
+                
+                <div class="alert alert-info">
+                    🔐 <strong>Análise Protegida:</strong> Suas tendências financeiras estão seguras e criptografadas. Dados exclusivos do seu usuário.
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Crescimento MoM Médio</div>
+                        <div class="metric-value" id="crescimentoMedioTrend">0%</div>
+                        <div class="metric-trend">Receita mensal</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Volatilidade Receita</div>
+                        <div class="metric-value" id="volatilidadeReceitaTrend">0%</div>
+                        <div class="metric-trend">Coeficiente de Variação</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Meses Positivos</div>
+                        <div class="metric-value" id="mesesPositivosTrend">0</div>
+                        <div class="metric-trend" id="percentualPositivosTrend"></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Maior Resultado</div>
+                        <div class="metric-value" id="maiorResultadoTrend">R$ 0,00</div>
+                        <div class="metric-trend" id="maiorResultadoMesTrend"></div>
+                    </div>
+                </div>
+                
+                <!-- Evolução da Margem -->
+                <div class="chart-container">
+                    <h4>📏 Evolução da Margem (%)</h4>
+                    <canvas id="marginTrendChart" width="400" height="200"></canvas>
+                </div>
+                
+                <!-- Análise Detalhada por Mês -->
+                <div class="table-container">
+                    <h4 style="padding: 20px 20px 0;">📋 Análise Detalhada por Mês</h4>
+                    <table id="trendsTable">
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Receita</th>
+                                <th>Crescimento MoM</th>
+                                <th>Margem</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trendsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Simulador de Cenários -->
+                <div class="input-section">
+                    <h4>🔮 Simulador de Cenários - VitexAI</h4>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Meta Receita Mensal (R$)</label>
+                            <input type="number" id="metaReceita" step="1000" placeholder="Ex: 20000">
+                        </div>
+                        <div class="input-group">
+                            <label>Aumento % Despesas</label>
+                            <input type="number" id="aumentoDespesas" step="5" placeholder="Ex: 10" value="0">
+                        </div>
+                        <div class="input-group" style="display: flex; align-items: end;">
+                            <button class="btn" onclick="calcularCenario()">🔮 Calcular Cenário</button>
+                        </div>
+                    </div>
+                    
+                    <div id="cenarioResult" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+            
+            <!-- Tab 5: Relatórios -->
             <div id="relatorios" class="tab-content">
                 <h3>📋 Relatórios Seguros</h3>
                 
@@ -1316,12 +1499,13 @@
             const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const resultadoTotal = totalReceitas - totalDespesas;
+            const margemTotal = totalReceitas > 0 ? (resultadoTotal / totalReceitas) * 100 : 0;
             
             // Ticket médio por receita
             const receitasCount = transactions.filter(t => t.tipo === 'receita').length;
             const ticketMedio = receitasCount > 0 ? totalReceitas / receitasCount : 0;
             
-            // Atualizar elementos
+            // Atualizar elementos básicos
             updateElement('receitasMes', formatCurrency(receitasMes));
             updateElement('despesasMes', formatCurrency(despesasMes));
             updateElement('resultadoMes', formatCurrency(resultadoMes));
@@ -1329,11 +1513,182 @@
             updateElement('receitaAcumulada', formatCurrency(totalReceitas));
             updateElement('despesasAcumuladas', formatCurrency(totalDespesas));
             updateElement('resultadoAcumulado', formatCurrency(resultadoTotal));
+            updateElement('margemMedia', margemTotal.toFixed(1) + '%');
             updateElement('ticketMedio', formatCurrency(ticketMedio));
+            updateElement('totalTransacoes', transactions.length);
             
             // Cores
             setElementColor('resultadoMes', resultadoMes >= 0 ? '#4CAF50' : '#f44336');
             setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? '#4CAF50' : '#f44336');
+            
+            // ===== MIX DE RECEITAS =====
+            updateMixReceitas();
+            
+            // ===== EFICIÊNCIA OPERACIONAL =====
+            updateEficienciaOperacional();
+            
+            // ===== TENDÊNCIAS =====
+            updateTendencias();
+            
+            // ===== PROJEÇÕES =====
+            updateProjecoes();
+        }
+
+        // Mix de Receitas
+        function updateMixReceitas() {
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            if (totalReceitas === 0) {
+                updateElement('mixConsultoria', '0%');
+                updateElement('mixDesenvolvimento', '0%');
+                updateElement('mixLicenciamento', '0%');
+                updateElement('mixOutras', '0%');
+                return;
+            }
+            
+            const consultoriaTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Consultoria').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const desenvolvimentoTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Desenvolvimento').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const licenciamentoTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Licenciamento').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const outrasTotal = transactions.filter(t => t.tipo === 'receita' && !['Consultoria', 'Desenvolvimento', 'Licenciamento'].includes(t.categoria)).reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            updateElement('mixConsultoria', formatPercent(consultoriaTotal / totalReceitas));
+            updateElement('mixDesenvolvimento', formatPercent(desenvolvimentoTotal / totalReceitas));
+            updateElement('mixLicenciamento', formatPercent(licenciamentoTotal / totalReceitas));
+            updateElement('mixOutras', formatPercent(outrasTotal / totalReceitas));
+            
+            updateElement('consultoriaValue', formatCurrency(consultoriaTotal));
+            updateElement('desenvolvimentoValue', formatCurrency(desenvolvimentoTotal));
+            updateElement('licenciamentoValue', formatCurrency(licenciamentoTotal));
+            updateElement('outrasValue', formatCurrency(outrasTotal));
+        }
+
+        // Eficiência Operacional
+        function updateEficienciaOperacional() {
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            // ROI Acumulado
+            const roi = totalDespesas > 0 ? (totalReceitas / totalDespesas - 1) * 100 : 0;
+            updateElement('roiAcumulado', roi.toFixed(1) + '%');
+            setElementColor('roiAcumulado', roi >= 0 ? '#4CAF50' : '#f44336');
+            
+            // Carga Tributária
+            const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Impostos').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const cargaTributaria = totalReceitas > 0 ? (impostosTotal / totalReceitas) * 100 : 0;
+            updateElement('cargaTributaria', cargaTributaria.toFixed(1) + '%');
+            
+            // Custos Fixos
+            const prolaboreTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Pró-labore').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const assinaturasTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Assinaturas').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const custosFixos = totalDespesas > 0 ? ((prolaboreTotal + assinaturasTotal) / totalDespesas) * 100 : 0;
+            updateElement('custosFixes', custosFixos.toFixed(1) + '%');
+            
+            // Burnrate Médio
+            const monthlyData = getMonthlyData();
+            const burnrateMedia = monthlyData.length > 0 ? monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
+            updateElement('burnrateMedia', formatCurrency(burnrateMedia));
+        }
+
+        // Tendências
+        function updateTendencias() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length < 2) {
+                updateElement('crescimentoMedio', '0%');
+                updateElement('volatilidadeReceita', '0%');
+                updateElement('mesesPositivos', '0');
+                updateElement('percentualPositivos', '0%');
+                updateElement('maiorResultado', formatCurrency(0));
+                updateElement('maiorResultadoMes', '-');
+                return;
+            }
+            
+            // Crescimento MoM
+            let crescimentos = [];
+            for (let i = 1; i < monthlyData.length; i++) {
+                const anterior = monthlyData[i-1].receitas;
+                const atual = monthlyData[i].receitas;
+                if (anterior > 0) {
+                    crescimentos.push((atual - anterior) / anterior);
+                }
+            }
+            
+            const crescimentoMedio = crescimentos.length > 0 ? crescimentos.reduce((sum, val) => sum + val, 0) / crescimentos.length : 0;
+            updateElement('crescimentoMedio', formatPercent(crescimentoMedio));
+            
+            // Volatilidade
+            const receitas = monthlyData.map(data => data.receitas);
+            const media = receitas.reduce((sum, val) => sum + val, 0) / receitas.length;
+            const variancia = receitas.reduce((sum, val) => sum + Math.pow(val - media, 2), 0) / receitas.length;
+            const desvio = Math.sqrt(variancia);
+            const volatilidade = media > 0 ? desvio / media : 0;
+            updateElement('volatilidadeReceita', formatPercent(volatilidade));
+            
+            // Meses Positivos
+            const mesesPositivos = monthlyData.filter(data => (data.receitas - data.despesas) > 0).length;
+            const percentualPositivos = mesesPositivos / monthlyData.length;
+            updateElement('mesesPositivos', mesesPositivos);
+            updateElement('percentualPositivos', formatPercent(percentualPositivos));
+            
+            // Maior Resultado
+            const resultados = monthlyData.map(data => data.receitas - data.despesas);
+            const maiorResultado = Math.max(...resultados);
+            const maiorResultadoIndex = resultados.indexOf(maiorResultado);
+            const maiorResultadoMes = monthlyData[maiorResultadoIndex]?.month;
+            
+            updateElement('maiorResultado', formatCurrency(maiorResultado));
+            if (maiorResultadoMes) {
+                const dataFormatada = new Date(maiorResultadoMes + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
+                updateElement('maiorResultadoMes', dataFormatada);
+            }
+        }
+
+        // Projeções
+        function updateProjecoes() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length === 0) {
+                updateElement('receitaProjetada', formatCurrency(0));
+                updateElement('breakEven', formatCurrency(0));
+                updateElement('runway', '0');
+                updateElement('runwayTrend', 'Sem dados históricos');
+                updateElement('metaMargem', 'Configure dados');
+                return;
+            }
+            
+            // Receita Projetada (média dos últimos meses)
+            const receitaMedia = monthlyData.reduce((sum, data) => sum + data.receitas, 0) / monthlyData.length;
+            updateElement('receitaProjetada', formatCurrency(receitaMedia));
+            
+            // Break-even (despesa média mensal)
+            const despesaMedia = monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length;
+            updateElement('breakEven', formatCurrency(despesaMedia));
+            
+            // Runway simplificado
+            const resultadoMedio = receitaMedia - despesaMedia;
+            const ultimoResultado = monthlyData[monthlyData.length - 1];
+            const ultimoRes = ultimoResultado.receitas - ultimoResultado.despesas;
+            
+            if (ultimoRes > 0) {
+                updateElement('runway', '∞');
+                updateElement('runwayTrend', 'Sustentável');
+            } else {
+                const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(50000 / Math.abs(resultadoMedio)) : 0;
+                updateElement('runway', runway);
+                updateElement('runwayTrend', 'Com R$ 50.000 em caixa');
+            }
+            
+            // Meta margem comparison
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const margemAtual = totalReceitas > 0 ? (totalReceitas - totalDespesas) / totalReceitas : 0;
+            const metaMargem = 0.20;
+            const statusMeta = margemAtual >= metaMargem ? '✅ Atingindo' : '❌ Abaixo da meta';
+            updateElement('metaMargem', statusMeta);
+        }
+
+        function formatPercent(value) {
+            return (value * 100).toFixed(1) + '%';
         }
 
         // Criar gráficos
