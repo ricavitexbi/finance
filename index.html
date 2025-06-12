@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de Gestão Financeira VitexAI - Seguro e Protegido">
-    <title>Sistema VitexAI | Login Seguro</title>
+    <meta name="description" content="Sistema de Gestão Financeira VitexAI - Dashboard Avançado com Indicadores Agregados">
+    <title>Sistema VitexAI | Dashboard Avançado</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
     <style>
         * {
             margin: 0;
@@ -163,6 +163,10 @@
             background: linear-gradient(135deg, #dc3545, #c82333);
         }
         
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+        
         .alert {
             padding: 15px;
             border-radius: 8px;
@@ -188,6 +192,12 @@
             color: #0c5460;
         }
         
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
         .loading {
             display: inline-block;
             width: 20px;
@@ -201,15 +211,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        
-        .setup-section {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
         }
         
         .content {
@@ -277,12 +278,18 @@
         }
         
         .input-group select {
+            width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
             background: white;
+        }
+        
+        .input-group select:focus {
+            outline: none;
+            border-color: #4facfe;
         }
         
         .metrics-grid {
@@ -327,6 +334,10 @@
             font-weight: 600;
             color: #666;
         }
+        
+        .trend-up { color: #4CAF50; }
+        .trend-down { color: #f44336; }
+        .trend-neutral { color: #666; }
         
         .table-container {
             background: white;
@@ -478,12 +489,12 @@
     <!-- Tela de Login/Cadastro -->
     <div id="authContainer" class="container">
         <div class="header">
-            <h1>🔐 VitexAI | Sistema Seguro</h1>
-            <p>Acesso Protegido - Gestão Financeira Empresarial</p>
+            <h1>🔐 VitexAI | Sistema Avançado</h1>
+            <p>Dashboard com Indicadores Agregados e Análise Avançada</p>
         </div>
         
         <div class="auth-section">
-            <h2>Acesso Seguro</h2>
+            <h2>Acesso ao Sistema</h2>
             
             <div class="auth-tabs">
                 <button class="auth-tab active" onclick="showAuthTab('login')">Login</button>
@@ -549,6 +560,9 @@
                 <button class="btn" onclick="setupConnection()">
                     🔗 Configurar e Conectar
                 </button>
+                <button class="btn btn-secondary" onclick="loadDemoMode()">
+                    🎮 Modo Demonstração (sem banco)
+                </button>
             </div>
         </div>
     </div>
@@ -556,8 +570,8 @@
     <!-- Sistema Principal (após login) -->
     <div id="mainContainer" class="container" style="display: none;">
         <div class="header">
-            <h1>💼 Sistema VitexAI</h1>
-            <p>Gestão Financeira Segura e Protegida</p>
+            <h1>📊 Dashboard VitexAI</h1>
+            <p>Indicadores Agregados - Análise Avançada</p>
             <div class="user-info" id="userInfo">
                 👤 <span id="userEmail"></span>
                 <button onclick="logoutUser()" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 15px; margin-left: 10px; cursor: pointer;">
@@ -567,11 +581,14 @@
         </div>
         
         <div class="content">
+            <div id="alertsContainer"></div>
+            
             <div class="tabs">
                 <button class="tab active" onclick="showTab('lancamentos')">💰 Lançamentos</button>
-                <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
-                <button class="tab" onclick="showTab('charts')">📈 Gráficos</button>
-                <button class="tab" onclick="showTab('tendencias')">📊 Tendências</button>
+                <button class="tab" onclick="showTab('aggregated')">📈 Indicadores Agregados</button>
+                <button class="tab" onclick="showTab('trends')">📊 Tendências</button>
+                <button class="tab" onclick="showTab('projections')">🎯 Projeções</button>
+                <button class="tab" onclick="showTab('charts')">📉 Gráficos</button>
                 <button class="tab" onclick="showTab('relatorios')">📋 Relatórios</button>
                 <button class="tab" onclick="showTab('configuracoes')">⚙️ Configurações</button>
             </div>
@@ -607,7 +624,7 @@
                             <input type="text" id="quickDescricao" placeholder="Descrição do lançamento">
                         </div>
                         <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn" onclick="adicionarLancamento()" id="btnAdicionar">
+                            <button class="btn btn-success" onclick="adicionarLancamento()" id="btnAdicionar">
                                 ➕ Adicionar
                             </button>
                         </div>
@@ -615,9 +632,14 @@
                 </div>
                 
                 <div class="table-container">
-                    <h3 style="padding: 20px 20px 0;">📝 Seus Lançamentos</h3>
+                    <h3 style="padding: 20px 20px 0;">📝 Histórico de Lançamentos</h3>
                     <div style="padding: 0 20px 20px;">
-                        <button class="btn" onclick="sincronizarDados()" style="padding: 8px 16px; width: auto;">🔄 Sincronizar</button>
+                        <button class="btn" onclick="sincronizarDados()" style="padding: 8px 16px; width: auto;">
+                            🔄 Sincronizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="importarDadosExemplo()" style="padding: 8px 16px; width: auto; margin-left: 10px;">
+                            📥 Carregar Dados de Exemplo
+                        </button>
                     </div>
                     <table id="transactionsTable">
                         <thead>
@@ -636,85 +658,61 @@
                 </div>
             </div>
             
-            <!-- Tab 2: Dashboard -->
-            <div id="dashboard" class="tab-content">
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h4>Receitas do Mês</h4>
-                        <div class="value" id="receitasMes">R$ 0,00</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>Despesas do Mês</h4>
-                        <div class="value" id="despesasMes">R$ 0,00</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>Resultado do Mês</h4>
-                        <div class="value" id="resultadoMes">R$ 0,00</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>Margem do Mês</h4>
-                        <div class="value" id="margemMes">0%</div>
-                    </div>
-                </div>
-                
-                <h3>📊 Indicadores VitexAI</h3>
+            <!-- Tab 2: Indicadores Agregados -->
+            <div id="aggregated" class="tab-content">
+                <h3>📊 Visão Agregada Geral - VitexAI</h3>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-title">Receita Acumulada</div>
                         <div class="metric-value" id="receitaAcumulada">R$ 0,00</div>
-                        <div class="metric-trend">Dados seguros e protegidos</div>
+                        <div class="metric-trend" id="receitaTrend"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Despesas Acumuladas</div>
                         <div class="metric-value" id="despesasAcumuladas">R$ 0,00</div>
-                        <div class="metric-trend">Backup automático</div>
+                        <div class="metric-trend" id="despesasTrend"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Resultado Acumulado</div>
                         <div class="metric-value" id="resultadoAcumulado">R$ 0,00</div>
-                        <div class="metric-trend">Criptografia avançada</div>
+                        <div class="metric-trend" id="resultadoTrend"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Margem Média</div>
                         <div class="metric-value" id="margemMedia">0%</div>
-                        <div class="metric-trend">Rentabilidade geral</div>
+                        <div class="metric-trend" id="margemTrend"></div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Ticket Médio Receita</div>
-                        <div class="metric-value" id="ticketMedio">R$ 0,00</div>
-                        <div class="metric-trend">Por transação de receita</div>
+                        <div class="metric-title">Receita Média Mensal</div>
+                        <div class="metric-value" id="receitaMedia">R$ 0,00</div>
+                        <div class="metric-trend" id="receitaMediaTrend"></div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Total Transações</div>
-                        <div class="metric-value" id="totalTransacoes">0</div>
-                        <div class="metric-trend">Total registrado</div>
+                        <div class="metric-title">Burnrate Médio</div>
+                        <div class="metric-value" id="burnrateMedia">R$ 0,00</div>
+                        <div class="metric-trend" id="burnrateTrend"></div>
                     </div>
                 </div>
-
+                
                 <h3>🏢 Mix de Receitas (Acumulado)</h3>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-title">Consultoria</div>
                         <div class="metric-value" id="mixConsultoria">0%</div>
-                        <div class="metric-trend" id="consultoriaValue"></div>
+                        <div class="metric-trend" id="consultoriaValue">R$ 0,00</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Desenvolvimento</div>
                         <div class="metric-value" id="mixDesenvolvimento">0%</div>
-                        <div class="metric-trend" id="desenvolvimentoValue"></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Licenciamento</div>
-                        <div class="metric-value" id="mixLicenciamento">0%</div>
-                        <div class="metric-trend" id="licenciamentoValue"></div>
+                        <div class="metric-trend" id="desenvolvimentoValue">R$ 0,00</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Outras Receitas</div>
                         <div class="metric-value" id="mixOutras">0%</div>
-                        <div class="metric-trend" id="outrasValue"></div>
+                        <div class="metric-trend" id="outrasValue">R$ 0,00</div>
                     </div>
                 </div>
-
+                
                 <h3>💰 Eficiência Operacional</h3>
                 <div class="metrics-grid">
                     <div class="metric-card">
@@ -732,14 +730,13 @@
                         <div class="metric-value" id="custosFixes">0%</div>
                         <div class="metric-trend">Pró-labore + Assinaturas</div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Burnrate Médio</div>
-                        <div class="metric-value" id="burnrateMedia">R$ 0,00</div>
-                        <div class="metric-trend">Despesa mensal média</div>
-                    </div>
                 </div>
-
-                <h3>📈 Tendências e Padrões</h3>
+            </div>
+            
+            <!-- Tab 3: Tendências -->
+            <div id="trends" class="tab-content">
+                <h3>📈 Análise de Tendências - VitexAI</h3>
+                
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-title">Crescimento MoM Médio</div>
@@ -762,13 +759,41 @@
                         <div class="metric-trend" id="maiorResultadoMes"></div>
                     </div>
                 </div>
-
-                <h3>🎯 Projeções e Metas</h3>
+                
+                <div class="chart-container">
+                    <h4>Evolução Mensal</h4>
+                    <canvas id="trendsChart" width="400" height="200"></canvas>
+                </div>
+                
+                <div class="table-container">
+                    <h4 style="padding: 20px 20px 0;">Análise Detalhada por Mês</h4>
+                    <table id="trendsTable">
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Receita</th>
+                                <th>Despesa</th>
+                                <th>Resultado</th>
+                                <th>Crescimento MoM</th>
+                                <th>Margem</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trendsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tab 4: Projeções -->
+            <div id="projections" class="tab-content">
+                <h3>🎯 Projeções e Metas - VitexAI</h3>
+                
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-title">Receita Projetada (Próx. Mês)</div>
                         <div class="metric-value" id="receitaProjetada">R$ 0,00</div>
-                        <div class="metric-trend">Baseado na média</div>
+                        <div class="metric-trend">Baseado na média móvel</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-title">Break-even Mensal</div>
@@ -786,18 +811,35 @@
                         <div class="metric-trend" id="metaMargem">Meta recomendada</div>
                     </div>
                 </div>
+                
+                <div class="input-section">
+                    <h4>🔮 Simulador de Cenários</h4>
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>Meta Receita Mensal (R$)</label>
+                            <input type="number" id="metaReceita" step="1000" placeholder="Ex: 20000">
+                        </div>
+                        <div class="input-group">
+                            <label>Aumento % Despesas</label>
+                            <input type="number" id="aumentoDespesas" step="5" placeholder="Ex: 10" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Caixa Disponível (R$)</label>
+                            <input type="number" id="caixaDisponivel" step="1000" placeholder="Ex: 50000" value="50000">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="calcularCenario()">🔮 Calcular Cenário</button>
+                    
+                    <div id="cenarioResult" style="margin-top: 20px;"></div>
+                </div>
             </div>
             
-            <!-- Tab 3: Gráficos -->
+            <!-- Tab 5: Gráficos -->
             <div id="charts" class="tab-content">
-                <h3>📈 Visualizações Seguras - VitexAI</h3>
-                
-                <div class="alert alert-info">
-                    🔐 <strong>Dados Protegidos:</strong> Suas informações financeiras estão criptografadas e seguras. Apenas você tem acesso.
-                </div>
+                <h3>📈 Visualizações Avançadas - VitexAI</h3>
                 
                 <div class="chart-container">
-                    <h4>📈 Evolução Mensal</h4>
+                    <h4>📈 Evolução Mensal - Receitas vs Despesas</h4>
                     <canvas id="evolutionChart" width="400" height="150"></canvas>
                 </div>
                 
@@ -812,98 +854,38 @@
                         <canvas id="expenseChart" width="400" height="200"></canvas>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Tab 4: Tendências -->
-            <div id="tendencias" class="tab-content">
-                <h3>📈 Análise de Tendências Segura - VitexAI</h3>
                 
-                <div class="alert alert-info">
-                    🔐 <strong>Análise Protegida:</strong> Suas tendências financeiras estão seguras e criptografadas. Dados exclusivos do seu usuário.
-                </div>
-                
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-title">Crescimento MoM Médio</div>
-                        <div class="metric-value" id="crescimentoMedioTrend">0%</div>
-                        <div class="metric-trend">Receita mensal</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Volatilidade Receita</div>
-                        <div class="metric-value" id="volatilidadeReceitaTrend">0%</div>
-                        <div class="metric-trend">Coeficiente de Variação</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Meses Positivos</div>
-                        <div class="metric-value" id="mesesPositivosTrend">0</div>
-                        <div class="metric-trend" id="percentualPositivosTrend"></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-title">Maior Resultado</div>
-                        <div class="metric-value" id="maiorResultadoTrend">R$ 0,00</div>
-                        <div class="metric-trend" id="maiorResultadoMesTrend"></div>
-                    </div>
-                </div>
-                
-                <!-- Evolução da Margem -->
                 <div class="chart-container">
-                    <h4>📏 Evolução da Margem (%)</h4>
-                    <canvas id="marginTrendChart" width="400" height="200"></canvas>
-                </div>
-                
-                <!-- Análise Detalhada por Mês -->
-                <div class="table-container">
-                    <h4 style="padding: 20px 20px 0;">📋 Análise Detalhada por Mês</h4>
-                    <table id="trendsTable">
-                        <thead>
-                            <tr>
-                                <th>Mês</th>
-                                <th>Receita</th>
-                                <th>Crescimento MoM</th>
-                                <th>Margem</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trendsTableBody">
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Simulador de Cenários -->
-                <div class="input-section">
-                    <h4>🔮 Simulador de Cenários - VitexAI</h4>
-                    <div class="input-grid">
-                        <div class="input-group">
-                            <label>Meta Receita Mensal (R$)</label>
-                            <input type="number" id="metaReceita" step="1000" placeholder="Ex: 20000">
-                        </div>
-                        <div class="input-group">
-                            <label>Aumento % Despesas</label>
-                            <input type="number" id="aumentoDespesas" step="5" placeholder="Ex: 10" value="0">
-                        </div>
-                        <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn" onclick="calcularCenario()">🔮 Calcular Cenário</button>
-                        </div>
-                    </div>
-                    
-                    <div id="cenarioResult" style="margin-top: 20px;"></div>
+                    <h4>📊 Evolução da Margem (%)</h4>
+                    <canvas id="marginChart" width="400" height="200"></canvas>
                 </div>
             </div>
             
-            <!-- Tab 5: Relatórios -->
+            <!-- Tab 6: Relatórios -->
             <div id="relatorios" class="tab-content">
-                <h3>📋 Relatórios Seguros</h3>
+                <h3>📋 Relatórios e Exportação</h3>
                 
                 <div class="input-section">
                     <h4>📥 Exportar Dados</h4>
-                    <button class="btn" onclick="exportarCSV()">📄 Exportar CSV</button>
-                    <button class="btn" onclick="exportarJSON()">💾 Backup Local</button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn" onclick="exportarCSV()" style="width: auto;">
+                            📄 Exportar CSV
+                        </button>
+                        <button class="btn" onclick="exportarJSON()" style="width: auto;">
+                            💾 Backup JSON
+                        </button>
+                        <button class="btn btn-secondary" onclick="gerarRelatorioMensal()" style="width: auto;">
+                            📊 Relatório Mensal
+                        </button>
+                    </div>
                 </div>
+                
+                <div id="relatorioContainer" style="margin-top: 20px;"></div>
             </div>
             
-            <!-- Tab 5: Configurações -->
+            <!-- Tab 7: Configurações -->
             <div id="configuracoes" class="tab-content">
-                <h3>⚙️ Configurações de Segurança</h3>
+                <h3>⚙️ Configurações do Sistema</h3>
                 
                 <div class="input-section">
                     <h4>👤 Perfil do Usuário</h4>
@@ -929,12 +911,17 @@
                         🚪 Sair do Sistema
                     </button>
                 </div>
+                
+                <div class="input-section">
+                    <h4>🔧 Configurações Avançadas</h4>
+                    <p>Em desenvolvimento: categorias personalizadas, metas automáticas, integração bancária.</p>
+                </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>🔐 <strong>VitexAI Sistema Seguro</strong> | Dados protegidos com criptografia | Acesso controlado</p>
-            <p style="font-size: 12px; margin-top: 5px;">Autenticação Supabase | Backup automático | Segurança enterprise</p>
+            <p>🔐 <strong>VitexAI Dashboard Avançado</strong> | Dados protegidos | Análise em tempo real</p>
+            <p style="font-size: 12px; margin-top: 5px;">Versão 3.0 | Indicadores Agregados | Projeções Inteligentes</p>
         </div>
     </div>
 
@@ -948,6 +935,7 @@
             despesa: ['Pró-labore', 'Impostos', 'Terceiros', 'Desenvolvedores', 'Assinaturas', 'Marketing', 'Outras']
         };
         let charts = {};
+        let demoMode = false;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -978,6 +966,15 @@
             }
         }
 
+        // Modo demonstração
+        function loadDemoMode() {
+            demoMode = true;
+            currentUser = { email: 'demo@vitexai.com' };
+            showMainApp();
+            showNotification('🎮 Modo demonstração ativado!', 'info');
+            setTimeout(() => importarDadosExemplo(), 500);
+        }
+
         // Configurar conexão inicial
         async function setupConnection() {
             const url = document.getElementById('setupSupabaseUrl').value.trim();
@@ -995,7 +992,7 @@
                 const testSupabase = window.supabase.createClient(url, key);
                 const { data, error } = await testSupabase.from('transactions').select('count', { count: 'exact', head: true });
                 
-                if (error) {
+                if (error && error.code !== 'PGRST116') { // PGRST116 = tabela não existe ainda
                     throw new Error(`Erro na conexão: ${error.message}`);
                 }
                 
@@ -1190,9 +1187,17 @@
         async function logoutUser() {
             if (confirm('Tem certeza que deseja sair?')) {
                 try {
-                    const { error } = await supabase.auth.signOut();
-                    if (error) throw error;
+                    if (!demoMode && supabase) {
+                        const { error } = await supabase.auth.signOut();
+                        if (error) throw error;
+                    }
                     
+                    // Limpar dados locais
+                    transactions = [];
+                    currentUser = null;
+                    demoMode = false;
+                    
+                    showAuthApp();
                     showNotification('👋 Logout realizado com sucesso!', 'info');
                     
                 } catch (error) {
@@ -1213,15 +1218,18 @@
             const profileEmail = document.getElementById('profileEmail');
             
             if (currentUser) {
-                userEmail.textContent = currentUser.email;
-                profileEmail.textContent = currentUser.email;
+                const email = currentUser.email || 'demo@vitexai.com';
+                userEmail.textContent = email;
+                profileEmail.textContent = email;
                 userInfo.style.display = 'block';
             }
             
             // Carregar dados
-            loadCategories();
-            sincronizarDados();
             updateCategories();
+            if (!demoMode) {
+                loadCategories();
+                sincronizarDados();
+            }
         }
 
         // Mostrar app de autenticação
@@ -1256,7 +1264,7 @@
 
         // Carregar categorias
         async function loadCategories() {
-            if (!supabase || !currentUser) return;
+            if (!supabase || !currentUser || demoMode) return;
             
             try {
                 const { data, error } = await supabase
@@ -1266,10 +1274,15 @@
                 
                 if (error) throw error;
                 
-                categories = { receita: [], despesa: [] };
-                data.forEach(cat => {
-                    categories[cat.tipo].push(cat.nome);
-                });
+                if (data && data.length > 0) {
+                    categories = { receita: [], despesa: [] };
+                    data.forEach(cat => {
+                        if (categories[cat.tipo]) {
+                            categories[cat.tipo].push(cat.nome);
+                        }
+                    });
+                    updateCategories();
+                }
                 
             } catch (error) {
                 console.error('Erro ao carregar categorias:', error);
@@ -1278,7 +1291,10 @@
 
         // Sincronizar dados
         async function sincronizarDados() {
-            if (!supabase || !currentUser) return;
+            if (!supabase || !currentUser || demoMode) {
+                showNotification('❌ Modo demo não suporta sincronização', 'warning');
+                return;
+            }
             
             try {
                 showNotification('🔄 Sincronizando dados...', 'info');
@@ -1292,7 +1308,7 @@
                 
                 transactions = data || [];
                 updateTransactionsTable();
-                updateDashboard();
+                updateAllDashboards();
                 
                 // Atualizar contador
                 const userDataCount = document.getElementById('userDataCount');
@@ -1326,6 +1342,26 @@
                 return;
             }
             
+            if (demoMode) {
+                // Modo demo - adicionar localmente
+                const newTransaction = {
+                    id: Date.now(),
+                    data,
+                    tipo,
+                    categoria,
+                    valor,
+                    descricao,
+                    created_at: new Date().toISOString()
+                };
+                
+                transactions.unshift(newTransaction);
+                updateTransactionsTable();
+                updateAllDashboards();
+                clearQuickForm();
+                showNotification('✅ Lançamento adicionado (modo demo)!', 'success');
+                return;
+            }
+            
             if (!supabase || !currentUser) {
                 showNotification('❌ Usuário não autenticado', 'danger');
                 return;
@@ -1343,7 +1379,8 @@
                         tipo,
                         categoria,
                         valor,
-                        descricao
+                        descricao,
+                        user_id: currentUser.id
                     })
                     .select()
                     .single();
@@ -1352,7 +1389,7 @@
                 
                 transactions.unshift(newTransaction);
                 updateTransactionsTable();
-                updateDashboard();
+                updateAllDashboards();
                 clearQuickForm();
                 
                 showNotification('✅ Lançamento salvo com segurança!', 'success');
@@ -1373,6 +1410,14 @@
                 return;
             }
             
+            if (demoMode) {
+                transactions = transactions.filter(t => t.id !== id);
+                updateTransactionsTable();
+                updateAllDashboards();
+                showNotification('🗑️ Lançamento removido (modo demo)!', 'warning');
+                return;
+            }
+            
             if (!supabase || !currentUser) {
                 showNotification('❌ Usuário não autenticado', 'danger');
                 return;
@@ -1388,7 +1433,7 @@
                 
                 transactions = transactions.filter(t => t.id !== id);
                 updateTransactionsTable();
-                updateDashboard();
+                updateAllDashboards();
                 
                 showNotification('🗑️ Lançamento removido!', 'warning');
                 
@@ -1398,6 +1443,80 @@
             }
         }
 
+        // Importar dados de exemplo
+        function importarDadosExemplo() {
+            const exemplos = [
+                {
+                    id: Date.now() + 1,
+                    data: '2025-05-15',
+                    tipo: 'receita',
+                    categoria: 'Outras',
+                    valor: 17500,
+                    descricao: 'Entrada investidor anjo',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 2,
+                    data: '2025-05-10',
+                    tipo: 'despesa',
+                    categoria: 'Pró-labore',
+                    valor: 5735.36,
+                    descricao: 'Pró-labore sócios',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 3,
+                    data: '2025-05-20',
+                    tipo: 'despesa',
+                    categoria: 'Impostos',
+                    valor: 3534.80,
+                    descricao: 'DAS - Simples Nacional',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 4,
+                    data: '2025-05-25',
+                    tipo: 'despesa',
+                    categoria: 'Terceiros',
+                    valor: 2024.50,
+                    descricao: 'Contabilidade',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 5,
+                    data: '2025-06-05',
+                    tipo: 'receita',
+                    categoria: 'Consultoria',
+                    valor: 5910.83,
+                    descricao: 'Consultoria TI - Cliente A',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 6,
+                    data: '2025-06-15',
+                    tipo: 'receita',
+                    categoria: 'Desenvolvimento',
+                    valor: 6875,
+                    descricao: 'Desenvolvimento app mobile',
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + 7,
+                    data: '2025-06-20',
+                    tipo: 'despesa',
+                    categoria: 'Outras',
+                    valor: 14165.10,
+                    descricao: 'Investimento em equipamentos',
+                    created_at: new Date().toISOString()
+                }
+            ];
+            
+            transactions = [...exemplos, ...transactions];
+            updateTransactionsTable();
+            updateAllDashboards();
+            showNotification('📥 Dados de exemplo carregados!', 'success');
+        }
+
         // Gerenciar abas
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -1405,6 +1524,10 @@
             
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            
+            if (tabName === 'aggregated' || tabName === 'trends' || tabName === 'projections') {
+                updateAllDashboards();
+            }
             
             if (tabName === 'charts') {
                 setTimeout(createCharts, 100);
@@ -1478,60 +1601,59 @@
             });
         }
 
-        // Atualizar dashboard
-        function updateDashboard() {
-            const hoje = new Date();
-            const mesAtual = hoje.getMonth();
-            const anoAtual = hoje.getFullYear();
-            
-            // Transações do mês atual
-            const transacoesMes = transactions.filter(t => {
-                const transactionDate = new Date(t.data);
-                return transactionDate.getMonth() === mesAtual && transactionDate.getFullYear() === anoAtual;
-            });
-            
-            const receitasMes = transacoesMes.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const despesasMes = transacoesMes.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const resultadoMes = receitasMes - despesasMes;
-            const margemMes = receitasMes > 0 ? (resultadoMes / receitasMes) * 100 : 0;
+        // Atualizar todos os dashboards
+        function updateAllDashboards() {
+            updateAggregatedMetrics();
+            updateTrends();
+            updateProjections();
+            updateAlerts();
+        }
+
+        // Atualizar indicadores agregados
+        function updateAggregatedMetrics() {
+            if (transactions.length === 0) {
+                resetAllMetrics();
+                return;
+            }
             
             // Totais acumulados
-            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const resultadoTotal = totalReceitas - totalDespesas;
-            const margemTotal = totalReceitas > 0 ? (resultadoTotal / totalReceitas) * 100 : 0;
+            const receitaTotal = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const despesaTotal = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const resultadoTotal = receitaTotal - despesaTotal;
             
-            // Ticket médio por receita
-            const receitasCount = transactions.filter(t => t.tipo === 'receita').length;
-            const ticketMedio = receitasCount > 0 ? totalReceitas / receitasCount : 0;
+            // Dados mensais
+            const monthlyData = getMonthlyData();
             
-            // Atualizar elementos básicos
-            updateElement('receitasMes', formatCurrency(receitasMes));
-            updateElement('despesasMes', formatCurrency(despesasMes));
-            updateElement('resultadoMes', formatCurrency(resultadoMes));
-            updateElement('margemMes', margemMes.toFixed(1) + '%');
-            updateElement('receitaAcumulada', formatCurrency(totalReceitas));
-            updateElement('despesasAcumuladas', formatCurrency(totalDespesas));
+            // Médias
+            const receitaMedia = monthlyData.length > 0 ? monthlyData.reduce((sum, data) => sum + data.receitas, 0) / monthlyData.length : 0;
+            const despesaMedia = monthlyData.length > 0 ? monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
+            const margemMedia = receitaTotal > 0 ? (resultadoTotal / receitaTotal) : 0;
+            
+            // Atualizar elementos
+            updateElement('receitaAcumulada', formatCurrency(receitaTotal));
+            updateElement('despesasAcumuladas', formatCurrency(despesaTotal));
             updateElement('resultadoAcumulado', formatCurrency(resultadoTotal));
-            updateElement('margemMedia', margemTotal.toFixed(1) + '%');
-            updateElement('ticketMedio', formatCurrency(ticketMedio));
-            updateElement('totalTransacoes', transactions.length);
+            updateElement('margemMedia', formatPercent(margemMedia));
+            updateElement('receitaMedia', formatCurrency(receitaMedia));
+            updateElement('burnrateMedia', formatCurrency(despesaMedia));
             
             // Cores
-            setElementColor('resultadoMes', resultadoMes >= 0 ? '#4CAF50' : '#f44336');
             setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? '#4CAF50' : '#f44336');
             
-            // ===== MIX DE RECEITAS =====
+            // Trends
+            if (resultadoTotal >= 0) {
+                updateElement('resultadoTrend', '↑ Lucro acumulado');
+                document.getElementById('resultadoTrend').className = 'metric-trend trend-up';
+            } else {
+                updateElement('resultadoTrend', '↓ Prejuízo acumulado');
+                document.getElementById('resultadoTrend').className = 'metric-trend trend-down';
+            }
+            
+            // Mix de receitas
             updateMixReceitas();
             
-            // ===== EFICIÊNCIA OPERACIONAL =====
+            // Eficiência operacional
             updateEficienciaOperacional();
-            
-            // ===== TENDÊNCIAS =====
-            updateTendencias();
-            
-            // ===== PROJEÇÕES =====
-            updateProjecoes();
         }
 
         // Mix de Receitas
@@ -1541,24 +1663,23 @@
             if (totalReceitas === 0) {
                 updateElement('mixConsultoria', '0%');
                 updateElement('mixDesenvolvimento', '0%');
-                updateElement('mixLicenciamento', '0%');
                 updateElement('mixOutras', '0%');
+                updateElement('consultoriaValue', 'R$ 0,00');
+                updateElement('desenvolvimentoValue', 'R$ 0,00');
+                updateElement('outrasValue', 'R$ 0,00');
                 return;
             }
             
             const consultoriaTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Consultoria').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const desenvolvimentoTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Desenvolvimento').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const licenciamentoTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Licenciamento').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const outrasTotal = transactions.filter(t => t.tipo === 'receita' && !['Consultoria', 'Desenvolvimento', 'Licenciamento'].includes(t.categoria)).reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const outrasTotal = totalReceitas - consultoriaTotal - desenvolvimentoTotal;
             
             updateElement('mixConsultoria', formatPercent(consultoriaTotal / totalReceitas));
             updateElement('mixDesenvolvimento', formatPercent(desenvolvimentoTotal / totalReceitas));
-            updateElement('mixLicenciamento', formatPercent(licenciamentoTotal / totalReceitas));
             updateElement('mixOutras', formatPercent(outrasTotal / totalReceitas));
             
             updateElement('consultoriaValue', formatCurrency(consultoriaTotal));
             updateElement('desenvolvimentoValue', formatCurrency(desenvolvimentoTotal));
-            updateElement('licenciamentoValue', formatCurrency(licenciamentoTotal));
             updateElement('outrasValue', formatCurrency(outrasTotal));
         }
 
@@ -1568,29 +1689,24 @@
             const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             
             // ROI Acumulado
-            const roi = totalDespesas > 0 ? (totalReceitas / totalDespesas - 1) * 100 : 0;
-            updateElement('roiAcumulado', roi.toFixed(1) + '%');
+            const roi = totalDespesas > 0 ? ((totalReceitas / totalDespesas) - 1) : 0;
+            updateElement('roiAcumulado', formatPercent(roi));
             setElementColor('roiAcumulado', roi >= 0 ? '#4CAF50' : '#f44336');
             
             // Carga Tributária
             const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Impostos').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const cargaTributaria = totalReceitas > 0 ? (impostosTotal / totalReceitas) * 100 : 0;
-            updateElement('cargaTributaria', cargaTributaria.toFixed(1) + '%');
+            const cargaTributaria = totalReceitas > 0 ? (impostosTotal / totalReceitas) : 0;
+            updateElement('cargaTributaria', formatPercent(cargaTributaria));
             
             // Custos Fixos
             const prolaboreTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Pró-labore').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const assinaturasTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Assinaturas').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const custosFixos = totalDespesas > 0 ? ((prolaboreTotal + assinaturasTotal) / totalDespesas) * 100 : 0;
-            updateElement('custosFixes', custosFixos.toFixed(1) + '%');
-            
-            // Burnrate Médio
-            const monthlyData = getMonthlyData();
-            const burnrateMedia = monthlyData.length > 0 ? monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
-            updateElement('burnrateMedia', formatCurrency(burnrateMedia));
+            const custosFixos = totalDespesas > 0 ? ((prolaboreTotal + assinaturasTotal) / totalDespesas) : 0;
+            updateElement('custosFixes', formatPercent(custosFixos));
         }
 
-        // Tendências
-        function updateTendencias() {
+        // Atualizar tendências
+        function updateTrends() {
             const monthlyData = getMonthlyData();
             
             if (monthlyData.length < 2) {
@@ -1624,27 +1740,64 @@
             const volatilidade = media > 0 ? desvio / media : 0;
             updateElement('volatilidadeReceita', formatPercent(volatilidade));
             
-            // Meses Positivos
-            const mesesPositivos = monthlyData.filter(data => (data.receitas - data.despesas) > 0).length;
-            const percentualPositivos = mesesPositivos / monthlyData.length;
+            // Meses positivos
+            const mesesPositivos = monthlyData.filter(data => data.resultado > 0).length;
+            const percentualPositivos = monthlyData.length > 0 ? mesesPositivos / monthlyData.length : 0;
             updateElement('mesesPositivos', mesesPositivos);
             updateElement('percentualPositivos', formatPercent(percentualPositivos));
             
-            // Maior Resultado
-            const resultados = monthlyData.map(data => data.receitas - data.despesas);
+            // Maior resultado
+            const resultados = monthlyData.map(data => data.resultado);
             const maiorResultado = Math.max(...resultados);
             const maiorResultadoIndex = resultados.indexOf(maiorResultado);
             const maiorResultadoMes = monthlyData[maiorResultadoIndex]?.month;
             
             updateElement('maiorResultado', formatCurrency(maiorResultado));
             if (maiorResultadoMes) {
-                const dataFormatada = new Date(maiorResultadoMes + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
-                updateElement('maiorResultadoMes', dataFormatada);
+                updateElement('maiorResultadoMes', new Date(maiorResultadoMes + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'}));
             }
+            
+            // Atualizar tabela de tendências
+            updateTrendsTable();
         }
 
-        // Projeções
-        function updateProjecoes() {
+        // Atualizar tabela de tendências
+        function updateTrendsTable() {
+            const tbody = document.getElementById('trendsTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const monthlyData = getMonthlyData();
+            
+            monthlyData.forEach((data, index) => {
+                let crescimentoMoM = '';
+                if (index > 0) {
+                    const anterior = monthlyData[index-1].receitas;
+                    if (anterior > 0) {
+                        const crescimento = (data.receitas - anterior) / anterior;
+                        crescimentoMoM = formatPercent(crescimento);
+                    }
+                }
+                
+                const status = data.resultado > 0 ? '✅ Positivo' : '❌ Negativo';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})}</td>
+                    <td>${formatCurrency(data.receitas)}</td>
+                    <td>${formatCurrency(data.despesas)}</td>
+                    <td style="color: ${data.resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(data.resultado)}</td>
+                    <td>${crescimentoMoM || '-'}</td>
+                    <td style="color: ${data.margem >= 0 ? '#4CAF50' : '#f44336'}">${formatPercent(data.margem)}</td>
+                    <td>${status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Atualizar projeções
+        function updateProjections() {
             const monthlyData = getMonthlyData();
             
             if (monthlyData.length === 0) {
@@ -1656,39 +1809,121 @@
                 return;
             }
             
-            // Receita Projetada (média dos últimos meses)
-            const receitaMedia = monthlyData.reduce((sum, data) => sum + data.receitas, 0) / monthlyData.length;
+            // Receita projetada (média móvel dos últimos 3 meses)
+            const ultimosMeses = monthlyData.slice(-3);
+            const receitaMedia = ultimosMeses.reduce((sum, data) => sum + data.receitas, 0) / ultimosMeses.length;
             updateElement('receitaProjetada', formatCurrency(receitaMedia));
             
-            // Break-even (despesa média mensal)
+            // Break-even
             const despesaMedia = monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length;
             updateElement('breakEven', formatCurrency(despesaMedia));
             
-            // Runway simplificado
-            const resultadoMedio = receitaMedia - despesaMedia;
+            // Runway
             const ultimoResultado = monthlyData[monthlyData.length - 1];
-            const ultimoRes = ultimoResultado.receitas - ultimoResultado.despesas;
+            const resultadoMedio = monthlyData.reduce((sum, data) => sum + data.resultado, 0) / monthlyData.length;
             
-            if (ultimoRes > 0) {
+            if (ultimoResultado.resultado > 0) {
                 updateElement('runway', '∞');
                 updateElement('runwayTrend', 'Sustentável');
             } else {
-                const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(50000 / Math.abs(resultadoMedio)) : 0;
+                const caixaDefault = 50000; // Valor padrão
+                const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(caixaDefault / Math.abs(resultadoMedio)) : 0;
                 updateElement('runway', runway);
-                updateElement('runwayTrend', 'Com R$ 50.000 em caixa');
+                updateElement('runwayTrend', `Com ${formatCurrency(caixaDefault)} em caixa`);
             }
             
-            // Meta margem comparison
-            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
-            const margemAtual = totalReceitas > 0 ? (totalReceitas - totalDespesas) / totalReceitas : 0;
+            // Meta margem
+            const margemAtual = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
             const metaMargem = 0.20;
             const statusMeta = margemAtual >= metaMargem ? '✅ Atingindo' : '❌ Abaixo da meta';
             updateElement('metaMargem', statusMeta);
         }
 
-        function formatPercent(value) {
-            return (value * 100).toFixed(1) + '%';
+        // Atualizar alertas
+        function updateAlerts() {
+            const alertsContainer = document.getElementById('alertsContainer');
+            alertsContainer.innerHTML = '';
+            
+            if (transactions.length === 0) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const margemMedia = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
+            
+            // Alert para resultado negativo
+            if (ultimoMes.resultado < 0) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        ⚠️ <strong>Resultado Negativo:</strong> O último mês apresentou prejuízo de ${formatCurrency(Math.abs(ultimoMes.resultado))}
+                    </div>
+                `;
+            }
+            
+            // Alert para margem baixa
+            if (margemMedia < 0.15) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        ⚠️ <strong>Margem Baixa:</strong> Margem média de ${formatPercent(margemMedia)} está abaixo do recomendado (20%+)
+                    </div>
+                `;
+            }
+            
+            // Alert para performance positiva
+            if (ultimoMes.resultado > 0 && margemMedia > 0.20) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-success">
+                        ✅ <strong>Performance Positiva:</strong> Empresa apresenta resultados saudáveis com margem de ${formatPercent(margemMedia)}
+                    </div>
+                `;
+            }
+            
+            // Alert para concentração de receita
+            const receitaTotal = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const outrasReceitas = transactions.filter(t => t.tipo === 'receita' && (t.categoria === 'Outras' || t.categoria === 'Licenciamento')).reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            if (receitaTotal > 0 && outrasReceitas / receitaTotal > 0.5) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-info">
+                        💡 <strong>Diversificação:</strong> ${formatPercent(outrasReceitas/receitaTotal)} da receita vem de categorias não-core
+                    </div>
+                `;
+            }
+        }
+
+        // Calcular cenário
+        function calcularCenario() {
+            const metaReceita = parseFloat(document.getElementById('metaReceita').value);
+            const aumentoDespesas = parseFloat(document.getElementById('aumentoDespesas').value) || 0;
+            const caixaDisponivel = parseFloat(document.getElementById('caixaDisponivel').value) || 50000;
+            
+            if (!metaReceita) {
+                showNotification('❌ Digite uma meta de receita', 'danger');
+                return;
+            }
+            
+            const monthlyData = getMonthlyData();
+            const despesaMedia = monthlyData.length > 0 ? 
+                monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
+            
+            const novaDespesa = despesaMedia * (1 + aumentoDespesas / 100);
+            const novoResultado = metaReceita - novaDespesa;
+            const novaMargem = metaReceita > 0 ? novoResultado / metaReceita : 0;
+            const novoRunway = novoResultado < 0 ? Math.floor(caixaDisponivel / Math.abs(novoResultado)) : '∞';
+            
+            const resultHtml = `
+                <div class="metric-card">
+                    <h4>📊 Resultado do Cenário</h4>
+                    <p><strong>Receita Meta:</strong> ${formatCurrency(metaReceita)}</p>
+                    <p><strong>Despesa Estimada:</strong> ${formatCurrency(novaDespesa)} (+${aumentoDespesas}%)</p>
+                    <p><strong>Resultado Projetado:</strong> <span style="color: ${novoResultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(novoResultado)}</span></p>
+                    <p><strong>Margem Projetada:</strong> <span style="color: ${novaMargem >= 0.2 ? '#4CAF50' : novaMargem >= 0 ? '#FFA500' : '#f44336'}">${formatPercent(novaMargem)}</span></p>
+                    <p><strong>Runway:</strong> ${novoRunway} ${novoRunway !== '∞' ? 'meses' : '(sustentável)'}</p>
+                    <p><strong>Status:</strong> ${novaMargem >= 0.2 ? '✅ Excelente' : novaMargem >= 0.1 ? '⚠️ Aceitável' : '❌ Abaixo do ideal'}</p>
+                </div>
+            `;
+            
+            document.getElementById('cenarioResult').innerHTML = resultHtml;
         }
 
         // Criar gráficos
@@ -1706,8 +1941,11 @@
             createEvolutionChart();
             createRevenueChart();
             createExpenseChart();
+            createMarginChart();
+            createTrendsChart();
         }
 
+        // Gráfico de evolução
         function createEvolutionChart() {
             const ctx = document.getElementById('evolutionChart')?.getContext('2d');
             if (!ctx) return;
@@ -1729,7 +1967,7 @@
                             data: monthlyData.map(data => data.receitas),
                             borderColor: '#4CAF50',
                             backgroundColor: '#4CAF5020',
-                            fill: false,
+                            fill: true,
                             tension: 0.4
                         },
                         {
@@ -1737,7 +1975,7 @@
                             data: monthlyData.map(data => data.despesas),
                             borderColor: '#f44336',
                             backgroundColor: '#f4433620',
-                            fill: false,
+                            fill: true,
                             tension: 0.4
                         }
                     ]
@@ -1767,6 +2005,7 @@
             });
         }
 
+        // Gráfico de receitas
         function createRevenueChart() {
             const ctx = document.getElementById('revenueChart')?.getContext('2d');
             if (!ctx) return;
@@ -1810,6 +2049,7 @@
             });
         }
 
+        // Gráfico de despesas
         function createExpenseChart() {
             const ctx = document.getElementById('expenseChart')?.getContext('2d');
             if (!ctx) return;
@@ -1853,7 +2093,113 @@
             });
         }
 
-        // Dados auxiliares para gráficos
+        // Gráfico de margem
+        function createMarginChart() {
+            const ctx = document.getElementById('marginChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.margin = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Margem (%)',
+                        data: monthlyData.map(data => data.margem * 100),
+                        backgroundColor: monthlyData.map(data => data.margem >= 0.2 ? '#4CAF50' : data.margem >= 0 ? '#FFA500' : '#f44336'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Margem: ' + context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de tendências
+        function createTrendsChart() {
+            const ctx = document.getElementById('trendsChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.trends = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyData.map(data => data.receitas),
+                            backgroundColor: '#4CAF5080',
+                            borderColor: '#4CAF50',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyData.map(data => data.despesas),
+                            backgroundColor: '#f4433680',
+                            borderColor: '#f44336',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dados auxiliares
         function getMonthlyData() {
             const monthlyMap = new Map();
             
@@ -1862,7 +2208,13 @@
                 const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 
                 if (!monthlyMap.has(monthKey)) {
-                    monthlyMap.set(monthKey, { month: monthKey, receitas: 0, despesas: 0 });
+                    monthlyMap.set(monthKey, { 
+                        month: monthKey, 
+                        receitas: 0, 
+                        despesas: 0,
+                        resultado: 0,
+                        margem: 0
+                    });
                 }
                 
                 const monthData = monthlyMap.get(monthKey);
@@ -1873,6 +2225,12 @@
                 } else {
                     monthData.despesas += valor;
                 }
+            });
+            
+            // Calcular resultado e margem
+            monthlyMap.forEach(data => {
+                data.resultado = data.receitas - data.despesas;
+                data.margem = data.receitas > 0 ? data.resultado / data.receitas : 0;
             });
             
             return Array.from(monthlyMap.values()).sort((a, b) => a.month.localeCompare(b.month));
@@ -1893,7 +2251,7 @@
             return categoryMap;
         }
 
-        // Exportação
+        // Exportação de dados
         function exportarCSV() {
             if (transactions.length === 0) {
                 showNotification('❌ Nenhum dado para exportar', 'danger');
@@ -1912,31 +2270,88 @@
                 ].join(','))
             ].join('\n');
             
-            downloadFile(csvContent, 'vitexai_financeiro_seguro.csv', 'text/csv');
-            showNotification('📄 Dados exportados com segurança!', 'success');
+            downloadFile(csvContent, 'vitexai_financeiro.csv', 'text/csv');
+            showNotification('📄 Dados exportados com sucesso!', 'success');
         }
 
         function exportarJSON() {
             const dataToExport = {
-                user: currentUser?.email,
+                user: currentUser?.email || 'demo@vitexai.com',
                 transactions,
                 categories,
                 exportDate: new Date().toISOString(),
-                source: 'vitexai_secure',
-                version: '3.0'
+                source: 'vitexai_dashboard_v3',
+                version: '3.0',
+                summary: {
+                    totalTransactions: transactions.length,
+                    totalReceitas: transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0),
+                    totalDespesas: transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0)
+                }
             };
             
             const jsonContent = JSON.stringify(dataToExport, null, 2);
-            downloadFile(jsonContent, 'vitexai_backup_seguro.json', 'application/json');
-            showNotification('💾 Backup seguro criado!', 'success');
+            downloadFile(jsonContent, 'vitexai_backup.json', 'application/json');
+            showNotification('💾 Backup criado com sucesso!', 'success');
         }
 
-        // Utilitários
+        // Gerar relatório mensal
+        function gerarRelatorioMensal() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) {
+                showNotification('❌ Sem dados para gerar relatório', 'danger');
+                return;
+            }
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            const relatorioHtml = `
+                <div class="input-section">
+                    <h4>📊 Relatório Executivo - VitexAI</h4>
+                    <p><strong>Período:</strong> ${new Date().toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})}</p>
+                    
+                    <h5>Resumo Geral</h5>
+                    <ul>
+                        <li><strong>Total de Transações:</strong> ${transactions.length}</li>
+                        <li><strong>Receita Total Acumulada:</strong> ${formatCurrency(totalReceitas)}</li>
+                        <li><strong>Despesa Total Acumulada:</strong> ${formatCurrency(totalDespesas)}</li>
+                        <li><strong>Resultado Acumulado:</strong> <span style="color: ${totalReceitas - totalDespesas >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(totalReceitas - totalDespesas)}</span></li>
+                    </ul>
+                    
+                    <h5>Último Mês (${new Date(ultimoMes.month + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})})</h5>
+                    <ul>
+                        <li><strong>Receitas:</strong> ${formatCurrency(ultimoMes.receitas)}</li>
+                        <li><strong>Despesas:</strong> ${formatCurrency(ultimoMes.despesas)}</li>
+                        <li><strong>Resultado:</strong> <span style="color: ${ultimoMes.resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(ultimoMes.resultado)}</span></li>
+                        <li><strong>Margem:</strong> ${formatPercent(ultimoMes.margem)}</li>
+                    </ul>
+                    
+                    <h5>Indicadores Chave</h5>
+                    <ul>
+                        <li><strong>Margem Média:</strong> ${formatPercent(totalReceitas > 0 ? (totalReceitas - totalDespesas) / totalReceitas : 0)}</li>
+                        <li><strong>ROI:</strong> ${formatPercent(totalDespesas > 0 ? (totalReceitas / totalDespesas) - 1 : 0)}</li>
+                        <li><strong>Meses Positivos:</strong> ${monthlyData.filter(m => m.resultado > 0).length} de ${monthlyData.length}</li>
+                    </ul>
+                    
+                    <button class="btn" onclick="window.print()" style="width: auto;">🖨️ Imprimir Relatório</button>
+                </div>
+            `;
+            
+            document.getElementById('relatorioContainer').innerHTML = relatorioHtml;
+            showNotification('📋 Relatório gerado com sucesso!', 'success');
+        }
+
+        // Funções utilitárias
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             }).format(value);
+        }
+
+        function formatPercent(value) {
+            return (value * 100).toFixed(1) + '%';
         }
 
         function showNotification(message, type) {
@@ -1953,7 +2368,9 @@
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.remove();
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
             }, 4000);
         }
 
@@ -1963,7 +2380,9 @@
             const link = document.createElement('a');
             link.href = url;
             link.download = filename;
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
             URL.revokeObjectURL(url);
         }
 
@@ -1976,6 +2395,72 @@
             const element = document.getElementById(id);
             if (element) element.style.color = color;
         }
+
+        function resetAllMetrics() {
+            const metrics = [
+                'receitaAcumulada', 'despesasAcumuladas', 'resultadoAcumulado', 'margemMedia',
+                'receitaMedia', 'burnrateMedia', 'mixConsultoria', 'mixDesenvolvimento', 'mixOutras',
+                'roiAcumulado', 'cargaTributaria', 'custosFixes', 'crescimentoMedio', 'volatilidadeReceita',
+                'mesesPositivos', 'maiorResultado', 'receitaProjetada', 'breakEven', 'runway',
+                'consultoriaValue', 'desenvolvimentoValue', 'outrasValue'
+            ];
+            
+            metrics.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (id.includes('mix') || id.includes('margem') || id.includes('roi') || 
+                        id.includes('carga') || id.includes('custos') || id.includes('crescimento') || 
+                        id.includes('volatilidade')) {
+                        element.textContent = '0%';
+                    } else if (id === 'mesesPositivos' || id === 'runway') {
+                        element.textContent = '0';
+                    } else {
+                        element.textContent = 'R$ 0,00';
+                    }
+                }
+            });
+            
+            // Reset trends
+            updateElement('percentualPositivos', '0%');
+            updateElement('maiorResultadoMes', '-');
+            updateElement('runwayTrend', 'Sem dados históricos');
+            updateElement('metaMargem', 'Configure dados');
+        }
+
+        // Estrutura do banco de dados Supabase (para referência)
+        /*
+        -- Tabela de transações
+        CREATE TABLE transactions (
+            id SERIAL PRIMARY KEY,
+            user_id UUID REFERENCES auth.users(id),
+            data DATE NOT NULL,
+            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
+            categoria VARCHAR(50) NOT NULL,
+            valor DECIMAL(10,2) NOT NULL,
+            descricao TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+
+        -- Tabela de categorias (opcional)
+        CREATE TABLE categories (
+            id SERIAL PRIMARY KEY,
+            user_id UUID REFERENCES auth.users(id),
+            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
+            nome VARCHAR(50) NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+
+        -- RLS (Row Level Security)
+        ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+
+        -- Políticas de segurança
+        CREATE POLICY "Users can only see own transactions" ON transactions
+            FOR ALL USING (auth.uid() = user_id);
+
+        CREATE POLICY "Users can only see own categories" ON categories
+            FOR ALL USING (auth.uid() = user_id);
+        */
     </script>
 </body>
 </html>
