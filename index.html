@@ -602,38 +602,40 @@
             <div id="lancamentos" class="tab-content active">
                 <div class="quick-add-section">
                     <h3>⚡ Lançamento Rápido</h3>
-                    <div class="input-grid">
-                        <div class="input-group">
-                            <label>Data</label>
-                            <input type="date" id="quickDate" value="">
+                    <form onsubmit="event.preventDefault(); adicionarLancamento();" style="margin: 0;">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label>Data</label>
+                                <input type="date" id="quickDate" value="" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Tipo</label>
+                                <select id="quickTipo" required>
+                                    <option value="receita">💰 Receita</option>
+                                    <option value="despesa">💸 Despesa</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Categoria</label>
+                                <select id="quickCategoria" required>
+                                    <!-- Será populado dinamicamente -->
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Valor (R$)</label>
+                                <input type="number" id="quickValor" step="0.01" placeholder="0,00" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Descrição</label>
+                                <input type="text" id="quickDescricao" placeholder="Descrição do lançamento" required>
+                            </div>
+                            <div class="input-group" style="display: flex; align-items: end;">
+                                <button type="submit" class="btn btn-success" id="btnAdicionar">
+                                    ➕ Adicionar
+                                </button>
+                            </div>
                         </div>
-                        <div class="input-group">
-                            <label>Tipo</label>
-                            <select id="quickTipo">
-                                <option value="receita">💰 Receita</option>
-                                <option value="despesa">💸 Despesa</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Categoria</label>
-                            <select id="quickCategoria">
-                                <!-- Será populado dinamicamente -->
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Valor (R$)</label>
-                            <input type="number" id="quickValor" step="0.01" placeholder="0,00">
-                        </div>
-                        <div class="input-group">
-                            <label>Descrição</label>
-                            <input type="text" id="quickDescricao" placeholder="Descrição do lançamento">
-                        </div>
-                        <div class="input-group" style="display: flex; align-items: end;">
-                            <button class="btn btn-success" onclick="adicionarLancamento()" id="btnAdicionar">
-                                ➕ Adicionar
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 
                 <div class="table-container">
@@ -938,7 +940,10 @@ CREATE TABLE transactions (
     valor DECIMAL(10,2) NOT NULL,
     descricao TEXT,
     created_at TIMESTAMP DEFAULT NOW()
-);</pre>
+);
+
+-- Opcional: Criar índice para melhor performance
+CREATE INDEX idx_transactions_data ON transactions(data DESC);</pre>
                     
                     <h5>Opção 2 - Estrutura COMPLETA (com isolamento por usuário):</h5>
                     <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto;">
@@ -988,7 +993,8 @@ USING (auth.uid() = user_id);</pre>
         };
         let charts = {};
         let demoMode = false;
-        let hasUserIdColumn = null; // null = não verificado, true/false = resultado da verificação
+        let lastTransactionTime = 0; // Prevenir duplos cliques
+        let updateDashboardTimeout = null; // Debounce para dashboards
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -1017,7 +1023,11 @@ USING (auth.uid() = user_id);</pre>
             const today = new Date();
             const quickDate = document.getElementById('quickDate');
             if (quickDate) {
-                quickDate.value = today.toISOString().split('T')[0];
+                // Formatar data no formato correto YYYY-MM-DD
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                quickDate.value = `${year}-${month}-${day}`;
             }
         }
 
@@ -1297,45 +1307,34 @@ USING (auth.uid() = user_id);</pre>
             // Verificar se está usando estrutura sem user_id
             checkDatabaseStructure();
             
-            // Carregar dados
-            updateCategories();
-            if (!demoMode) {
-                loadCategories();
-                sincronizarDados();
-            }
+            // Carregar dados com pequeno delay para garantir DOM pronto
+            setTimeout(() => {
+                setupDefaults();
+                updateCategories();
+                if (!demoMode) {
+                    loadCategories();
+                    sincronizarDados();
+                } else {
+                    // Em modo demo, garantir que a data esteja definida
+                    setupDefaults();
+                }
+            }, 100);
         }
 
         // Verificar estrutura do banco
         async function checkDatabaseStructure() {
             if (!supabase || demoMode) return;
             
-            try {
-                // Tentar uma query com user_id para ver se a coluna existe
-                const { error } = await supabase
-                    .from('transactions')
-                    .select('*')
-                    .eq('user_id', 'test')
-                    .limit(0);
-                
-                if (error && error.message.includes('user_id')) {
-                    hasUserIdColumn = false;
-                    // Mostrar alerta informativo
-                    const systemAlerts = document.getElementById('systemAlerts');
-                    if (systemAlerts) {
-                        systemAlerts.innerHTML = `
-                            <div class="alert alert-info">
-                                💡 <strong>Modo Simplificado:</strong> Você está usando a estrutura de banco sem isolamento por usuário. 
-                                Todos os lançamentos são compartilhados. Para dados privados, recrie a tabela com a estrutura COMPLETA 
-                                (disponível em Configurações).
-                            </div>
-                        `;
-                    }
-                } else {
-                    hasUserIdColumn = true;
-                }
-            } catch (e) {
-                // Ignorar erros silenciosamente
-                console.log('Verificação de estrutura:', e.message);
+            // Mostrar aviso informativo sobre estrutura simplificada
+            const systemAlerts = document.getElementById('systemAlerts');
+            if (systemAlerts) {
+                systemAlerts.innerHTML = `
+                    <div class="alert alert-info">
+                        💡 <strong>Sistema Simplificado:</strong> Esta versão utiliza uma estrutura de banco compartilhada. 
+                        Todos os usuários visualizam os mesmos dados. Para dados privados por usuário, consulte a 
+                        estrutura avançada em Configurações.
+                    </div>
+                `;
             }
         }
 
@@ -1412,57 +1411,34 @@ USING (auth.uid() = user_id);</pre>
         // Sincronizar dados
         async function sincronizarDados() {
             if (!supabase || !currentUser || demoMode) {
-                showNotification('❌ Modo demo não suporta sincronização', 'warning');
+                if (demoMode) {
+                    showNotification('ℹ️ Modo demo - dados locais', 'info');
+                }
                 return;
             }
             
             try {
                 showNotification('🔄 Sincronizando dados...', 'info');
                 
-                // Primeiro tentar buscar com user_id (se existir)
-                let data = null;
-                let error = null;
-                
-                // Se já sabemos que não tem user_id, pular direto para query sem filtro
-                if (hasUserIdColumn === false) {
-                    const result = await supabase
-                        .from('transactions')
-                        .select('*')
-                        .order('data', { ascending: false });
-                    
-                    data = result.data;
-                    error = result.error;
-                } else {
-                    try {
-                        // Tentar com filtro de user_id
-                        const result = await supabase
-                            .from('transactions')
-                            .select('*')
-                            .eq('user_id', currentUser.id)
-                            .order('data', { ascending: false });
-                        
-                        data = result.data;
-                        error = result.error;
-                        
-                        if (!error) {
-                            hasUserIdColumn = true;
-                        }
-                    } catch (e) {
-                        // Se falhar, tentar sem filtro
-                        const result = await supabase
-                            .from('transactions')
-                            .select('*')
-                            .order('data', { ascending: false });
-                        
-                        data = result.data;
-                        error = result.error;
-                        hasUserIdColumn = false;
-                    }
-                }
+                // Buscar todos os registros
+                const { data, error } = await supabase
+                    .from('transactions')
+                    .select('*')
+                    .order('data', { ascending: false })
+                    .order('created_at', { ascending: false });
                 
                 if (error) throw error;
                 
+                // Substituir toda a lista (evita duplicações)
                 transactions = data || [];
+                
+                // Ordenar por data e ID para garantir ordem consistente
+                transactions.sort((a, b) => {
+                    const dateCompare = new Date(b.data) - new Date(a.data);
+                    if (dateCompare !== 0) return dateCompare;
+                    return b.id - a.id;
+                });
+                
                 updateTransactionsTable();
                 updateAllDashboards();
                 
@@ -1476,28 +1452,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro na sincronização:', error);
-                
-                // Se o erro for relacionado a user_id, tentar sem filtro
-                if (error.message && error.message.includes('user_id')) {
-                    try {
-                        const { data, error: error2 } = await supabase
-                            .from('transactions')
-                            .select('*')
-                            .order('data', { ascending: false });
-                        
-                        if (error2) throw error2;
-                        
-                        transactions = data || [];
-                        updateTransactionsTable();
-                        updateAllDashboards();
-                        
-                        showNotification(`✅ ${transactions.length} registros sincronizados (sem filtro de usuário)`, 'success');
-                    } catch (error2) {
-                        showNotification(`❌ Erro: ${error2.message}`, 'danger');
-                    }
-                } else {
-                    showNotification(`❌ Erro: ${error.message}`, 'danger');
-                }
+                showNotification(`❌ Erro: ${error.message}`, 'danger');
             }
         }
 
@@ -1561,95 +1516,31 @@ USING (auth.uid() = user_id);</pre>
                 let newTransaction = null;
                 let error = null;
                 
-                // Se já sabemos se tem user_id ou não, usar a estratégia apropriada
-                if (hasUserIdColumn === true && currentUser.id) {
-                    // Sabemos que tem user_id
-                    const result = await supabase
-                        .from('transactions')
-                        .insert({
-                            ...transactionData,
-                            user_id: currentUser.id
-                        })
-                        .select()
-                        .single();
-                    
-                    newTransaction = result.data;
-                    error = result.error;
-                } else if (hasUserIdColumn === false) {
-                    // Sabemos que NÃO tem user_id
+                // ESTRATÉGIA SIMPLIFICADA: Sempre tentar sem user_id primeiro
+                // Isso evita duplicações e funciona em ambas estruturas
+                try {
                     const result = await supabase
                         .from('transactions')
                         .insert(transactionData)
                         .select()
                         .single();
                     
-                    newTransaction = result.data;
-                    error = result.error;
-                } else {
-                    // Não sabemos ainda, tentar ambos
-                    if (currentUser.id) {
-                        // Tentar primeiro com user_id
-                        try {
-                            const result = await supabase
-                                .from('transactions')
-                                .insert({
-                                    ...transactionData,
-                                    user_id: currentUser.id
-                                })
-                                .select()
-                                .single();
-                            
-                            if (!result.error) {
-                                newTransaction = result.data;
-                                error = result.error;
-                                hasUserIdColumn = true;
-                            } else if (result.error.message && result.error.message.includes('user_id')) {
-                                // Tentar sem user_id
-                                hasUserIdColumn = false;
-                                const result2 = await supabase
-                                    .from('transactions')
-                                    .insert(transactionData)
-                                    .select()
-                                    .single();
-                                
-                                newTransaction = result2.data;
-                                error = result2.error;
-                            } else {
-                                error = result.error;
-                            }
-                        } catch (e) {
-                            // Se falhar com user_id, tentar sem
-                            const result = await supabase
-                                .from('transactions')
-                                .insert(transactionData)
-                                .select()
-                                .single();
-                            
-                            newTransaction = result.data;
-                            error = result.error;
-                            hasUserIdColumn = false;
-                        }
-                    } else {
-                        // Sem user_id disponível
-                        const result = await supabase
-                            .from('transactions')
-                            .insert(transactionData)
-                            .select()
-                            .single();
-                        
+                    if (result.data) {
                         newTransaction = result.data;
-                        error = result.error;
+                        transactions.unshift(newTransaction);
+                        updateTransactionsTable();
+                        updateAllDashboards();
+                        clearQuickForm();
+                        showNotification('✅ Lançamento salvo com sucesso!', 'success');
+                        return;
                     }
+                    
+                    error = result.error;
+                } catch (e) {
+                    error = e;
                 }
                 
                 if (error) throw error;
-                
-                transactions.unshift(newTransaction);
-                updateTransactionsTable();
-                updateAllDashboards();
-                clearQuickForm();
-                
-                showNotification('✅ Lançamento salvo com segurança!', 'success');
                 
                 if (error) throw error;
                 
@@ -1690,27 +1581,11 @@ USING (auth.uid() = user_id);</pre>
             }
             
             try {
-                // Tentar remover considerando possível user_id
-                let error = null;
-                
-                try {
-                    // Primeiro tentar com user_id
-                    const result = await supabase
-                        .from('transactions')
-                        .delete()
-                        .eq('id', id)
-                        .eq('user_id', currentUser.id);
-                    
-                    error = result.error;
-                } catch (e) {
-                    // Se falhar, tentar sem user_id
-                    const result = await supabase
-                        .from('transactions')
-                        .delete()
-                        .eq('id', id);
-                    
-                    error = result.error;
-                }
+                // SIMPLIFICADO: Remover apenas pelo ID
+                const { error } = await supabase
+                    .from('transactions')
+                    .delete()
+                    .eq('id', id);
                 
                 if (error) throw error;
                 
@@ -1722,28 +1597,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro ao remover:', error);
-                
-                // Se o erro for relacionado a user_id, tentar sem
-                if (error.message && error.message.includes('user_id')) {
-                    try {
-                        const { error: error2 } = await supabase
-                            .from('transactions')
-                            .delete()
-                            .eq('id', id);
-                        
-                        if (error2) throw error2;
-                        
-                        transactions = transactions.filter(t => t.id !== id);
-                        updateTransactionsTable();
-                        updateAllDashboards();
-                        
-                        showNotification('🗑️ Lançamento removido!', 'warning');
-                    } catch (error2) {
-                        showNotification(`❌ Erro: ${error2.message}`, 'danger');
-                    }
-                } else {
-                    showNotification(`❌ Erro: ${error.message}`, 'danger');
-                }
+                showNotification(`❌ Erro: ${error.message}`, 'danger');
             }
         }
 
@@ -1865,7 +1719,10 @@ USING (auth.uid() = user_id);</pre>
             const valor = document.getElementById('quickValor');
             const descricao = document.getElementById('quickDescricao');
             
-            if (valor) valor.value = '';
+            if (valor) {
+                valor.value = '';
+                valor.focus(); // Focar no campo valor para próximo lançamento
+            }
             if (descricao) descricao.value = '';
         }
 
@@ -1876,7 +1733,23 @@ USING (auth.uid() = user_id);</pre>
             
             tbody.innerHTML = '';
             
-            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.data) - new Date(a.data));
+            // Remover duplicatas baseado no ID
+            const uniqueTransactions = [];
+            const seenIds = new Set();
+            
+            for (const transaction of transactions) {
+                if (!seenIds.has(transaction.id)) {
+                    seenIds.add(transaction.id);
+                    uniqueTransactions.push(transaction);
+                }
+            }
+            
+            // Ordenar por data decrescente
+            const sortedTransactions = uniqueTransactions.sort((a, b) => {
+                const dateCompare = new Date(b.data) - new Date(a.data);
+                if (dateCompare !== 0) return dateCompare;
+                return b.id - a.id;
+            });
             
             sortedTransactions.forEach(transaction => {
                 const row = document.createElement('tr');
@@ -1907,10 +1780,17 @@ USING (auth.uid() = user_id);</pre>
 
         // Atualizar todos os dashboards
         function updateAllDashboards() {
-            updateAggregatedMetrics();
-            updateTrends();
-            updateProjections();
-            updateAlerts();
+            // Debounce para evitar múltiplas atualizações rápidas
+            if (updateDashboardTimeout) {
+                clearTimeout(updateDashboardTimeout);
+            }
+            
+            updateDashboardTimeout = setTimeout(() => {
+                updateAggregatedMetrics();
+                updateTrends();
+                updateProjections();
+                updateAlerts();
+            }, 100);
         }
 
         // Atualizar indicadores agregados
@@ -2749,7 +2629,10 @@ USING (auth.uid() = user_id);</pre>
     valor DECIMAL(10,2) NOT NULL,
     descricao TEXT,
     created_at TIMESTAMP DEFAULT NOW()
-);`;
+);
+
+-- Opcional: Criar índice para melhor performance
+CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
             } else {
                 sql = `CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
@@ -2791,7 +2674,7 @@ USING (auth.uid() = user_id);`;
 
         // Estrutura do banco de dados Supabase (para referência)
         /*
-        OPÇÃO 1 - Estrutura SIMPLES (sem isolamento por usuário):
+        ESTRUTURA DO BANCO DE DADOS SIMPLIFICADA
         
         CREATE TABLE transactions (
             id SERIAL PRIMARY KEY,
@@ -2802,34 +2685,8 @@ USING (auth.uid() = user_id);`;
             descricao TEXT,
             created_at TIMESTAMP DEFAULT NOW()
         );
-
-        OPÇÃO 2 - Estrutura COMPLETA (com isolamento por usuário):
         
-        CREATE TABLE transactions (
-            id SERIAL PRIMARY KEY,
-            user_id UUID REFERENCES auth.users(id),
-            data DATE NOT NULL,
-            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
-            categoria VARCHAR(50) NOT NULL,
-            valor DECIMAL(10,2) NOT NULL,
-            descricao TEXT,
-            created_at TIMESTAMP DEFAULT NOW()
-        );
-
-        -- Se usar a Opção 2, ative RLS:
-        ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
-
-        -- E crie a política de segurança:
-        CREATE POLICY "Users can only see own transactions" ON transactions
-            FOR ALL USING (auth.uid() = user_id);
-            
-        -- Tabela de categorias (opcional)
-        CREATE TABLE categories (
-            id SERIAL PRIMARY KEY,
-            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
-            nome VARCHAR(50) NOT NULL,
-            created_at TIMESTAMP DEFAULT NOW()
-        );
+        CREATE INDEX idx_transactions_data ON transactions(data DESC);
         */
     </script>
 </body>
