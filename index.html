@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de Gestão Financeira VitexAI - Dashboard Avançado com Indicadores Agregados">
+    <meta name="description" content="VitexAI - Financial Intelligence Dashboard with Advanced Analytics">
     <title>VitexAI | Financial Intelligence Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='60' width='15' height='30' fill='%23718096'/><rect x='30' y='40' width='15' height='50' fill='%234A5568'/><rect x='50' y='50' width='15' height='40' fill='%234A5568'/><rect x='70' y='30' width='15' height='60' fill='%232E86AB'/><path d='M 5 55 L 45 15 L 50 20 L 10 60 Z' fill='%232E86AB'/><polygon points='45,15 55,15 50,5' fill='%232E86AB'/></svg>">
     <style>
         :root {
             --primary-blue: #2E86AB;
@@ -963,47 +964,49 @@
             
             <!-- Tab 3: Tendências -->
             <div id="trends" class="tab-content">
-                <h3>📈 Análise de Tendências - VitexAI</h3>
+                <h3 class="font-semibold" style="font-size: 1.25rem; color: var(--dark-gray); margin-bottom: 24px;">
+                    Trend Analysis
+                </h3>
                 
                 <div class="metrics-grid">
                     <div class="metric-card">
-                        <div class="metric-title">Crescimento MoM Médio</div>
+                        <div class="metric-title">Average MoM Growth</div>
                         <div class="metric-value" id="crescimentoMedio">0%</div>
-                        <div class="metric-trend">Receita mensal</div>
+                        <div class="metric-trend">Monthly revenue</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Volatilidade Receita</div>
+                        <div class="metric-title">Revenue Volatility</div>
                         <div class="metric-value" id="volatilidadeReceita">0%</div>
-                        <div class="metric-trend">Coeficiente de Variação</div>
+                        <div class="metric-trend">Coefficient of variation</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Meses Positivos</div>
+                        <div class="metric-title">Positive Months</div>
                         <div class="metric-value" id="mesesPositivos">0</div>
                         <div class="metric-trend" id="percentualPositivos"></div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Maior Resultado</div>
-                        <div class="metric-value" id="maiorResultado">R$ 0,00</div>
+                        <div class="metric-title">Best Result</div>
+                        <div class="metric-value" id="maiorResultado">R$ 0.00</div>
                         <div class="metric-trend" id="maiorResultadoMes"></div>
                     </div>
                 </div>
                 
-                <div class="chart-container">
-                    <h4>Evolução Mensal</h4>
+                <div class="chart-container" style="height: auto;">
+                    <h4>Monthly Evolution</h4>
                     <canvas id="trendsChart" width="400" height="200"></canvas>
                 </div>
                 
                 <div class="table-container">
-                    <h4 style="padding: 20px 20px 0;">Análise Detalhada por Mês</h4>
+                    <h4>Monthly Detailed Analysis</h4>
                     <table id="trendsTable">
                         <thead>
                             <tr>
-                                <th>Mês</th>
-                                <th>Receita</th>
-                                <th>Despesa</th>
-                                <th>Resultado</th>
-                                <th>Crescimento MoM</th>
-                                <th>Margem</th>
+                                <th>Month</th>
+                                <th>Revenue</th>
+                                <th>Expenses</th>
+                                <th>Result</th>
+                                <th>MoM Growth</th>
+                                <th>Margin</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -1015,48 +1018,50 @@
             
             <!-- Tab 4: Projeções -->
             <div id="projections" class="tab-content">
-                <h3>🎯 Projeções e Metas - VitexAI</h3>
+                <h3 class="font-semibold" style="font-size: 1.25rem; color: var(--dark-gray); margin-bottom: 24px;">
+                    Projections & Goals
+                </h3>
                 
                 <div class="metrics-grid">
                     <div class="metric-card">
-                        <div class="metric-title">Receita Projetada (Próx. Mês)</div>
-                        <div class="metric-value" id="receitaProjetada">R$ 0,00</div>
-                        <div class="metric-trend">Baseado na média móvel</div>
+                        <div class="metric-title">Projected Revenue (Next Month)</div>
+                        <div class="metric-value" id="receitaProjetada">R$ 0.00</div>
+                        <div class="metric-trend">Based on moving average</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Break-even Mensal</div>
-                        <div class="metric-value" id="breakEven">R$ 0,00</div>
-                        <div class="metric-trend">Despesa média mensal</div>
+                        <div class="metric-title">Monthly Break-even</div>
+                        <div class="metric-value" id="breakEven">R$ 0.00</div>
+                        <div class="metric-trend">Average monthly expenses</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Runway (Meses)</div>
+                        <div class="metric-title">Runway (Months)</div>
                         <div class="metric-value" id="runway">0</div>
-                        <div class="metric-trend" id="runwayTrend">Com resultado médio</div>
+                        <div class="metric-trend" id="runwayTrend">With average result</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-title">Meta Margem</div>
+                        <div class="metric-title">Target Margin</div>
                         <div class="metric-value">20%</div>
-                        <div class="metric-trend" id="metaMargem">Meta recomendada</div>
+                        <div class="metric-trend" id="metaMargem">Recommended target</div>
                     </div>
                 </div>
                 
                 <div class="input-section">
-                    <h4>🔮 Simulador de Cenários</h4>
+                    <h4>Scenario Simulator</h4>
                     <div class="input-grid">
                         <div class="input-group">
-                            <label>Meta Receita Mensal (R$)</label>
+                            <label>Monthly Revenue Target (R$)</label>
                             <input type="number" id="metaReceita" step="1000" placeholder="Ex: 20000">
                         </div>
                         <div class="input-group">
-                            <label>Aumento % Despesas</label>
+                            <label>Expense Increase %</label>
                             <input type="number" id="aumentoDespesas" step="5" placeholder="Ex: 10" value="0">
                         </div>
                         <div class="input-group">
-                            <label>Caixa Disponível (R$)</label>
+                            <label>Available Cash (R$)</label>
                             <input type="number" id="caixaDisponivel" step="1000" placeholder="Ex: 50000" value="50000">
                         </div>
                     </div>
-                    <button class="btn" onclick="calcularCenario()">🔮 Calcular Cenário</button>
+                    <button class="btn" onclick="calcularCenario()">Calculate Scenario</button>
                     
                     <div id="cenarioResult" style="margin-top: 20px;"></div>
                 </div>
@@ -1064,46 +1069,50 @@
             
             <!-- Tab 5: Gráficos -->
             <div id="charts" class="tab-content">
-                <h3>📈 Visualizações Avançadas - VitexAI</h3>
+                <h3 class="font-semibold" style="font-size: 1.25rem; color: var(--dark-gray); margin-bottom: 24px;">
+                    Analytics & Visualizations
+                </h3>
                 
-                <div class="chart-container">
-                    <h4>📈 Evolução Mensal - Receitas vs Despesas</h4>
+                <div class="chart-container" style="height: auto;">
+                    <h4>Monthly Evolution - Revenue vs Expenses</h4>
                     <canvas id="evolutionChart" width="400" height="150"></canvas>
                 </div>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
-                    <div class="chart-container">
-                        <h4>🍰 Distribuição de Receitas</h4>
+                    <div class="chart-container" style="height: auto;">
+                        <h4>Revenue Distribution</h4>
                         <canvas id="revenueChart" width="400" height="200"></canvas>
                     </div>
                     
-                    <div class="chart-container">
-                        <h4>💸 Distribuição de Despesas</h4>
+                    <div class="chart-container" style="height: auto;">
+                        <h4>Expense Distribution</h4>
                         <canvas id="expenseChart" width="400" height="200"></canvas>
                     </div>
                 </div>
                 
-                <div class="chart-container">
-                    <h4>📊 Evolução da Margem (%)</h4>
+                <div class="chart-container" style="height: auto;">
+                    <h4>Margin Evolution (%)</h4>
                     <canvas id="marginChart" width="400" height="200"></canvas>
                 </div>
             </div>
             
             <!-- Tab 6: Relatórios -->
             <div id="relatorios" class="tab-content">
-                <h3>📋 Relatórios e Exportação</h3>
+                <h3 class="font-semibold" style="font-size: 1.25rem; color: var(--dark-gray); margin-bottom: 24px;">
+                    Reports & Export
+                </h3>
                 
                 <div class="input-section">
-                    <h4>📥 Exportar Dados</h4>
+                    <h4>Export Data</h4>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn" onclick="exportarCSV()" style="width: auto;">
-                            📄 Exportar CSV
+                            Export to CSV
                         </button>
                         <button class="btn" onclick="exportarJSON()" style="width: auto;">
-                            💾 Backup JSON
+                            Backup to JSON
                         </button>
                         <button class="btn btn-secondary" onclick="gerarRelatorioMensal()" style="width: auto;">
-                            📊 Relatório Mensal
+                            Monthly Report
                         </button>
                     </div>
                 </div>
@@ -1113,46 +1122,48 @@
             
             <!-- Tab 7: Configurações -->
             <div id="configuracoes" class="tab-content">
-                <h3>⚙️ Configurações do Sistema</h3>
+                <h3 class="font-semibold" style="font-size: 1.25rem; color: var(--dark-gray); margin-bottom: 24px;">
+                    System Settings
+                </h3>
                 
                 <div class="input-section">
-                    <h4>👤 Perfil do Usuário</h4>
+                    <h4>User Profile</h4>
                     <div class="metrics-grid">
                         <div class="metric-card">
                             <div class="metric-title">Email</div>
-                            <div class="metric-value" id="profileEmail" style="font-size: 18px;">-</div>
-                            <div class="metric-trend">Usuário autenticado</div>
+                            <div class="metric-value" id="profileEmail" style="font-size: 1.125rem;">-</div>
+                            <div class="metric-trend">Authenticated user</div>
                         </div>
                         <div class="metric-card">
                             <div class="metric-title">Status</div>
-                            <div class="metric-value" style="color: #4CAF50;">🟢 Online</div>
-                            <div class="metric-trend">Sessão ativa e segura</div>
+                            <div class="metric-value" style="color: var(--success);">● Online</div>
+                            <div class="metric-trend">Active session</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-title">Dados</div>
+                            <div class="metric-title">Data</div>
                             <div class="metric-value" id="userDataCount">0</div>
-                            <div class="metric-trend">Transações registradas</div>
+                            <div class="metric-trend">Transactions recorded</div>
                         </div>
                     </div>
                     
                     <button class="btn btn-danger" onclick="logoutUser()">
-                        🚪 Sair do Sistema
+                        Sign Out
                     </button>
                 </div>
                 
                 <div class="input-section">
-                    <h4>🔧 Configurações Avançadas</h4>
-                    <p>Em desenvolvimento: categorias personalizadas, metas automáticas, integração bancária.</p>
+                    <h4>Advanced Settings</h4>
+                    <p>Coming soon: custom categories, automatic goals, bank integration.</p>
                 </div>
                 
                 <div class="input-section">
-                    <h4>🗄️ Estrutura do Banco de Dados</h4>
+                    <h4>Database Structure</h4>
                     <div class="alert alert-info">
-                        <strong>Importante:</strong> Se você está recebendo erro relacionado a 'user_id', use a estrutura SIMPLES abaixo:
+                        <strong>Important:</strong> If you're getting 'user_id' errors, use the SIMPLE structure below:
                     </div>
                     
-                    <h5>Opção 1 - Estrutura SIMPLES (recomendada para começar):</h5>
-                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto;">
+                    <h5 style="margin-top: 20px; margin-bottom: 12px; color: var(--dark-gray);">Option 1 - SIMPLE Structure (recommended to start):</h5>
+                    <pre style="background: var(--bg-light); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.875rem;">
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     data DATE NOT NULL,
@@ -1163,11 +1174,11 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Opcional: Criar índice para melhor performance
+-- Optional: Create index for better performance
 CREATE INDEX idx_transactions_data ON transactions(data DESC);</pre>
                     
-                    <h5>Opção 2 - Estrutura COMPLETA (com isolamento por usuário):</h5>
-                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto;">
+                    <h5 style="margin-top: 20px; margin-bottom: 12px; color: var(--dark-gray);">Option 2 - COMPLETE Structure (with user isolation):</h5>
+                    <pre style="background: var(--bg-light); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 0.875rem;">
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id),
@@ -1179,27 +1190,27 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Ativar RLS
+-- Enable RLS
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 
--- Criar política
+-- Create policy
 CREATE POLICY "Users can only see own transactions" 
 ON transactions FOR ALL 
 USING (auth.uid() = user_id);</pre>
                     
                     <button class="btn btn-secondary" onclick="copyToClipboard('simple')" style="width: auto;">
-                        📋 Copiar Estrutura Simples
+                        Copy Simple Structure
                     </button>
                     <button class="btn btn-secondary" onclick="copyToClipboard('complete')" style="width: auto; margin-left: 10px;">
-                        📋 Copiar Estrutura Completa
+                        Copy Complete Structure
                     </button>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>🔐 <strong>VitexAI Dashboard Avançado</strong> | Dados protegidos | Análise em tempo real</p>
-            <p style="font-size: 12px; margin-top: 5px;">Versão 3.0 | Indicadores Agregados | Projeções Inteligentes</p>
+            <p><strong>VitexAI</strong> - Financial Intelligence Dashboard</p>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Version 3.0 | Advanced Analytics | Real-time Insights</p>
         </div>
     </div>
 
@@ -1383,7 +1394,7 @@ USING (auth.uid() = user_id);</pre>
                 
                 if (error) throw error;
                 
-                showAuthAlert('✅ Login realizado com sucesso!', 'success');
+                showAuthAlert('✓ Login successful!', 'success');
                 
             } catch (error) {
                 console.error('Erro no login:', error);
@@ -1486,7 +1497,7 @@ USING (auth.uid() = user_id);</pre>
 
         // Logout do usuário
         async function logoutUser() {
-            if (confirm('Tem certeza que deseja sair?')) {
+            if (confirm('Are you sure you want to sign out?')) {
                 try {
                     if (!demoMode && supabase) {
                         const { error } = await supabase.auth.signOut();
@@ -1499,11 +1510,11 @@ USING (auth.uid() = user_id);</pre>
                     demoMode = false;
                     
                     showAuthApp();
-                    showNotification('👋 Logout realizado com sucesso!', 'info');
+                    showNotification('Signed out successfully!', 'info');
                     
                 } catch (error) {
-                    console.error('Erro no logout:', error);
-                    showNotification(`❌ Erro: ${error.message}`, 'danger');
+                    console.error('Logout error:', error);
+                    showNotification(`Error: ${error.message}`, 'danger');
                 }
             }
         }
@@ -1551,9 +1562,9 @@ USING (auth.uid() = user_id);</pre>
             if (systemAlerts) {
                 systemAlerts.innerHTML = `
                     <div class="alert alert-info">
-                        💡 <strong>Sistema Simplificado:</strong> Esta versão utiliza uma estrutura de banco compartilhada. 
-                        Todos os usuários visualizam os mesmos dados. Para dados privados por usuário, consulte a 
-                        estrutura avançada em Configurações.
+                        <strong>Simplified System:</strong> This version uses a shared database structure. 
+                        All users view the same data. For private per-user data, see the 
+                        advanced structure in Settings.
                     </div>
                 `;
             }
@@ -1838,7 +1849,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'receita',
                     categoria: 'Outras',
                     valor: 17500,
-                    descricao: 'Entrada investidor anjo',
+                    descricao: 'Angel investor funding',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1847,7 +1858,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'despesa',
                     categoria: 'Pró-labore',
                     valor: 5735.36,
-                    descricao: 'Pró-labore sócios',
+                    descricao: 'Partner salaries',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1856,7 +1867,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'despesa',
                     categoria: 'Impostos',
                     valor: 3534.80,
-                    descricao: 'DAS - Simples Nacional',
+                    descricao: 'Monthly taxes',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1865,7 +1876,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'despesa',
                     categoria: 'Terceiros',
                     valor: 2024.50,
-                    descricao: 'Contabilidade',
+                    descricao: 'Accounting services',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1874,7 +1885,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'receita',
                     categoria: 'Consultoria',
                     valor: 5910.83,
-                    descricao: 'Consultoria TI - Cliente A',
+                    descricao: 'IT Consulting - Client A',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1883,7 +1894,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'receita',
                     categoria: 'Desenvolvimento',
                     valor: 6875,
-                    descricao: 'Desenvolvimento app mobile',
+                    descricao: 'Mobile app development',
                     created_at: new Date().toISOString()
                 },
                 {
@@ -1892,7 +1903,7 @@ USING (auth.uid() = user_id);</pre>
                     tipo: 'despesa',
                     categoria: 'Outras',
                     valor: 14165.10,
-                    descricao: 'Investimento em equipamentos',
+                    descricao: 'Equipment investment',
                     created_at: new Date().toISOString()
                 }
             ];
@@ -1900,7 +1911,7 @@ USING (auth.uid() = user_id);</pre>
             transactions = [...exemplos, ...transactions];
             updateTransactionsTable();
             updateAllDashboards();
-            showNotification('📥 Dados de exemplo carregados!', 'success');
+            showNotification('Sample data loaded successfully!', 'success');
         }
 
         // Gerenciar abas
@@ -1986,7 +1997,7 @@ USING (auth.uid() = user_id);</pre>
                 const dataFormatada = new Date(transaction.data).toLocaleDateString('pt-BR');
                 const valorFormatado = formatCurrency(transaction.valor);
                 const valorClass = transaction.tipo === 'receita' ? 'value-positive' : 'value-negative';
-                const tipoText = transaction.tipo.charAt(0).toUpperCase() + transaction.tipo.slice(1);
+                const tipoText = transaction.tipo === 'receita' ? 'Revenue' : 'Expense';
                 
                 row.innerHTML = `
                     <td>${dataFormatada}</td>
@@ -2050,14 +2061,14 @@ USING (auth.uid() = user_id);</pre>
             updateElement('burnrateMedia', formatCurrency(despesaMedia));
             
             // Cores
-            setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? '#4CAF50' : '#f44336');
+            setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? 'var(--success)' : 'var(--danger)');
             
             // Trends
             if (resultadoTotal >= 0) {
-                updateElement('resultadoTrend', '↑ Lucro acumulado');
+                updateElement('resultadoTrend', '↑ Accumulated profit');
                 document.getElementById('resultadoTrend').className = 'metric-trend trend-up';
             } else {
-                updateElement('resultadoTrend', '↓ Prejuízo acumulado');
+                updateElement('resultadoTrend', '↓ Accumulated loss');
                 document.getElementById('resultadoTrend').className = 'metric-trend trend-down';
             }
             
@@ -2103,7 +2114,7 @@ USING (auth.uid() = user_id);</pre>
             // ROI Acumulado
             const roi = totalDespesas > 0 ? ((totalReceitas / totalDespesas) - 1) : 0;
             updateElement('roiAcumulado', formatPercent(roi));
-            setElementColor('roiAcumulado', roi >= 0 ? '#4CAF50' : '#f44336');
+            setElementColor('roiAcumulado', roi >= 0 ? 'var(--success)' : 'var(--danger)');
             
             // Carga Tributária
             const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Impostos').reduce((sum, t) => sum + parseFloat(t.valor), 0);
@@ -2166,7 +2177,7 @@ USING (auth.uid() = user_id);</pre>
             
             updateElement('maiorResultado', formatCurrency(maiorResultado));
             if (maiorResultadoMes) {
-                updateElement('maiorResultadoMes', new Date(maiorResultadoMes + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'}));
+                updateElement('maiorResultadoMes', new Date(maiorResultadoMes + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'}));
             }
             
             // Atualizar tabela de tendências
@@ -2183,7 +2194,7 @@ USING (auth.uid() = user_id);</pre>
             const monthlyData = getMonthlyData();
             
             if (monthlyData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum dado disponível</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No data available</td></tr>';
                 return;
             }
             
@@ -2197,16 +2208,16 @@ USING (auth.uid() = user_id);</pre>
                     }
                 }
                 
-                const status = data.resultado > 0 ? '✅ Positivo' : '❌ Negativo';
+                const status = data.resultado > 0 ? '✓ Positive' : '✗ Negative';
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})}</td>
+                    <td>${new Date(data.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</td>
                     <td>${formatCurrency(data.receitas)}</td>
                     <td>${formatCurrency(data.despesas)}</td>
-                    <td style="color: ${data.resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(data.resultado)}</td>
+                    <td style="color: ${data.resultado >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatCurrency(data.resultado)}</td>
                     <td>${crescimentoMoM || '-'}</td>
-                    <td style="color: ${data.margem >= 0 ? '#4CAF50' : '#f44336'}">${formatPercent(data.margem)}</td>
+                    <td style="color: ${data.margem >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatPercent(data.margem)}</td>
                     <td>${status}</td>
                 `;
                 tbody.appendChild(row);
@@ -2221,8 +2232,8 @@ USING (auth.uid() = user_id);</pre>
                 updateElement('receitaProjetada', formatCurrency(0));
                 updateElement('breakEven', formatCurrency(0));
                 updateElement('runway', '0');
-                updateElement('runwayTrend', 'Sem dados históricos');
-                updateElement('metaMargem', 'Configure dados');
+                updateElement('runwayTrend', 'No historical data');
+                updateElement('metaMargem', 'Configure data');
                 return;
             }
             
@@ -2241,18 +2252,18 @@ USING (auth.uid() = user_id);</pre>
             
             if (ultimoResultado.resultado > 0) {
                 updateElement('runway', '∞');
-                updateElement('runwayTrend', 'Sustentável');
+                updateElement('runwayTrend', 'Sustainable');
             } else {
                 const caixaDefault = 50000; // Valor padrão
                 const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(caixaDefault / Math.abs(resultadoMedio)) : 0;
                 updateElement('runway', runway);
-                updateElement('runwayTrend', `Com ${formatCurrency(caixaDefault)} em caixa`);
+                updateElement('runwayTrend', `With ${formatCurrency(caixaDefault)} in cash`);
             }
             
             // Meta margem
             const margemAtual = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
             const metaMargem = 0.20;
-            const statusMeta = margemAtual >= metaMargem ? '✅ Atingindo' : '❌ Abaixo da meta';
+            const statusMeta = margemAtual >= metaMargem ? '✓ Achieving' : '✗ Below target';
             updateElement('metaMargem', statusMeta);
         }
 
@@ -2273,7 +2284,7 @@ USING (auth.uid() = user_id);</pre>
             if (ultimoMes.resultado < 0) {
                 alertsContainer.innerHTML += `
                     <div class="alert alert-warning">
-                        ⚠️ <strong>Resultado Negativo:</strong> O último mês apresentou prejuízo de ${formatCurrency(Math.abs(ultimoMes.resultado))}
+                        <strong>Negative Result:</strong> Last month showed a loss of ${formatCurrency(Math.abs(ultimoMes.resultado))}
                     </div>
                 `;
             }
@@ -2282,7 +2293,7 @@ USING (auth.uid() = user_id);</pre>
             if (margemMedia < 0.15) {
                 alertsContainer.innerHTML += `
                     <div class="alert alert-warning">
-                        ⚠️ <strong>Margem Baixa:</strong> Margem média de ${formatPercent(margemMedia)} está abaixo do recomendado (20%+)
+                        <strong>Low Margin:</strong> Average margin of ${formatPercent(margemMedia)} is below recommended (20%+)
                     </div>
                 `;
             }
@@ -2291,7 +2302,7 @@ USING (auth.uid() = user_id);</pre>
             if (ultimoMes.resultado > 0 && margemMedia > 0.20) {
                 alertsContainer.innerHTML += `
                     <div class="alert alert-success">
-                        ✅ <strong>Performance Positiva:</strong> Empresa apresenta resultados saudáveis com margem de ${formatPercent(margemMedia)}
+                        <strong>Positive Performance:</strong> Company shows healthy results with ${formatPercent(margemMedia)} margin
                     </div>
                 `;
             }
@@ -2302,7 +2313,7 @@ USING (auth.uid() = user_id);</pre>
             if (receitaTotal > 0 && outrasReceitas / receitaTotal > 0.5) {
                 alertsContainer.innerHTML += `
                     <div class="alert alert-info">
-                        💡 <strong>Diversificação:</strong> ${formatPercent(outrasReceitas/receitaTotal)} da receita vem de categorias não-core
+                        <strong>Diversification:</strong> ${formatPercent(outrasReceitas/receitaTotal)} of revenue comes from non-core categories
                     </div>
                 `;
             }
@@ -2671,11 +2682,11 @@ USING (auth.uid() = user_id);</pre>
         // Exportação de dados
         function exportarCSV() {
             if (transactions.length === 0) {
-                showNotification('❌ Nenhum dado para exportar', 'danger');
+                showNotification('No data to export', 'danger');
                 return;
             }
             
-            const headers = ['Data', 'Tipo', 'Categoria', 'Descrição', 'Valor'];
+            const headers = ['Date', 'Type', 'Category', 'Description', 'Amount'];
             const csvContent = [
                 headers.join(','),
                 ...transactions.map(t => [
@@ -2687,8 +2698,8 @@ USING (auth.uid() = user_id);</pre>
                 ].join(','))
             ].join('\n');
             
-            downloadFile(csvContent, 'vitexai_financeiro.csv', 'text/csv');
-            showNotification('📄 Dados exportados com sucesso!', 'success');
+            downloadFile(csvContent, 'vitexai_financial_data.csv', 'text/csv');
+            showNotification('Data exported successfully!', 'success');
         }
 
         function exportarJSON() {
@@ -2708,7 +2719,7 @@ USING (auth.uid() = user_id);</pre>
             
             const jsonContent = JSON.stringify(dataToExport, null, 2);
             downloadFile(jsonContent, 'vitexai_backup.json', 'application/json');
-            showNotification('💾 Backup criado com sucesso!', 'success');
+            showNotification('Backup created successfully!', 'success');
         }
 
         // Gerar relatório mensal
@@ -2780,7 +2791,8 @@ USING (auth.uid() = user_id);</pre>
             notification.style.right = '20px';
             notification.style.zIndex = '1000';
             notification.style.maxWidth = '400px';
-            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            notification.style.animation = 'slideIn 0.3s ease-out';
             
             document.body.appendChild(notification);
             
@@ -2832,7 +2844,7 @@ USING (auth.uid() = user_id);</pre>
                     } else if (id === 'mesesPositivos' || id === 'runway') {
                         element.textContent = '0';
                     } else {
-                        element.textContent = 'R$ 0,00';
+                        element.textContent = 'R$ 0.00';
                     }
                 }
             });
@@ -2840,9 +2852,25 @@ USING (auth.uid() = user_id);</pre>
             // Reset trends
             updateElement('percentualPositivos', '0%');
             updateElement('maiorResultadoMes', '-');
-            updateElement('runwayTrend', 'Sem dados históricos');
-            updateElement('metaMargem', 'Configure dados');
+            updateElement('runwayTrend', 'No historical data');
+            updateElement('metaMargem', 'Configure data');
         }
+
+        // Adicionar animação de entrada
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
 
         // Copiar estrutura SQL para clipboard
         function copyToClipboard(type) {
@@ -2859,7 +2887,7 @@ USING (auth.uid() = user_id);</pre>
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Opcional: Criar índice para melhor performance
+-- Optional: Create index for better performance
 CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
             } else {
                 sql = `CREATE TABLE transactions (
@@ -2873,10 +2901,10 @@ CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
     created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Ativar RLS
+-- Enable RLS
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 
--- Criar política
+-- Create policy
 CREATE POLICY "Users can only see own transactions" 
 ON transactions FOR ALL 
 USING (auth.uid() = user_id);`;
@@ -2892,9 +2920,9 @@ USING (auth.uid() = user_id);`;
             
             try {
                 document.execCommand('copy');
-                showNotification('📋 SQL copiado para a área de transferência!', 'success');
+                showNotification('SQL copied to clipboard!', 'success');
             } catch (err) {
-                showNotification('❌ Erro ao copiar SQL', 'danger');
+                showNotification('Error copying SQL', 'danger');
             }
             
             document.body.removeChild(textarea);
