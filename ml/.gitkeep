@@ -1,0 +1,11 @@
+your-repo/
+├── ml/
+│   ├── cashflow/
+│   │   ├── model.py
+│   │   └── requirements.txt
+│   └── anomalies/
+│       ├── model.py
+│       └── requirements.txt
+├── Dockerfile
+├── docker-compose.yml  (opcional para testes locais)
+└── src/  (seu front-end + código supabase)
