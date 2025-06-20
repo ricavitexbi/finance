@@ -1259,7 +1259,7 @@ USING (auth.uid() = user_id);</pre>
                 const year = today.getFullYear();
                 const month = String(today.getMonth() + 1).padStart(2, '0');
                 const day = String(today.getDate()).padStart(2, '0');
-                quickDate.value = ${year}-${month}-${day};
+                quickDate.value = `${year}-${month}-${day}`;
             }
         }
 
@@ -1298,7 +1298,7 @@ USING (auth.uid() = user_id);</pre>
                     } else if (error.message.includes('user_id')) {
                         showAuthAlert('⚠️ Erro de user_id detectado. Use a estrutura SIMPLES da tabela (sem user_id)', 'warning');
                     } else {
-                        throw new Error(Erro na conexão: ${error.message});
+                        throw new Error(`Erro na conexão: ${error.message}`);
                     }
                 }
                 
@@ -1318,7 +1318,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro ao configurar:', error);
-                showAuthAlert(❌ Erro: ${error.message}, 'danger');
+                showAuthAlert(`❌ Erro: ${error.message}`, 'danger');
             }
         }
 
@@ -1357,7 +1357,7 @@ USING (auth.uid() = user_id);</pre>
             document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
             
             if (tabName !== 'setup') {
-                const tabButton = document.querySelector(.auth-tab[onclick="showAuthTab('${tabName}')"]);
+                const tabButton = document.querySelector(`.auth-tab[onclick="showAuthTab('${tabName}')"]`);
                 if (tabButton) tabButton.classList.add('active');
             }
             
@@ -1398,7 +1398,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro no login:', error);
-                showAuthAlert(❌ ${error.message}, 'danger');
+                showAuthAlert(`❌ ${error.message}`, 'danger');
             } finally {
                 const btn = document.getElementById('loginBtn');
                 btn.disabled = false;
@@ -1460,7 +1460,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro no cadastro:', error);
-                showAuthAlert(❌ ${error.message}, 'danger');
+                showAuthAlert(`❌ ${error.message}`, 'danger');
             } finally {
                 const btn = document.getElementById('registerBtn');
                 btn.disabled = false;
@@ -1491,7 +1491,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro no reset:', error);
-                showAuthAlert(❌ ${error.message}, 'danger');
+                showAuthAlert(`❌ ${error.message}`, 'danger');
             }
         }
 
@@ -1514,7 +1514,7 @@ USING (auth.uid() = user_id);</pre>
                     
                 } catch (error) {
                     console.error('Logout error:', error);
-                    showNotification(Error: ${error.message}, 'danger');
+                    showNotification(`Error: ${error.message}`, 'danger');
                 }
             }
         }
@@ -1560,13 +1560,13 @@ USING (auth.uid() = user_id);</pre>
             // Mostrar aviso informativo sobre estrutura simplificada
             const systemAlerts = document.getElementById('systemAlerts');
             if (systemAlerts) {
-                systemAlerts.innerHTML = 
+                systemAlerts.innerHTML = `
                     <div class="alert alert-info">
                         <strong>Simplified System:</strong> This version uses a shared database structure. 
                         All users view the same data. For private per-user data, see the 
                         advanced structure in Settings.
                     </div>
-                ;
+                `;
             }
         }
 
@@ -1593,7 +1593,7 @@ USING (auth.uid() = user_id);</pre>
         // Mostrar alertas de auth
         function showAuthAlert(message, type) {
             const container = document.getElementById('authAlerts');
-            container.innerHTML = <div class="alert alert-${type}">${message}</div>;
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             
             setTimeout(() => {
                 container.innerHTML = '';
@@ -1687,11 +1687,11 @@ USING (auth.uid() = user_id);</pre>
                     userDataCount.textContent = transactions.length;
                 }
                 
-                showNotification(${transactions.length} records synchronized successfully, 'success');
+                showNotification(`${transactions.length} records synchronized successfully`, 'success');
                 
             } catch (error) {
                 console.error('Sync error:', error);
-                showNotification(Error: ${error.message}, 'danger');
+                showNotification(`Error: ${error.message}`, 'danger');
             }
         }
 
@@ -1792,7 +1792,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Erro ao adicionar:', error);
-                showNotification(❌ Erro: ${error.message}, 'danger');
+                showNotification(`❌ Erro: ${error.message}`, 'danger');
             } finally {
                 const btn = document.getElementById('btnAdicionar');
                 btn.disabled = false;
@@ -1836,7 +1836,7 @@ USING (auth.uid() = user_id);</pre>
                 
             } catch (error) {
                 console.error('Error removing transaction:', error);
-                showNotification(Error: ${error.message}, 'danger');
+                showNotification(`Error: ${error.message}`, 'danger');
             }
         }
 
@@ -1992,14 +1992,14 @@ USING (auth.uid() = user_id);</pre>
             
             sortedTransactions.forEach(transaction => {
                 const row = document.createElement('tr');
-                row.className = transaction-row ${transaction.tipo};
+                row.className = `transaction-row ${transaction.tipo}`;
                 
                 const dataFormatada = new Date(transaction.data).toLocaleDateString('pt-BR');
                 const valorFormatado = formatCurrency(transaction.valor);
                 const valorClass = transaction.tipo === 'receita' ? 'value-positive' : 'value-negative';
                 const tipoText = transaction.tipo === 'receita' ? 'Revenue' : 'Expense';
                 
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${dataFormatada}</td>
                     <td>${tipoText}</td>
                     <td>${transaction.categoria}</td>
@@ -2011,7 +2011,7 @@ USING (auth.uid() = user_id);</pre>
                             Remove
                         </button>
                     </td>
-                ;
+                `;
                 
                 tbody.appendChild(row);
             });
@@ -2211,7 +2211,7 @@ USING (auth.uid() = user_id);</pre>
                 const status = data.resultado > 0 ? '✓ Positive' : '✗ Negative';
                 
                 const row = document.createElement('tr');
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${new Date(data.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</td>
                     <td>${formatCurrency(data.receitas)}</td>
                     <td>${formatCurrency(data.despesas)}</td>
@@ -2219,7 +2219,7 @@ USING (auth.uid() = user_id);</pre>
                     <td>${crescimentoMoM || '-'}</td>
                     <td style="color: ${data.margem >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatPercent(data.margem)}</td>
                     <td>${status}</td>
-                ;
+                `;
                 tbody.appendChild(row);
             });
         }
@@ -2257,7 +2257,7 @@ USING (auth.uid() = user_id);</pre>
                 const caixaDefault = 50000; // Valor padrão
                 const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(caixaDefault / Math.abs(resultadoMedio)) : 0;
                 updateElement('runway', runway);
-                updateElement('runwayTrend', With ${formatCurrency(caixaDefault)} in cash);
+                updateElement('runwayTrend', `With ${formatCurrency(caixaDefault)} in cash`);
             }
             
             // Meta margem
@@ -2282,40 +2282,40 @@ USING (auth.uid() = user_id);</pre>
             
             // Alert para resultado negativo
             if (ultimoMes.resultado < 0) {
-                alertsContainer.innerHTML += 
+                alertsContainer.innerHTML += `
                     <div class="alert alert-warning">
                         <strong>Negative Result:</strong> Last month showed a loss of ${formatCurrency(Math.abs(ultimoMes.resultado))}
                     </div>
-                ;
+                `;
             }
             
             // Alert para margem baixa
             if (margemMedia < 0.15) {
-                alertsContainer.innerHTML += 
+                alertsContainer.innerHTML += `
                     <div class="alert alert-warning">
                         <strong>Low Margin:</strong> Average margin of ${formatPercent(margemMedia)} is below recommended (20%+)
                     </div>
-                ;
+                `;
             }
             
             // Alert para performance positiva
             if (ultimoMes.resultado > 0 && margemMedia > 0.20) {
-                alertsContainer.innerHTML += 
+                alertsContainer.innerHTML += `
                     <div class="alert alert-success">
                         <strong>Positive Performance:</strong> Company shows healthy results with ${formatPercent(margemMedia)} margin
                     </div>
-                ;
+                `;
             }
             
             // Alert para concentração de receita
             const receitaTotal = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const outrasReceitas = transactions.filter(t => t.tipo === 'receita' && (t.categoria === 'Outras' || t.categoria === 'Licenciamento')).reduce((sum, t) => sum + parseFloat(t.valor), 0);
             if (receitaTotal > 0 && outrasReceitas / receitaTotal > 0.5) {
-                alertsContainer.innerHTML += 
+                alertsContainer.innerHTML += `
                     <div class="alert alert-info">
                         <strong>Diversification:</strong> ${formatPercent(outrasReceitas/receitaTotal)} of revenue comes from non-core categories
                     </div>
-                ;
+                `;
             }
         }
 
@@ -2339,7 +2339,7 @@ USING (auth.uid() = user_id);</pre>
             const novaMargem = metaReceita > 0 ? novoResultado / metaReceita : 0;
             const novoRunway = novoResultado < 0 ? Math.floor(caixaDisponivel / Math.abs(novoResultado)) : '∞';
             
-            const resultHtml = 
+            const resultHtml = `
                 <div class="metric-card">
                     <h4>📊 Resultado do Cenário</h4>
                     <p><strong>Receita Meta:</strong> ${formatCurrency(metaReceita)}</p>
@@ -2349,7 +2349,7 @@ USING (auth.uid() = user_id);</pre>
                     <p><strong>Runway:</strong> ${novoRunway} ${novoRunway !== '∞' ? 'meses' : '(sustentável)'}</p>
                     <p><strong>Status:</strong> ${novaMargem >= 0.2 ? '✅ Excelente' : novaMargem >= 0.1 ? '⚠️ Aceitável' : '❌ Abaixo do ideal'}</p>
                 </div>
-            ;
+            `;
             
             document.getElementById('cenarioResult').innerHTML = resultHtml;
         }
@@ -2633,7 +2633,7 @@ USING (auth.uid() = user_id);</pre>
             
             transactions.forEach(transaction => {
                 const date = new Date(transaction.data);
-                const monthKey = ${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')};
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 
                 if (!monthlyMap.has(monthKey)) {
                     monthlyMap.set(monthKey, { 
@@ -2693,7 +2693,7 @@ USING (auth.uid() = user_id);</pre>
                     t.data,
                     t.tipo,
                     t.categoria,
-                    "${t.descricao.replace(/"/g, '""')}", // Escapar aspas duplas
+                    `"${t.descricao.replace(/"/g, '""')}"`, // Escapar aspas duplas
                     parseFloat(t.valor).toFixed(2)
                 ].join(','))
             ].join('\n');
@@ -2734,7 +2734,7 @@ USING (auth.uid() = user_id);</pre>
             const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             
-            const relatorioHtml = 
+            const relatorioHtml = `
                 <div class="input-section">
                     <h4>📊 Relatório Executivo - VitexAI</h4>
                     <p><strong>Período:</strong> ${new Date().toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})}</p>
@@ -2764,7 +2764,7 @@ USING (auth.uid() = user_id);</pre>
                     
                     <button class="btn" onclick="window.print()" style="width: auto;">🖨️ Imprimir Relatório</button>
                 </div>
-            ;
+            `;
             
             document.getElementById('relatorioContainer').innerHTML = relatorioHtml;
             showNotification('📋 Relatório gerado com sucesso!', 'success');
@@ -2784,7 +2784,7 @@ USING (auth.uid() = user_id);</pre>
 
         function showNotification(message, type) {
             const notification = document.createElement('div');
-            notification.className = alert alert-${type};
+            notification.className = `alert alert-${type}`;
             notification.innerHTML = message;
             notification.style.position = 'fixed';
             notification.style.top = '20px';
@@ -2858,7 +2858,7 @@ USING (auth.uid() = user_id);</pre>
 
         // Adicionar animação de entrada
         const style = document.createElement('style');
-        style.textContent = 
+        style.textContent = `
             @keyframes slideIn {
                 from {
                     transform: translateX(100%);
@@ -2869,7 +2869,7 @@ USING (auth.uid() = user_id);</pre>
                     opacity: 1;
                 }
             }
-        ;
+        `;
         document.head.appendChild(style);
 
         // Copiar estrutura SQL para clipboard
@@ -2877,7 +2877,7 @@ USING (auth.uid() = user_id);</pre>
             let sql = '';
             
             if (type === 'simple') {
-                sql = CREATE TABLE transactions (
+                sql = `CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     data DATE NOT NULL,
     tipo VARCHAR(10) NOT NULL,
@@ -2888,9 +2888,9 @@ USING (auth.uid() = user_id);</pre>
 );
 
 -- Optional: Create index for better performance
-CREATE INDEX idx_transactions_data ON transactions(data DESC);;
+CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
             } else {
-                sql = CREATE TABLE transactions (
+                sql = `CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id),
     data DATE NOT NULL,
@@ -2907,7 +2907,7 @@ ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 -- Create policy
 CREATE POLICY "Users can only see own transactions" 
 ON transactions FOR ALL 
-USING (auth.uid() = user_id);;
+USING (auth.uid() = user_id);`;
             }
             
             // Criar elemento temporário para copiar
@@ -2947,5 +2947,3 @@ USING (auth.uid() = user_id);;
     </script>
 </body>
 </html>
-
-
