@@ -2402,4 +2402,1129 @@ USING (auth.uid() = user_id);</pre>
             setElementColor('roiAcumulado', roi >= 0 ? 'var(--success)' : 'var(--danger)');
             
             // Carga Tributária
-            const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.
+            const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Impostos').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const cargaTributaria = totalReceitas > 0 ? (impostosTotal / totalReceitas) : 0;
+            animateValue('cargaTributaria', cargaTributaria, 'percent');
+            
+            // Custos Fixos
+            const prolaboreTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Pró-labore').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const assinaturasTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Assinaturas').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const custosFixos = totalDespesas > 0 ? ((prolaboreTotal + assinaturasTotal) / totalDespesas) : 0;
+            animateValue('custosFixes', custosFixos, 'percent');
+        }
+
+        // Atualizar tendências
+        function updateTrends() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length < 2) {
+                updateElement('crescimentoMedio', '0%');
+                updateElement('volatilidadeReceita', '0%');
+                updateElement('mesesPositivos', '0');
+                updateElement('percentualPositivos', '0%');
+                updateElement('maiorResultado', formatCurrency(0));
+                updateElement('maiorResultadoMes', '-');
+                return;
+            }
+            
+            // Crescimento MoM
+            let crescimentos = [];
+            for (let i = 1; i < monthlyData.length; i++) {
+                const anterior = monthlyData[i-1].receitas;
+                const atual = monthlyData[i].receitas;
+                if (anterior > 0) {
+                    crescimentos.push((atual - anterior) / anterior);
+                }
+            }
+            
+            const crescimentoMedio = crescimentos.length > 0 ? crescimentos.reduce((sum, val) => sum + val, 0) / crescimentos.length : 0;
+            animateValue('crescimentoMedio', crescimentoMedio, 'percent');
+            
+            // Volatilidade
+            const receitas = monthlyData.map(data => data.receitas);
+            const media = receitas.reduce((sum, val) => sum + val, 0) / receitas.length;
+            const variancia = receitas.reduce((sum, val) => sum + Math.pow(val - media, 2), 0) / receitas.length;
+            const desvio = Math.sqrt(variancia);
+            const volatilidade = media > 0 ? desvio / media : 0;
+            animateValue('volatilidadeReceita', volatilidade, 'percent');
+            
+            // Meses positivos
+            const mesesPositivos = monthlyData.filter(data => data.resultado > 0).length;
+            const percentualPositivos = monthlyData.length > 0 ? mesesPositivos / monthlyData.length : 0;
+            updateElement('mesesPositivos', mesesPositivos);
+            animateValue('percentualPositivos', percentualPositivos, 'percent');
+            
+            // Maior resultado
+            const resultados = monthlyData.map(data => data.resultado);
+            const maiorResultado = Math.max(...resultados);
+            const maiorResultadoIndex = resultados.indexOf(maiorResultado);
+            const maiorResultadoMes = monthlyData[maiorResultadoIndex]?.month;
+            
+            animateValue('maiorResultado', maiorResultado, 'currency');
+            if (maiorResultadoMes) {
+                updateElement('maiorResultadoMes', new Date(maiorResultadoMes + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'}));
+            }
+            
+            // Atualizar tabela de tendências
+            updateTrendsTable();
+        }
+
+        // Atualizar tabela de tendências
+        function updateTrendsTable() {
+            const tbody = document.getElementById('trendsTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
+            
+            monthlyData.forEach((data, index) => {
+                let crescimentoMoM = '';
+                if (index > 0) {
+                    const anterior = monthlyData[index-1].receitas;
+                    if (anterior > 0) {
+                        const crescimento = (data.receitas - anterior) / anterior;
+                        crescimentoMoM = formatPercent(crescimento);
+                    }
+                }
+                
+                const status = data.resultado > 0 ? '✓ Positive' : '✗ Negative';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(data.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</td>
+                    <td>${formatCurrency(data.receitas)}</td>
+                    <td>${formatCurrency(data.despesas)}</td>
+                    <td style="color: ${data.resultado >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatCurrency(data.resultado)}</td>
+                    <td>${crescimentoMoM || '-'}</td>
+                    <td style="color: ${data.margem >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatPercent(data.margem)}</td>
+                    <td>${status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Atualizar projeções
+        function updateProjections() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length === 0) {
+                updateElement('receitaProjetada', formatCurrency(0));
+                updateElement('breakEven', formatCurrency(0));
+                updateElement('runway', '0');
+                updateElement('runwayTrend', 'No historical data');
+                updateElement('metaMargem', 'Configure data');
+                return;
+            }
+            
+            // Receita projetada (média móvel dos últimos 3 meses)
+            const ultimosMeses = monthlyData.slice(-3);
+            const receitaMedia = ultimosMeses.reduce((sum, data) => sum + data.receitas, 0) / ultimosMeses.length;
+            animateValue('receitaProjetada', receitaMedia, 'currency');
+            
+            // Break-even
+            const despesaMedia = monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length;
+            animateValue('breakEven', despesaMedia, 'currency');
+            
+            // Runway
+            const ultimoResultado = monthlyData[monthlyData.length - 1];
+            const resultadoMedio = monthlyData.reduce((sum, data) => sum + data.resultado, 0) / monthlyData.length;
+            
+            if (ultimoResultado.resultado > 0) {
+                updateElement('runway', '∞');
+                updateElement('runwayTrend', 'Sustainable');
+            } else {
+                const caixaDefault = 50000; // Valor padrão
+                const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(caixaDefault / Math.abs(resultadoMedio)) : 0;
+                updateElement('runway', runway);
+                updateElement('runwayTrend', `With ${formatCurrency(caixaDefault)} in cash`);
+            }
+            
+            // Meta margem
+            const margemAtual = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
+            const metaMargem = 0.20;
+            const statusMeta = margemAtual >= metaMargem ? '✓ Achieving' : '✗ Below target';
+            updateElement('metaMargem', statusMeta);
+        }
+
+        // Atualizar alertas
+        function updateAlerts() {
+            const alertsContainer = document.getElementById('alertsContainer');
+            alertsContainer.innerHTML = '';
+            
+            if (transactions.length === 0) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const margemMedia = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
+            
+            // Alert para resultado negativo
+            if (ultimoMes.resultado < 0) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        <strong>Negative Result:</strong> Last month showed a loss of ${formatCurrency(Math.abs(ultimoMes.resultado))}
+                    </div>
+                `;
+            }
+            
+            // Alert para margem baixa
+            if (margemMedia < 0.15) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        <strong>Low Margin:</strong> Average margin of ${formatPercent(margemMedia)} is below recommended (20%+)
+                    </div>
+                `;
+            }
+            
+            // Alert para performance positiva
+            if (ultimoMes.resultado > 0 && margemMedia > 0.20) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-success">
+                        <strong>Positive Performance:</strong> Company shows healthy results with ${formatPercent(margemMedia)} margin
+                    </div>
+                `;
+            }
+            
+            // Alert para concentração de receita
+            const receitaTotal = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const outrasReceitas = transactions.filter(t => t.tipo === 'receita' && (t.categoria === 'Outras' || t.categoria === 'Licenciamento')).reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            if (receitaTotal > 0 && outrasReceitas / receitaTotal > 0.5) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-info">
+                        <strong>Diversification:</strong> ${formatPercent(outrasReceitas/receitaTotal)} of revenue comes from non-core categories
+                    </div>
+                `;
+            }
+        }
+
+        // Calcular cenário
+        function calcularCenario() {
+            const metaReceita = parseFloat(document.getElementById('metaReceita').value);
+            const aumentoDespesas = parseFloat(document.getElementById('aumentoDespesas').value) || 0;
+            const caixaDisponivel = parseFloat(document.getElementById('caixaDisponivel').value) || 50000;
+            
+            if (!metaReceita) {
+                showNotification('❌ Digite uma meta de receita', 'danger');
+                return;
+            }
+            
+            const monthlyData = getMonthlyData();
+            const despesaMedia = monthlyData.length > 0 ? 
+                monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
+            
+            const novaDespesa = despesaMedia * (1 + aumentoDespesas / 100);
+            const novoResultado = metaReceita - novaDespesa;
+            const novaMargem = metaReceita > 0 ? novoResultado / metaReceita : 0;
+            const novoRunway = novoResultado < 0 ? Math.floor(caixaDisponivel / Math.abs(novoResultado)) : '∞';
+            
+            const resultHtml = `
+                <div class="metric-card">
+                    <h4>📊 Scenario Result</h4>
+                    <p><strong>Target Revenue:</strong> ${formatCurrency(metaReceita)}</p>
+                    <p><strong>Estimated Expenses:</strong> ${formatCurrency(novaDespesa)} (+${aumentoDespesas}%)</p>
+                    <p><strong>Projected Result:</strong> <span style="color: ${novoResultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(novoResultado)}</span></p>
+                    <p><strong>Projected Margin:</strong> <span style="color: ${novaMargem >= 0.2 ? '#4CAF50' : novaMargem >= 0 ? '#FFA500' : '#f44336'}">${formatPercent(novaMargem)}</span></p>
+                    <p><strong>Runway:</strong> ${novoRunway} ${novoRunway !== '∞' ? 'months' : '(sustainable)'}</p>
+                    <p><strong>Status:</strong> ${novaMargem >= 0.2 ? '✅ Excellent' : novaMargem >= 0.1 ? '⚠️ Acceptable' : '❌ Below ideal'}</p>
+                </div>
+            `;
+            
+            document.getElementById('cenarioResult').innerHTML = resultHtml;
+        }
+
+        // Criar gráficos
+        function createCharts() {
+            if (transactions.length === 0) {
+                showNotification('📊 Adicione lançamentos para visualizar os gráficos', 'info');
+                return;
+            }
+            
+            // Destruir gráficos existentes
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            
+            createEvolutionChart();
+            createRevenueChart();
+            createExpenseChart();
+            createMarginChart();
+            createTrendsChart();
+        }
+
+        // Gráfico de evolução
+        function createEvolutionChart() {
+            const ctx = document.getElementById('evolutionChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.evolution = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyData.map(data => data.receitas),
+                            borderColor: '#4CAF50',
+                            backgroundColor: '#4CAF5020',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyData.map(data => data.despesas),
+                            borderColor: '#f44336',
+                            backgroundColor: '#f4433620',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de receitas
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const revenueByCategory = getCategoryData('receita');
+            if (Object.keys(revenueByCategory).length === 0) return;
+            
+            const labels = Object.keys(revenueByCategory);
+            const data = Object.values(revenueByCategory);
+            const colors = ['#4facfe', '#00f2fe', '#4CAF50', '#2196f3', '#9c27b0', '#ff9800'];
+            
+            charts.revenue = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de despesas
+        function createExpenseChart() {
+            const ctx = document.getElementById('expenseChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const expenseByCategory = getCategoryData('despesa');
+            if (Object.keys(expenseByCategory).length === 0) return;
+            
+            const labels = Object.keys(expenseByCategory);
+            const data = Object.values(expenseByCategory);
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'];
+            
+            charts.expense = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de margem
+        function createMarginChart() {
+            const ctx = document.getElementById('marginChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.margin = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Margem (%)',
+                        data: monthlyData.map(data => data.margem * 100),
+                        backgroundColor: monthlyData.map(data => data.margem >= 0.2 ? '#4CAF50' : data.margem >= 0 ? '#FFA500' : '#f44336'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Margem: ' + context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de tendências
+        function createTrendsChart() {
+            const ctx = document.getElementById('trendsChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.trends = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyData.map(data => data.receitas),
+                            backgroundColor: '#4CAF5080',
+                            borderColor: '#4CAF50',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyData.map(data => data.despesas),
+                            backgroundColor: '#f4433680',
+                            borderColor: '#f44336',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dados auxiliares
+        function getMonthlyData() {
+            const monthlyMap = new Map();
+            
+            transactions.forEach(transaction => {
+                const date = new Date(transaction.data);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                
+                if (!monthlyMap.has(monthKey)) {
+                    monthlyMap.set(monthKey, { 
+                        month: monthKey, 
+                        receitas: 0, 
+                        despesas: 0,
+                        resultado: 0,
+                        margem: 0
+                    });
+                }
+                
+                const monthData = monthlyMap.get(monthKey);
+                const valor = parseFloat(transaction.valor);
+                
+                if (transaction.tipo === 'receita') {
+                    monthData.receitas += valor;
+                } else {
+                    monthData.despesas += valor;
+                }
+            });
+            
+            // Calcular resultado e margem
+            monthlyMap.forEach(data => {
+                data.resultado = data.receitas - data.despesas;
+                data.margem = data.receitas > 0 ? data.resultado / data.receitas : 0;
+            });
+            
+            return Array.from(monthlyMap.values()).sort((a, b) => a.month.localeCompare(b.month));
+        }
+
+        function getCategoryData(tipo) {
+            const categoryMap = {};
+            
+            transactions
+                .filter(t => t.tipo === tipo)
+                .forEach(transaction => {
+                    if (!categoryMap[transaction.categoria]) {
+                        categoryMap[transaction.categoria] = 0;
+                    }
+                    categoryMap[transaction.categoria] += parseFloat(transaction.valor);
+                });
+            
+            return categoryMap;
+        }
+
+        // Exportação de dados
+        function exportarCSV() {
+            if (transactions.length === 0) {
+                showNotification('No data to export', 'danger');
+                return;
+            }
+            
+            const headers = ['Date', 'Type', 'Category', 'Description', 'Amount'];
+            const csvContent = [
+                headers.join(','),
+                ...transactions.map(t => [
+                    t.data,
+                    t.tipo,
+                    t.categoria,
+                    `"${t.descricao.replace(/"/g, '""')}"`, // Escapar aspas duplas
+                    parseFloat(t.valor).toFixed(2)
+                ].join(','))
+            ].join('\n');
+            
+            downloadFile(csvContent, 'vitexai_financial_data.csv', 'text/csv');
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function exportarJSON() {
+            const dataToExport = {
+                user: currentUser?.email || 'demo@vitexai.com',
+                transactions,
+                categories,
+                exportDate: new Date().toISOString(),
+                source: 'vitexai_dashboard_v3',
+                version: '3.0',
+                summary: {
+                    totalTransactions: transactions.length,
+                    totalReceitas: transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0),
+                    totalDespesas: transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0)
+                }
+            };
+            
+            const jsonContent = JSON.stringify(dataToExport, null, 2);
+            downloadFile(jsonContent, 'vitexai_backup.json', 'application/json');
+            showNotification('Backup created successfully!', 'success');
+        }
+
+        // Gerar relatório mensal
+        function gerarRelatorioMensal() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) {
+                showNotification('❌ Sem dados para gerar relatório', 'danger');
+                return;
+            }
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            const relatorioHtml = `
+                <div class="input-section">
+                    <h4>📊 Executive Report - VitexAI</h4>
+                    <p><strong>Period:</strong> ${new Date().toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</p>
+                    
+                    <h5>General Summary</h5>
+                    <ul>
+                        <li><strong>Total Transactions:</strong> ${transactions.length}</li>
+                        <li><strong>Total Accumulated Revenue:</strong> ${formatCurrency(totalReceitas)}</li>
+                        <li><strong>Total Accumulated Expenses:</strong> ${formatCurrency(totalDespesas)}</li>
+                        <li><strong>Accumulated Result:</strong> <span style="color: ${totalReceitas - totalDespesas >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(totalReceitas - totalDespesas)}</span></li>
+                    </ul>
+                    
+                    <h5>Last Month (${new Date(ultimoMes.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})})</h5>
+                    <ul>
+                        <li><strong>Revenue:</strong> ${formatCurrency(ultimoMes.receitas)}</li>
+                        <li><strong>Expenses:</strong> ${formatCurrency(ultimoMes.despesas)}</li>
+                        <li><strong>Result:</strong> <span style="color: ${ultimoMes.resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(ultimoMes.resultado)}</span></li>
+                        <li><strong>Margin:</strong> ${formatPercent(ultimoMes.margem)}</li>
+                    </ul>
+                    
+                    <h5>Key Indicators</h5>
+                    <ul>
+                        <li><strong>Average Margin:</strong> ${formatPercent(totalReceitas > 0 ? (totalReceitas - totalDespesas) / totalReceitas : 0)}</li>
+                        <li><strong>ROI:</strong> ${formatPercent(totalDespesas > 0 ? (totalReceitas / totalDespesas) - 1 : 0)}</li>
+                        <li><strong>Positive Months:</strong> ${monthlyData.filter(m => m.resultado > 0).length} of ${monthlyData.length}</li>
+                    </ul>
+                    
+                    <button class="btn" onclick="window.print()" style="width: auto;">🖨️ Print Report</button>
+                </div>
+            `;
+            
+            document.getElementById('relatorioContainer').innerHTML = relatorioHtml;
+            showNotification('📋 Report generated successfully!', 'success');
+        }
+
+        // Chat Functions
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const chatPanel = document.getElementById('chatPanel');
+            const chatToggle = document.querySelector('.chat-toggle');
+            
+            if (chatOpen) {
+                chatPanel.classList.add('active');
+                chatToggle.style.display = 'none';
+                document.getElementById('chatInput').focus();
+            } else {
+                chatPanel.classList.remove('active');
+                chatToggle.style.display = 'flex';
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const btn = document.getElementById('chatSendBtn');
+            btn.disabled = true;
+            input.disabled = true;
+            
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Process the message
+            const response = await processUserQuery(message);
+            
+            // Add assistant response
+            addChatMessage(response, 'assistant');
+            
+            btn.disabled = false;
+            input.disabled = false;
+            input.focus();
+        }
+
+        function addChatMessage(message, type) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            messageDiv.innerHTML = message;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        async function processUserQuery(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Financial health check
+            if (lowerQuery.includes('health') || lowerQuery.includes('status') || lowerQuery.includes('how am i doing')) {
+                return analyzeFinancialHealth();
+            }
+            
+            // Biggest expense
+            if (lowerQuery.includes('biggest expense') || lowerQuery.includes('largest expense')) {
+                return findBiggestExpense();
+            }
+            
+            // Revenue trends
+            if (lowerQuery.includes('revenue trend') || lowerQuery.includes('income trend')) {
+                return analyzeRevenueTrends();
+            }
+            
+            // Margin evolution
+            if (lowerQuery.includes('margin') || lowerQuery.includes('profit')) {
+                return analyzeMargin();
+            }
+            
+            // Monthly summary
+            if (lowerQuery.includes('this month') || lowerQuery.includes('current month')) {
+                return currentMonthSummary();
+            }
+            
+            // Best month
+            if (lowerQuery.includes('best month') || lowerQuery.includes('highest revenue')) {
+                return findBestMonth();
+            }
+            
+            // Expense breakdown
+            if (lowerQuery.includes('expense breakdown') || lowerQuery.includes('where money goes')) {
+                return expenseBreakdown();
+            }
+            
+            // Default response
+            return `I can help you analyze your financial data! Try asking about:
+                <br><br>
+                • Your financial health<br>
+                • Biggest expenses<br>
+                • Revenue trends<br>
+                • Profit margins<br>
+                • Monthly summaries<br>
+                • Expense breakdowns`;
+        }
+
+        function analyzeFinancialHealth() {
+            const totalRevenue = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalExpenses = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const netResult = totalRevenue - totalExpenses;
+            const margin = totalRevenue > 0 ? (netResult / totalRevenue) : 0;
+            
+            let health = '';
+            if (margin >= 0.2) {
+                health = '🟢 <strong>Excellent!</strong> Your margin is above 20%.';
+            } else if (margin >= 0.1) {
+                health = '🟡 <strong>Good.</strong> Your margin is healthy but could be improved.';
+            } else if (margin >= 0) {
+                health = '🟠 <strong>Attention needed.</strong> Your margin is low.';
+            } else {
+                health = '🔴 <strong>Critical.</strong> You\'re operating at a loss.';
+            }
+            
+            return `<strong>Financial Health Analysis:</strong><br><br>
+                    ${health}<br><br>
+                    <strong>Summary:</strong><br>
+                    • Total Revenue: ${formatCurrency(totalRevenue)}<br>
+                    • Total Expenses: ${formatCurrency(totalExpenses)}<br>
+                    • Net Result: <span style="color: ${netResult >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(netResult)}</span><br>
+                    • Profit Margin: ${formatPercent(margin)}`;
+        }
+
+        function findBiggestExpense() {
+            const expenses = transactions.filter(t => t.tipo === 'despesa');
+            if (expenses.length === 0) {
+                return 'No expenses recorded yet.';
+            }
+            
+            const biggest = expenses.reduce((max, t) => parseFloat(t.valor) > parseFloat(max.valor) ? t : max);
+            const categoryTotals = {};
+            
+            expenses.forEach(t => {
+                if (!categoryTotals[t.categoria]) {
+                    categoryTotals[t.categoria] = 0;
+                }
+                categoryTotals[t.categoria] += parseFloat(t.valor);
+            });
+            
+            const biggestCategory = Object.entries(categoryTotals).reduce((max, [cat, total]) => 
+                total > max[1] ? [cat, total] : max
+            );
+            
+            return `<strong>Biggest Expense Analysis:</strong><br><br>
+                    <strong>Single transaction:</strong><br>
+                    • ${biggest.descricao}: ${formatCurrency(biggest.valor)}<br>
+                    • Date: ${new Date(biggest.data).toLocaleDateString()}<br>
+                    • Category: ${biggest.categoria}<br><br>
+                    <strong>By category:</strong><br>
+                    • ${biggestCategory[0]}: ${formatCurrency(biggestCategory[1])}`;
+        }
+
+        function analyzeRevenueTrends() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length < 2) {
+                return 'Not enough data to analyze trends. Need at least 2 months.';
+            }
+            
+            const recentMonths = monthlyData.slice(-3);
+            const trend = recentMonths.length > 1 ? 
+                (recentMonths[recentMonths.length - 1].receitas - recentMonths[0].receitas) / recentMonths[0].receitas : 0;
+            
+            let trendAnalysis = '';
+            if (trend > 0.1) {
+                trendAnalysis = '📈 <strong>Growing!</strong> Revenue is increasing.';
+            } else if (trend > -0.1) {
+                trendAnalysis = '➡️ <strong>Stable.</strong> Revenue is relatively constant.';
+            } else {
+                trendAnalysis = '📉 <strong>Declining.</strong> Revenue is decreasing.';
+            }
+            
+            return `<strong>Revenue Trend Analysis:</strong><br><br>
+                    ${trendAnalysis}<br><br>
+                    <strong>Last 3 months:</strong><br>
+                    ${recentMonths.map(m => 
+                        `• ${new Date(m.month + '-01').toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}: ${formatCurrency(m.receitas)}`
+                    ).join('<br>')}<br><br>
+                    <strong>Growth rate:</strong> ${formatPercent(trend)}`;
+        }
+
+        function analyzeMargin() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) {
+                return 'No data available to analyze margins.';
+            }
+            
+            const avgMargin = monthlyData.reduce((sum, m) => sum + m.margem, 0) / monthlyData.length;
+            const lastMonth = monthlyData[monthlyData.length - 1];
+            const improving = monthlyData.length > 1 && lastMonth.margem > monthlyData[monthlyData.length - 2].margem;
+            
+            return `<strong>Margin Analysis:</strong><br><br>
+                    <strong>Average margin:</strong> ${formatPercent(avgMargin)}<br>
+                    <strong>Last month:</strong> ${formatPercent(lastMonth.margem)}<br>
+                    <strong>Trend:</strong> ${improving ? '📈 Improving' : '📉 Declining'}<br><br>
+                    <strong>Recommendation:</strong><br>
+                    ${avgMargin < 0.2 ? 
+                        '• Focus on increasing revenue or reducing costs<br>• Target margin should be 20%+' : 
+                        '• Maintain current performance<br>• Look for optimization opportunities'}`;
+        }
+
+        function currentMonthSummary() {
+            const now = new Date();
+            const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            const currentTransactions = transactions.filter(t => t.data.startsWith(currentMonth));
+            
+            if (currentTransactions.length === 0) {
+                return 'No transactions recorded for the current month yet.';
+            }
+            
+            const revenue = currentTransactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const expenses = currentTransactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const result = revenue - expenses;
+            
+            return `<strong>Current Month Summary:</strong><br><br>
+                    <strong>${now.toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</strong><br><br>
+                    • Transactions: ${currentTransactions.length}<br>
+                    • Revenue: ${formatCurrency(revenue)}<br>
+                    • Expenses: ${formatCurrency(expenses)}<br>
+                    • Result: <span style="color: ${result >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(result)}</span><br>
+                    • Margin: ${revenue > 0 ? formatPercent(result / revenue) : '0%'}`;
+        }
+
+        function findBestMonth() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) {
+                return 'No data available to analyze.';
+            }
+            
+            const bestRevenue = monthlyData.reduce((best, m) => m.receitas > best.receitas ? m : best);
+            const bestResult = monthlyData.reduce((best, m) => m.resultado > best.resultado ? m : best);
+            
+            return `<strong>Best Performance Analysis:</strong><br><br>
+                    <strong>Highest Revenue:</strong><br>
+                    • ${new Date(bestRevenue.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}<br>
+                    • Revenue: ${formatCurrency(bestRevenue.receitas)}<br><br>
+                    <strong>Best Result:</strong><br>
+                    • ${new Date(bestResult.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}<br>
+                    • Net profit: ${formatCurrency(bestResult.resultado)}<br>
+                    • Margin: ${formatPercent(bestResult.margem)}`;
+        }
+
+        function expenseBreakdown() {
+            const expenses = transactions.filter(t => t.tipo === 'despesa');
+            if (expenses.length === 0) {
+                return 'No expenses recorded yet.';
+            }
+            
+            const categoryTotals = {};
+            const total = expenses.reduce((sum, t) => {
+                const valor = parseFloat(t.valor);
+                if (!categoryTotals[t.categoria]) {
+                    categoryTotals[t.categoria] = 0;
+                }
+                categoryTotals[t.categoria] += valor;
+                return sum + valor;
+            }, 0);
+            
+            const sortedCategories = Object.entries(categoryTotals)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5);
+            
+            return `<strong>Expense Breakdown:</strong><br><br>
+                    <strong>Total expenses:</strong> ${formatCurrency(total)}<br><br>
+                    <strong>Top categories:</strong><br>
+                    ${sortedCategories.map(([cat, value]) => 
+                        `• ${cat}: ${formatCurrency(value)} (${formatPercent(value/total)})`
+                    ).join('<br>')}<br><br>
+                    💡 <strong>Tip:</strong> Focus on reducing the highest categories for maximum impact.`;
+        }
+
+        // Funções utilitárias
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function formatPercent(value) {
+            return (value * 100).toFixed(1) + '%';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type}`;
+            notification.innerHTML = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.maxWidth = '400px';
+            notification.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            notification.style.animation = 'slideIn 0.3s ease-out';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 4000);
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+
+        function setElementColor(id, color) {
+            const element = document.getElementById(id);
+            if (element) element.style.color = color;
+        }
+
+        function resetAllMetrics() {
+            const metrics = [
+                'receitaAcumulada', 'despesasAcumuladas', 'resultadoAcumulado', 'margemMedia',
+                'receitaMedia', 'burnrateMedia', 'mixConsultoria', 'mixDesenvolvimento', 'mixOutras',
+                'roiAcumulado', 'cargaTributaria', 'custosFixes', 'crescimentoMedio', 'volatilidadeReceita',
+                'mesesPositivos', 'maiorResultado', 'receitaProjetada', 'breakEven', 'runway',
+                'consultoriaValue', 'desenvolvimentoValue', 'outrasValue'
+            ];
+            
+            metrics.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (id.includes('mix') || id.includes('margem') || id.includes('roi') || 
+                        id.includes('carga') || id.includes('custos') || id.includes('crescimento') || 
+                        id.includes('volatilidade')) {
+                        element.textContent = '0%';
+                    } else if (id === 'mesesPositivos' || id === 'runway') {
+                        element.textContent = '0';
+                    } else {
+                        element.textContent = 'R$ 0.00';
+                    }
+                }
+            });
+            
+            // Reset trends
+            updateElement('percentualPositivos', '0%');
+            updateElement('maiorResultadoMes', '-');
+            updateElement('runwayTrend', 'No historical data');
+            updateElement('metaMargem', 'Configure data');
+        }
+
+        // Animação de valores
+        function animateValue(id, endValue, type = 'number') {
+            const element = document.getElementById(id);
+            if (!element) return;
+            
+            const startValue = parseFloat(element.textContent.replace(/[^\d.-]/g, '')) || 0;
+            const duration = 600;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const currentValue = startValue + (endValue - startValue) * easeOutQuart;
+                
+                if (type === 'currency') {
+                    element.textContent = formatCurrency(currentValue);
+                } else if (type === 'percent') {
+                    element.textContent = formatPercent(currentValue);
+                } else {
+                    element.textContent = currentValue.toFixed(0);
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Copiar estrutura SQL para clipboard
+        function copyToClipboard(type) {
+            let sql = '';
+            
+            if (type === 'simple') {
+                sql = `CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    data DATE NOT NULL,
+    tipo VARCHAR(10) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Optional: Create index for better performance
+CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
+            } else {
+                sql = `CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    data DATE NOT NULL,
+    tipo VARCHAR(10) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+
+-- Create policy
+CREATE POLICY "Users can only see own transactions" 
+ON transactions FOR ALL 
+USING (auth.uid() = user_id);`;
+            }
+            
+            // Criar elemento temporário para copiar
+            const textarea = document.createElement('textarea');
+            textarea.value = sql;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification('SQL copied to clipboard!', 'success');
+            } catch (err) {
+                showNotification('Error copying SQL', 'danger');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // Estrutura do banco de dados Supabase (para referência)
+        /*
+        ESTRUTURA DO BANCO DE DADOS SIMPLIFICADA
+        
+        CREATE TABLE transactions (
+            id SERIAL PRIMARY KEY,
+            data DATE NOT NULL,
+            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
+            categoria VARCHAR(50) NOT NULL,
+            valor DECIMAL(10,2) NOT NULL,
+            descricao TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+        
+        CREATE INDEX idx_transactions_data ON transactions(data DESC);
+        */
+    </script>
+</body>
+</html>
