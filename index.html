@@ -7,21 +7,6 @@
     <title>VitexAI | Financial Intelligence Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-      // === Integração com o serviço de ML Holt Model ===
-  const ML_BASE_URL = "https://vitexai-ml.onrender.com";
-
-  async function forecastCashflow(months = 1) {
-    try {
-      const res = await fetch(`${ML_BASE_URL}/predict_cashflow/?months=${months}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const { predictions } = await res.json();
-      return predictions;
-    } catch (err) {
-      console.error("Erro forecastCashflow:", err);
-      return [];
-    }
-  }
-  // ================================================
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2962,3 +2947,5 @@ USING (auth.uid() = user_id);;
     </script>
 </body>
 </html>
+
+
