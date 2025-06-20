@@ -1033,8 +1033,14 @@
                 <button class="btn" onclick="setupConnection()">
                     Configure Connection
                 </button>
+                <button class="btn btn-secondary" onclick="testConnection()" style="margin-top: 8px;">
+                    Test Connection
+                </button>
                 <button class="btn btn-secondary" onclick="loadDemoMode()">
                     Try Demo Mode
+                </button>
+                <button class="btn btn-danger" onclick="clearStoredCredentials()" style="margin-top: 20px;">
+                    Clear Saved Credentials
                 </button>
             </div>
         </div>
@@ -1518,6 +1524,8 @@ USING (auth.uid() = user_id);</pre>
     </div>
 
     <script>
+        console.log('🚀 VitexAI iniciando...');
+        
         // Variáveis globais
         let supabase = null;
         let currentUser = null;
@@ -1534,20 +1542,40 @@ USING (auth.uid() = user_id);</pre>
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se Supabase está carregado
+            if (!window.supabase) {
+                console.error('❌ Biblioteca Supabase não carregada!');
+                showAuthAlert('❌ Erro ao carregar bibliotecas. Recarregue a página.', 'danger');
+                return;
+            }
+            
+            console.log('✅ Biblioteca Supabase carregada');
+            
             checkStoredCredentials();
             setupDefaults();
         });
 
         // Verificar credenciais armazenadas
         function checkStoredCredentials() {
+            console.log('🔍 Verificando credenciais armazenadas...');
+            
             const url = localStorage.getItem('vitexai_supabase_url');
             const key = localStorage.getItem('vitexai_supabase_key');
             
+            console.log('📊 Credenciais encontradas:', { 
+                hasUrl: !!url, 
+                hasKey: !!key,
+                urlLength: url?.length,
+                keyLength: key?.length 
+            });
+            
             if (url && key) {
+                console.log('✅ Credenciais encontradas, inicializando...');
                 document.getElementById('setupSupabaseUrl').value = url;
                 document.getElementById('setupSupabaseKey').value = key;
                 initializeSupabase(url, key);
             } else {
+                console.log('ℹ️ Nenhuma credencial encontrada, mostrando setup');
                 showAuthTab('setup');
                 // Mostrar dica sobre a estrutura da tabela
                 showAuthAlert('First time? Use Demo Mode or configure Supabase with the SIMPLE structure (without user_id)', 'info');
@@ -1556,6 +1584,8 @@ USING (auth.uid() = user_id);</pre>
 
         // Configuração inicial
         function setupDefaults() {
+            console.log('📅 Configurando defaults...');
+            
             const today = new Date();
             const quickDate = document.getElementById('quickDate');
             if (quickDate) {
@@ -1564,6 +1594,9 @@ USING (auth.uid() = user_id);</pre>
                 const month = String(today.getMonth() + 1).padStart(2, '0');
                 const day = String(today.getDate()).padStart(2, '0');
                 quickDate.value = `${year}-${month}-${day}`;
+                console.log('✅ Data padrão configurada:', quickDate.value);
+            } else {
+                console.log('ℹ️ Campo de data não encontrado (normal na tela de login)');
             }
         }
 
@@ -1626,21 +1659,102 @@ USING (auth.uid() = user_id);</pre>
             }
         }
 
+        // Testar conexão manualmente
+        async function testConnection() {
+            const url = document.getElementById('setupSupabaseUrl').value.trim();
+            const key = document.getElementById('setupSupabaseKey').value.trim();
+            
+            if (!url || !key) {
+                showAuthAlert('❌ Preencha a URL e API Key primeiro', 'danger');
+                return;
+            }
+            
+            try {
+                showAuthAlert('🔄 Testando conexão detalhadamente...', 'info');
+                
+                // Teste 1: Criar cliente
+                console.log('Teste 1: Criando cliente Supabase...');
+                const testClient = window.supabase.createClient(url, key);
+                
+                if (!testClient) {
+                    throw new Error('Falha ao criar cliente');
+                }
+                
+                // Teste 2: Verificar autenticação
+                console.log('Teste 2: Verificando sistema de autenticação...');
+                const { data: authData, error: authError } = await testClient.auth.getSession();
+                
+                if (authError) {
+                    console.error('Erro de autenticação:', authError);
+                }
+                
+                // Teste 3: Verificar acesso ao banco
+                console.log('Teste 3: Verificando acesso ao banco de dados...');
+                const { data: tableData, error: tableError } = await testClient
+                    .from('transactions')
+                    .select('*')
+                    .limit(1);
+                
+                let status = '📊 Resultado dos Testes:\n\n';
+                status += '✅ Cliente Supabase: OK\n';
+                status += authError ? '❌ Autenticação: ' + authError.message + '\n' : '✅ Autenticação: OK\n';
+                
+                if (tableError) {
+                    if (tableError.message.includes('not exist')) {
+                        status += '⚠️ Tabela: Não existe (crie usando a estrutura nas Configurações)\n';
+                    } else if (tableError.message.includes('JWT')) {
+                        status += '❌ API Key: Chave inválida ou expirada\n';
+                    } else {
+                        status += '❌ Banco de dados: ' + tableError.message + '\n';
+                    }
+                } else {
+                    status += '✅ Banco de dados: OK\n';
+                }
+                
+                console.log(status);
+                alert(status);
+                
+            } catch (error) {
+                console.error('Erro no teste:', error);
+                showAuthAlert(`❌ Erro no teste: ${error.message}`, 'danger');
+            }
+        }
+
         // Inicializar Supabase
         async function initializeSupabase(url, key) {
             try {
+                console.log('🚀 Inicializando Supabase com:', { url, keyLength: key?.length });
+                
                 supabase = window.supabase.createClient(url, key);
                 
+                if (!supabase) {
+                    throw new Error('Falha ao criar cliente Supabase');
+                }
+                
+                console.log('✅ Cliente Supabase criado');
+                
                 // Verificar sessão existente
-                const { data: { session } } = await supabase.auth.getSession();
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                
+                console.log('🔍 Verificando sessão existente:', { session, sessionError });
+                
+                if (sessionError) {
+                    console.error('Erro ao verificar sessão:', sessionError);
+                }
+                
                 if (session) {
+                    console.log('✅ Sessão encontrada:', session.user.email);
                     currentUser = session.user;
                     showMainApp();
+                } else {
+                    console.log('ℹ️ Nenhuma sessão ativa');
                 }
                 
                 // Escutar mudanças de autenticação
                 supabase.auth.onAuthStateChange((event, session) => {
-                    if (event === 'SIGNED_IN') {
+                    console.log('🔄 Auth state changed:', event, session?.user?.email);
+                    
+                    if (event === 'SIGNED_IN' && session) {
                         currentUser = session.user;
                         showMainApp();
                     } else if (event === 'SIGNED_OUT') {
@@ -1650,8 +1764,8 @@ USING (auth.uid() = user_id);</pre>
                 });
                 
             } catch (error) {
-                console.error('Erro ao inicializar Supabase:', error);
-                showAuthAlert('❌ Erro na inicialização', 'danger');
+                console.error('❌ Erro ao inicializar Supabase:', error);
+                showAuthAlert('❌ Erro na inicialização: ' + error.message, 'danger');
             }
         }
 
@@ -1675,12 +1789,15 @@ USING (auth.uid() = user_id);</pre>
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
+            console.log('🔐 Tentando login com:', email);
+            
             if (!email || !password) {
                 showAuthAlert('❌ Preencha email e senha', 'danger');
                 return;
             }
             
             if (!supabase) {
+                console.error('❌ Supabase não inicializado');
                 showAuthAlert('❌ Configure a conexão primeiro', 'danger');
                 showAuthTab('setup');
                 return;
@@ -1691,22 +1808,46 @@ USING (auth.uid() = user_id);</pre>
                 btn.disabled = true;
                 btn.innerHTML = '<span class="loading"></span> Entrando...';
                 
+                console.log('📡 Enviando requisição para Supabase...');
+                
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
                 
+                console.log('📊 Resposta do Supabase:', { data, error });
+                
                 if (error) throw error;
                 
-                showAuthAlert('✓ Login successful!', 'success');
+                if (data.user) {
+                    console.log('✅ Login bem-sucedido:', data.user.email);
+                    showAuthAlert('✓ Login successful!', 'success');
+                    // Força redirecionamento
+                    currentUser = data.user;
+                    setTimeout(() => showMainApp(), 500);
+                } else {
+                    throw new Error('Login retornou sem erro mas sem usuário');
+                }
                 
             } catch (error) {
-                console.error('Erro no login:', error);
-                showAuthAlert(`❌ ${error.message}`, 'danger');
+                console.error('❌ Erro completo no login:', error);
+                
+                // Mensagens de erro mais específicas
+                let errorMessage = error.message;
+                
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'Email ou senha incorretos';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'Email não confirmado. Verifique sua caixa de entrada';
+                } else if (error.message.includes('Network')) {
+                    errorMessage = 'Erro de conexão. Verifique sua internet';
+                }
+                
+                showAuthAlert(`❌ ${errorMessage}`, 'danger');
             } finally {
                 const btn = document.getElementById('loginBtn');
                 btn.disabled = false;
-                btn.innerHTML = '🔐 Entrar no Sistema';
+                btn.innerHTML = 'Sign In';
             }
         }
 
@@ -1825,9 +1966,22 @@ USING (auth.uid() = user_id);</pre>
 
         // Mostrar app principal
         function showMainApp() {
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
-            document.getElementById('chatWidget').style.display = 'block';
+            console.log('🏠 Mostrando app principal...');
+            
+            const authContainer = document.getElementById('authContainer');
+            const mainContainer = document.getElementById('mainContainer');
+            const chatWidget = document.getElementById('chatWidget');
+            
+            if (!mainContainer) {
+                console.error('❌ mainContainer não encontrado!');
+                return;
+            }
+            
+            authContainer.style.display = 'none';
+            mainContainer.style.display = 'block';
+            chatWidget.style.display = 'block';
+            
+            console.log('✅ Containers alternados');
             
             // Atualizar info do usuário
             const userInfo = document.getElementById('userInfo');
@@ -1836,9 +1990,11 @@ USING (auth.uid() = user_id);</pre>
             
             if (currentUser) {
                 const email = currentUser.email || 'demo@vitexai.com';
-                userEmail.textContent = email;
-                profileEmail.textContent = email;
-                userInfo.style.display = 'block';
+                console.log('👤 Usuário logado:', email);
+                
+                if (userEmail) userEmail.textContent = email;
+                if (profileEmail) profileEmail.textContent = email;
+                if (userInfo) userInfo.style.display = 'block';
             }
             
             // Verificar se está usando estrutura sem user_id
@@ -1846,6 +2002,7 @@ USING (auth.uid() = user_id);</pre>
             
             // Carregar dados com pequeno delay para garantir DOM pronto
             setTimeout(() => {
+                console.log('📊 Carregando dados...');
                 setupDefaults();
                 updateCategories();
                 if (!demoMode) {
@@ -4275,6 +4432,24 @@ USING (auth.uid() = user_id);`;
             addChatMessage(response, 'assistant');
         }
 
+        // Limpar credenciais armazenadas
+        function clearStoredCredentials() {
+            if (confirm('Isso apagará suas credenciais salvas. Continuar?')) {
+                localStorage.removeItem('vitexai_supabase_url');
+                localStorage.removeItem('vitexai_supabase_key');
+                localStorage.removeItem('vitexai_enable_ml');
+                
+                document.getElementById('setupSupabaseUrl').value = '';
+                document.getElementById('setupSupabaseKey').value = '';
+                
+                supabase = null;
+                currentUser = null;
+                
+                showAuthAlert('✅ Credenciais removidas. Configure novamente.', 'success');
+                showAuthTab('setup');
+            }
+        }
+
         // Initialize ML checkbox state
         document.addEventListener('DOMContentLoaded', function() {
             const mlEnabled = localStorage.getItem('vitexai_enable_ml') === 'true';
@@ -4300,6 +4475,32 @@ USING (auth.uid() = user_id);`;
         
         CREATE INDEX idx_transactions_data ON transactions(data DESC);
         */
+
+        // Função de diagnóstico global
+        window.vitexDiagnostic = function() {
+            console.log('=== VitexAI Diagnostic ===');
+            console.log('Supabase loaded:', !!window.supabase);
+            console.log('Supabase client:', !!supabase);
+            console.log('Current user:', currentUser);
+            console.log('Demo mode:', demoMode);
+            console.log('Stored URL:', localStorage.getItem('vitexai_supabase_url'));
+            console.log('Stored key exists:', !!localStorage.getItem('vitexai_supabase_key'));
+            console.log('Auth container visible:', document.getElementById('authContainer')?.style.display);
+            console.log('Main container visible:', document.getElementById('mainContainer')?.style.display);
+            console.log('Active form:', document.querySelector('.auth-form.active')?.id);
+            console.log('Transactions count:', transactions.length);
+            console.log('=========================');
+            
+            return {
+                supabaseLoaded: !!window.supabase,
+                clientInitialized: !!supabase,
+                userLoggedIn: !!currentUser,
+                demoMode,
+                hasStoredCredentials: !!localStorage.getItem('vitexai_supabase_url')
+            };
+        };
+
+        console.log('💡 Dica: Execute vitexDiagnostic() no console para diagnóstico completo');
     </script>
 </body>
 </html>
