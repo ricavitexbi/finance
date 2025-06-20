@@ -4,3 +4,8 @@ statsmodels
 joblib
 fastapi
 uvicorn
+fastapi
+uvicorn
+joblib
+pandas
+statsmodels
