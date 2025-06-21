@@ -6,36 +6,7 @@
     <meta name="description" content="VitexAI - Financial Intelligence Dashboard with Advanced Analytics">
     <title>VitexAI | Financial Intelligence Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.1/dist/umd/supabase.js"></script>
-    <!-- NLP Libraries (opcional - carrega sob demanda) -->
-    <script>
-        // Verificar carregamento do Supabase imediatamente
-        setTimeout(() => {
-            console.log('🔍 Verificação inicial - Supabase disponível?', !!window.supabase);
-            if (!window.supabase) {
-                console.error('❌ Supabase não carregou após 1 segundo!');
-            }
-        }, 1000);
-        
-        // Aguardar Supabase carregar
-        function waitForSupabase(callback) {
-            if (window.supabase && window.supabase.createClient) {
-                console.log('✅ Supabase disponível');
-                callback();
-            } else {
-                console.log('⏳ Aguardando Supabase carregar...');
-                setTimeout(() => waitForSupabase(callback), 100);
-            }
-        }
-        
-        // Carregamento progressivo de bibliotecas NLP
-        window.nlpLibraries = {
-            compromise: 'https://unpkg.com/compromise@latest/builds/compromise.min.js',
-            tensorflow: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs',
-            sentenceEncoder: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder',
-            brain: 'https://cdn.jsdelivr.net/npm/brain.js@2.0.0-beta.23/dist/brain-browser.min.js'
-        };
-    </script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -995,36 +966,18 @@
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email">
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
                 </div>
-                <button class="btn" type="button" onclick="window.loginUser ? window.loginUser() : alert('Sistema carregando...')" id="loginBtn">
+                <button class="btn" onclick="loginUser()" id="loginBtn">
                     Sign In
                 </button>
-                <button class="btn btn-secondary" type="button" onclick="window.resetPassword ? window.resetPassword() : alert('Sistema carregando...')">
+                <button class="btn btn-secondary" onclick="resetPassword()">
                     Forgot Password?
                 </button>
-                
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px;">
-                        Having login issues? Try these options:
-                    </p>
-                    <button class="btn btn-secondary" type="button" onclick="window.loadDemoMode ? window.loadDemoMode() : alert('Sistema carregando...')" style="font-size: 0.875rem;">
-                        Use Demo Mode
-                    </button>
-                    <button class="btn btn-secondary" type="button" onclick="window.showAuthTab ? window.showAuthTab('setup') : alert('Sistema carregando...')" style="font-size: 0.875rem; margin-top: 8px;">
-                        Reconfigure Connection
-                    </button>
-                    <button type="button" onclick="window.testSupabase ? window.testSupabase() : alert('Sistema carregando...')" style="font-size: 0.75rem; padding: 4px 8px; margin-top: 8px; cursor: pointer;">
-                        Test Supabase
-                    </button>
-                    <button type="button" onclick="window.vitexDiagnostic ? console.log(window.vitexDiagnostic()) : alert('Sistema carregando...')" style="font-size: 0.75rem; padding: 4px 8px; margin-top: 8px; margin-left: 8px; cursor: pointer;">
-                        Check Console (F12)
-                    </button>
-                </div>
             </div>
             
             <!-- Register Form -->
@@ -1070,22 +1023,9 @@
                 <button class="btn" onclick="setupConnection()">
                     Configure Connection
                 </button>
-                <button class="btn btn-secondary" onclick="testConnection()" style="margin-top: 8px;">
-                    Test Connection
-                </button>
                 <button class="btn btn-secondary" onclick="loadDemoMode()">
                     Try Demo Mode
                 </button>
-                <button class="btn btn-danger" onclick="clearStoredCredentials()" style="margin-top: 20px;">
-                    Clear Saved Credentials
-                </button>
-                
-                <div style="margin-top: 20px; font-size: 0.75rem; color: var(--text-secondary);">
-                    <p>Having issues? Press F12 and check the console for errors.</p>
-                    <button onclick="runDiagnostic()" style="font-size: 0.75rem; padding: 4px 8px; cursor: pointer;">
-                        Run Diagnostic
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -1469,17 +1409,6 @@
                 <div class="input-section">
                     <h4>Advanced Settings</h4>
                     <p>Coming soon: custom categories, automatic goals, bank integration.</p>
-                    
-                    <div style="margin-top: 20px;">
-                        <h5 style="margin-bottom: 12px;">AI Features</h5>
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                            <input type="checkbox" id="enableMLCheckbox" onchange="toggleMLFeatures()" style="width: auto; margin: 0;">
-                            <span>Enable Advanced AI (Machine Learning)</span>
-                        </label>
-                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">
-                            ⚡ Enables smarter chat responses using TensorFlow.js. May use more CPU/memory.
-                        </p>
-                    </div>
                 </div>
                 
                 <div class="input-section">
@@ -1568,8 +1497,6 @@ USING (auth.uid() = user_id);</pre>
     </div>
 
     <script>
-        console.log('🚀 VitexAI iniciando...');
-        
         // Variáveis globais
         let supabase = null;
         let currentUser = null;
@@ -1586,100 +1513,20 @@ USING (auth.uid() = user_id);</pre>
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📄 DOM carregado, aguardando Supabase...');
-            
-            // Aguardar Supabase carregar
-            waitForSupabase(() => {
-                console.log('✅ Supabase carregado!');
-                
-                // Verificar se Supabase está carregado
-                if (!window.supabase || !window.supabase.createClient) {
-                    console.error('❌ Biblioteca Supabase não carregada corretamente!');
-                    showAuthAlert('❌ Erro ao carregar bibliotecas. Recarregue a página.', 'danger');
-                    
-                    // Tentar carregar manualmente
-                    const script = document.createElement('script');
-                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-                    script.onload = () => {
-                        console.log('✅ Supabase carregado manualmente');
-                        initializeApp();
-                    };
-                    script.onerror = () => {
-                        console.error('❌ Falha ao carregar Supabase manualmente');
-                        showAuthAlert('❌ Erro crítico. Verifique sua conexão com a internet.', 'danger');
-                    };
-                    document.head.appendChild(script);
-                    return;
-                }
-                
-                console.log('✅ Biblioteca Supabase verificada');
-                initializeApp();
-            });
-        });
-        
-        // Função principal de inicialização
-        function initializeApp() {
-            console.log('🚀 Inicializando VitexAI...');
             checkStoredCredentials();
             setupDefaults();
-            
-            // Adicionar event listeners
-            setupEventListeners();
-        }
-        
-        // Configurar event listeners
-        function setupEventListeners() {
-            // Garantir que os botões funcionem
-            const loginBtn = document.getElementById('loginBtn');
-            if (loginBtn) {
-                loginBtn.onclick = loginUser;
-                console.log('✅ Botão de login configurado');
-            }
-            
-            const registerBtn = document.getElementById('registerBtn');
-            if (registerBtn) {
-                registerBtn.onclick = registerUser;
-                console.log('✅ Botão de registro configurado');
-            }
-            
-            // Adicionar listener para Enter no formulário de login
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        loginUser();
-                    }
-                });
-            }
-        }
+        });
 
         // Verificar credenciais armazenadas
         function checkStoredCredentials() {
-            console.log('🔍 Verificando credenciais armazenadas...');
-            
             const url = localStorage.getItem('vitexai_supabase_url');
             const key = localStorage.getItem('vitexai_supabase_key');
             
-            console.log('📊 Credenciais encontradas:', { 
-                hasUrl: !!url, 
-                hasKey: !!key,
-                urlLength: url?.length,
-                keyLength: key?.length 
-            });
-            
             if (url && key) {
-                console.log('✅ Credenciais encontradas, inicializando...');
-                // Só preencher os campos de setup, não os de login
-                const setupUrlField = document.getElementById('setupSupabaseUrl');
-                const setupKeyField = document.getElementById('setupSupabaseKey');
-                
-                if (setupUrlField) setupUrlField.value = url;
-                if (setupKeyField) setupKeyField.value = key;
-                
+                document.getElementById('setupSupabaseUrl').value = url;
+                document.getElementById('setupSupabaseKey').value = key;
                 initializeSupabase(url, key);
             } else {
-                console.log('ℹ️ Nenhuma credencial encontrada, mostrando setup');
                 showAuthTab('setup');
                 // Mostrar dica sobre a estrutura da tabela
                 showAuthAlert('First time? Use Demo Mode or configure Supabase with the SIMPLE structure (without user_id)', 'info');
@@ -1688,8 +1535,6 @@ USING (auth.uid() = user_id);</pre>
 
         // Configuração inicial
         function setupDefaults() {
-            console.log('📅 Configurando defaults...');
-            
             const today = new Date();
             const quickDate = document.getElementById('quickDate');
             if (quickDate) {
@@ -1698,9 +1543,6 @@ USING (auth.uid() = user_id);</pre>
                 const month = String(today.getMonth() + 1).padStart(2, '0');
                 const day = String(today.getDate()).padStart(2, '0');
                 quickDate.value = `${year}-${month}-${day}`;
-                console.log('✅ Data padrão configurada:', quickDate.value);
-            } else {
-                console.log('ℹ️ Campo de data não encontrado (normal na tela de login)');
             }
         }
 
@@ -1712,7 +1554,6 @@ USING (auth.uid() = user_id);</pre>
             showNotification('🎮 Modo demonstração ativado!', 'info');
             setTimeout(() => importarDadosExemplo(), 500);
         }
-        window.loadDemoMode = loadDemoMode; // Expor imediatamente
 
         // Configurar conexão inicial
         async function setupConnection() {
@@ -1764,108 +1605,21 @@ USING (auth.uid() = user_id);</pre>
             }
         }
 
-        // Testar conexão manualmente
-        async function testConnection() {
-            const url = document.getElementById('setupSupabaseUrl').value.trim();
-            const key = document.getElementById('setupSupabaseKey').value.trim();
-            
-            if (!url || !key) {
-                showAuthAlert('❌ Preencha a URL e API Key primeiro', 'danger');
-                return;
-            }
-            
-            try {
-                showAuthAlert('🔄 Testando conexão detalhadamente...', 'info');
-                
-                // Teste 1: Criar cliente
-                console.log('Teste 1: Criando cliente Supabase...');
-                const testClient = window.supabase.createClient(url, key);
-                
-                if (!testClient) {
-                    throw new Error('Falha ao criar cliente');
-                }
-                
-                // Teste 2: Verificar autenticação
-                console.log('Teste 2: Verificando sistema de autenticação...');
-                const { data: authData, error: authError } = await testClient.auth.getSession();
-                
-                if (authError) {
-                    console.error('Erro de autenticação:', authError);
-                }
-                
-                // Teste 3: Verificar acesso ao banco
-                console.log('Teste 3: Verificando acesso ao banco de dados...');
-                const { data: tableData, error: tableError } = await testClient
-                    .from('transactions')
-                    .select('*')
-                    .limit(1);
-                
-                let status = '📊 Resultado dos Testes:\n\n';
-                status += '✅ Cliente Supabase: OK\n';
-                status += authError ? '❌ Autenticação: ' + authError.message + '\n' : '✅ Autenticação: OK\n';
-                
-                if (tableError) {
-                    if (tableError.message.includes('not exist')) {
-                        status += '⚠️ Tabela: Não existe (crie usando a estrutura nas Configurações)\n';
-                    } else if (tableError.message.includes('JWT')) {
-                        status += '❌ API Key: Chave inválida ou expirada\n';
-                    } else {
-                        status += '❌ Banco de dados: ' + tableError.message + '\n';
-                    }
-                } else {
-                    status += '✅ Banco de dados: OK\n';
-                }
-                
-                console.log(status);
-                alert(status);
-                
-            } catch (error) {
-                console.error('Erro no teste:', error);
-                showAuthAlert(`❌ Erro no teste: ${error.message}`, 'danger');
-            }
-        }
-        window.testConnection = testConnection; // Expor imediatamente
-        window.setupConnection = setupConnection; // Expor setupConnection também
-
         // Inicializar Supabase
         async function initializeSupabase(url, key) {
             try {
-                console.log('🚀 Inicializando Supabase com:', { url, keyLength: key?.length });
-                
                 supabase = window.supabase.createClient(url, key);
                 
-                if (!supabase) {
-                    throw new Error('Falha ao criar cliente Supabase');
-                }
-                
-                console.log('✅ Cliente Supabase criado');
-                
                 // Verificar sessão existente
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-                
-                console.log('🔍 Verificando sessão existente:', { session, sessionError });
-                
-                if (sessionError) {
-                    console.error('Erro ao verificar sessão:', sessionError);
-                }
-                
+                const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
-                    console.log('✅ Sessão encontrada:', session.user.email);
                     currentUser = session.user;
                     showMainApp();
-                } else {
-                    console.log('ℹ️ Nenhuma sessão ativa');
-                    // Se tem credenciais mas não tem sessão, mostrar tela de login
-                    if (url && key) {
-                        showAuthTab('login');
-                    }
                 }
                 
                 // Escutar mudanças de autenticação
                 supabase.auth.onAuthStateChange((event, session) => {
-                    console.log('🔄 Auth state changed:', event, session?.user?.email);
-                    
-                    if (event === 'SIGNED_IN' && session) {
+                    if (event === 'SIGNED_IN') {
                         currentUser = session.user;
                         showMainApp();
                     } else if (event === 'SIGNED_OUT') {
@@ -1875,8 +1629,8 @@ USING (auth.uid() = user_id);</pre>
                 });
                 
             } catch (error) {
-                console.error('❌ Erro ao inicializar Supabase:', error);
-                showAuthAlert('❌ Erro na inicialização: ' + error.message, 'danger');
+                console.error('Erro ao inicializar Supabase:', error);
+                showAuthAlert('❌ Erro na inicialização', 'danger');
             }
         }
 
@@ -1893,39 +1647,12 @@ USING (auth.uid() = user_id);</pre>
             const form = document.getElementById(tabName === 'login' ? 'loginForm' : 
                                                tabName === 'register' ? 'registerForm' : 'setupForm');
             if (form) form.classList.add('active');
-            
-            // Limpar campos de login se estiver mostrando login
-            if (tabName === 'login') {
-                const emailField = document.getElementById('loginEmail');
-                const passwordField = document.getElementById('loginPassword');
-                
-                // Só limpar se o email parecer ser uma URL
-                if (emailField && emailField.value.includes('supabase.co')) {
-                    emailField.value = '';
-                }
-                if (passwordField) {
-                    passwordField.value = '';
-                }
-            }
         }
-        window.showAuthTab = showAuthTab; // Expor imediatamente
 
         // Login do usuário
         async function loginUser() {
-            console.log('🔐 Função loginUser chamada');
-            
-            // Verificar se o Supabase está disponível
-            if (!window.supabase) {
-                console.error('❌ Supabase não está carregado!');
-                alert('Erro: Sistema ainda carregando. Por favor, aguarde e tente novamente.');
-                location.reload(); // Recarregar página
-                return;
-            }
-            
-            const email = document.getElementById('loginEmail')?.value.trim();
-            const password = document.getElementById('loginPassword')?.value;
-            
-            console.log('🔐 Tentando login com:', email);
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
             if (!email || !password) {
                 showAuthAlert('❌ Preencha email e senha', 'danger');
@@ -1933,7 +1660,6 @@ USING (auth.uid() = user_id);</pre>
             }
             
             if (!supabase) {
-                console.error('❌ Supabase não inicializado');
                 showAuthAlert('❌ Configure a conexão primeiro', 'danger');
                 showAuthTab('setup');
                 return;
@@ -1941,56 +1667,27 @@ USING (auth.uid() = user_id);</pre>
             
             try {
                 const btn = document.getElementById('loginBtn');
-                if (btn) {
-                    btn.disabled = true;
-                    btn.innerHTML = '<span class="loading"></span> Entrando...';
-                }
-                
-                console.log('📡 Enviando requisição para Supabase...');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loading"></span> Entrando...';
                 
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
                 
-                console.log('📊 Resposta do Supabase:', { data, error });
-                
                 if (error) throw error;
                 
-                if (data.user) {
-                    console.log('✅ Login bem-sucedido:', data.user.email);
-                    showAuthAlert('✓ Login successful!', 'success');
-                    // Força redirecionamento
-                    currentUser = data.user;
-                    setTimeout(() => showMainApp(), 500);
-                } else {
-                    throw new Error('Login retornou sem erro mas sem usuário');
-                }
+                showAuthAlert('✓ Login successful!', 'success');
                 
             } catch (error) {
-                console.error('❌ Erro completo no login:', error);
-                
-                // Mensagens de erro mais específicas
-                let errorMessage = error.message;
-                
-                if (error.message.includes('Invalid login credentials')) {
-                    errorMessage = 'Email ou senha incorretos';
-                } else if (error.message.includes('Email not confirmed')) {
-                    errorMessage = 'Email não confirmado. Verifique sua caixa de entrada';
-                } else if (error.message.includes('Network')) {
-                    errorMessage = 'Erro de conexão. Verifique sua internet';
-                }
-                
-                showAuthAlert(`❌ ${errorMessage}`, 'danger');
+                console.error('Erro no login:', error);
+                showAuthAlert(`❌ ${error.message}`, 'danger');
             } finally {
                 const btn = document.getElementById('loginBtn');
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = 'Sign In';
-                }
+                btn.disabled = false;
+                btn.innerHTML = '🔐 Entrar no Sistema';
             }
         }
-        window.loginUser = loginUser; // Expor imediatamente
 
         // Cadastro do usuário
         async function registerUser() {
@@ -2107,22 +1804,9 @@ USING (auth.uid() = user_id);</pre>
 
         // Mostrar app principal
         function showMainApp() {
-            console.log('🏠 Mostrando app principal...');
-            
-            const authContainer = document.getElementById('authContainer');
-            const mainContainer = document.getElementById('mainContainer');
-            const chatWidget = document.getElementById('chatWidget');
-            
-            if (!mainContainer) {
-                console.error('❌ mainContainer não encontrado!');
-                return;
-            }
-            
-            authContainer.style.display = 'none';
-            mainContainer.style.display = 'block';
-            chatWidget.style.display = 'block';
-            
-            console.log('✅ Containers alternados');
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            document.getElementById('chatWidget').style.display = 'block';
             
             // Atualizar info do usuário
             const userInfo = document.getElementById('userInfo');
@@ -2131,11 +1815,9 @@ USING (auth.uid() = user_id);</pre>
             
             if (currentUser) {
                 const email = currentUser.email || 'demo@vitexai.com';
-                console.log('👤 Usuário logado:', email);
-                
-                if (userEmail) userEmail.textContent = email;
-                if (profileEmail) profileEmail.textContent = email;
-                if (userInfo) userInfo.style.display = 'block';
+                userEmail.textContent = email;
+                profileEmail.textContent = email;
+                userInfo.style.display = 'block';
             }
             
             // Verificar se está usando estrutura sem user_id
@@ -2143,7 +1825,6 @@ USING (auth.uid() = user_id);</pre>
             
             // Carregar dados com pequeno delay para garantir DOM pronto
             setTimeout(() => {
-                console.log('📊 Carregando dados...');
                 setupDefaults();
                 updateCategories();
                 if (!demoMode) {
@@ -2197,21 +1878,10 @@ USING (auth.uid() = user_id);</pre>
         // Mostrar alertas de auth
         function showAuthAlert(message, type) {
             const container = document.getElementById('authAlerts');
-            if (!container) {
-                console.error('❌ Container de alertas não encontrado:', message);
-                // Fallback para alert do navegador
-                if (type === 'danger' || type === 'warning') {
-                    alert('⚠️ ' + message);
-                }
-                return;
-            }
-            
             container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             
             setTimeout(() => {
-                if (container) {
-                    container.innerHTML = '';
-                }
+                container.innerHTML = '';
             }, 5000);
         }
 
@@ -3395,12 +3065,6 @@ USING (auth.uid() = user_id);</pre>
                 chatPanel.classList.add('active');
                 chatToggle.style.display = 'none';
                 document.getElementById('chatInput').focus();
-                
-                // Inicializa NLP avançado na primeira abertura
-                if (!window.nlpInitialized) {
-                    initializeNLPSystem();
-                    window.nlpInitialized = true;
-                }
             } else {
                 chatPanel.classList.remove('active');
                 chatToggle.style.display = 'flex';
@@ -3448,707 +3112,8 @@ USING (auth.uid() = user_id);</pre>
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // Sistema NLP Híbrido
-        let nlpSystem = null;
-
-        class HybridNLPSystem {
-            constructor() {
-                this.basicMatcher = new BasicPatternMatcher();
-                this.intermediateNLP = null;
-                this.advancedML = null;
-                this.loadingStatus = {
-                    basic: true,
-                    intermediate: false,
-                    advanced: false
-                };
-            }
-
-            async initialize() {
-                // NLP intermediário com Compromise.js
-                try {
-                    await this.loadScript(window.nlpLibraries.compromise);
-                    this.intermediateNLP = new IntermediateNLP();
-                    this.loadingStatus.intermediate = true;
-                    addChatMessage('🧠 NLP intermediário ativado!', 'assistant');
-                } catch (e) {
-                    console.log('NLP intermediário não disponível');
-                }
-
-                // ML avançado opcional
-                if (localStorage.getItem('vitexai_enable_ml') === 'true') {
-                    try {
-                        await this.loadAdvancedML();
-                        this.loadingStatus.advanced = true;
-                        addChatMessage('🤖 IA avançada ativada!', 'assistant');
-                    } catch (e) {
-                        console.log('ML avançado não disponível');
-                    }
-                }
-            }
-
-            async loadScript(src) {
-                return new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-            }
-
-            async loadAdvancedML() {
-                await this.loadScript(window.nlpLibraries.tensorflow);
-                await this.loadScript(window.nlpLibraries.sentenceEncoder);
-                this.advancedML = new AdvancedMLChat();
-                await this.advancedML.initialize();
-            }
-
-            async processQuery(query) {
-                // Usa o sistema mais avançado disponível
-                if (this.advancedML && this.loadingStatus.advanced) {
-                    return await this.advancedML.process(query);
-                } else if (this.intermediateNLP && this.loadingStatus.intermediate) {
-                    return this.intermediateNLP.process(query);
-                } else {
-                    return this.basicMatcher.process(query);
-                }
-            }
-        }
-
-        // Pattern Matching Básico (sempre disponível)
-        class BasicPatternMatcher {
-            constructor() {
-                this.patterns = {
-                    financial_health: {
-                        keywords: ['saúde', 'health', 'status', 'situação', 'como está', 'como anda', 'how am i'],
-                        action: () => analyzeFinancialHealth()
-                    },
-                    biggest_expense: {
-                        keywords: ['maior despesa', 'biggest expense', 'maior gasto', 'largest', 'top spending'],
-                        action: () => findBiggestExpense()
-                    },
-                    revenue_trend: {
-                        keywords: ['tendência', 'trend', 'receita', 'revenue', 'evolução', 'income'],
-                        action: () => analyzeRevenueTrends()
-                    },
-                    margin: {
-                        keywords: ['margem', 'margin', 'lucro', 'profit', 'lucratividade'],
-                        action: () => analyzeMargin()
-                    },
-                    current_month: {
-                        keywords: ['este mês', 'this month', 'mês atual', 'current month'],
-                        action: () => currentMonthSummary()
-                    },
-                    best_month: {
-                        keywords: ['melhor mês', 'best month', 'maior receita', 'highest revenue'],
-                        action: () => findBestMonth()
-                    },
-                    expense_breakdown: {
-                        keywords: ['breakdown', 'onde', 'where', 'dinheiro vai', 'money goes', 'análise despesas'],
-                        action: () => expenseBreakdown()
-                    }
-                };
-            }
-
-            process(query) {
-                const lowerQuery = query.toLowerCase();
-                
-                // Encontra melhor correspondência
-                let bestMatch = null;
-                let bestScore = 0;
-
-                for (const [intent, data] of Object.entries(this.patterns)) {
-                    let score = 0;
-                    for (const keyword of data.keywords) {
-                        if (lowerQuery.includes(keyword)) {
-                            score += keyword.split(' ').length; // Peso por complexidade
-                        }
-                    }
-                    
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMatch = data;
-                    }
-                }
-
-                if (bestMatch && bestScore > 0) {
-                    return bestMatch.action();
-                }
-
-                return this.getDefaultResponse();
-            }
-
-            getDefaultResponse() {
-                return `Posso ajudar você a analisar seus dados financeiros! Tente perguntar:
-                    <br><br>
-                    • "Qual minha saúde financeira?"<br>
-                    • "Mostre minhas maiores despesas"<br>
-                    • "Como estão as tendências de receita?"<br>
-                    • "Análise de margem de lucro"<br>
-                    • "Resumo do mês atual"<br>
-                    • "Para onde vai meu dinheiro?"`;
-            }
-        }
-
-        // NLP Intermediário com Compromise.js
-        class IntermediateNLP {
-            constructor() {
-                this.nlp = window.nlp;
-            }
-
-            process(query) {
-                const doc = this.nlp(query);
-                
-                // Análise linguística
-                const analysis = {
-                    verbs: doc.verbs().out('array'),
-                    nouns: doc.nouns().out('array'),
-                    values: doc.values().out('array'),
-                    dates: doc.dates().out('array'),
-                    questions: doc.questions().out('array')
-                };
-
-                // Identifica intenção com base na estrutura
-                const intent = this.identifyIntent(analysis, query);
-                
-                // Extrai entidades
-                const entities = this.extractEntities(analysis, query);
-                
-                // Gera resposta contextual
-                return this.generateResponse(intent, entities);
-            }
-
-            identifyIntent(analysis, query) {
-                // Análise mais sofisticada usando estrutura gramatical
-                if (analysis.questions.length > 0) {
-                    if (query.includes('quanto') || query.includes('how much')) {
-                        return 'quantitative_analysis';
-                    } else if (query.includes('quando') || query.includes('when')) {
-                        return 'temporal_analysis';
-                    } else if (query.includes('qual') || query.includes('what')) {
-                        return 'identification';
-                    }
-                }
-
-                // Análise por verbos
-                const verbIntents = {
-                    'estar': 'status_check',
-                    'gastar': 'expense_analysis',
-                    'ganhar': 'revenue_analysis',
-                    'comparar': 'comparison',
-                    'analisar': 'deep_analysis'
-                };
-
-                for (const verb of analysis.verbs) {
-                    for (const [key, intent] of Object.entries(verbIntents)) {
-                        if (verb.toLowerCase().includes(key)) {
-                            return intent;
-                        }
-                    }
-                }
-
-                return 'general_query';
-            }
-
-            extractEntities(analysis, query) {
-                const entities = {
-                    timeframe: this.extractTimeframe(analysis.dates, query),
-                    amounts: analysis.values,
-                    categories: this.extractCategories(query),
-                    metrics: this.extractMetrics(analysis.nouns)
-                };
-                
-                return entities;
-            }
-
-            extractTimeframe(dates, query) {
-                if (dates.length > 0) return dates[0];
-                
-                const timePatterns = {
-                    'hoje': 'today',
-                    'ontem': 'yesterday',
-                    'esta semana': 'this_week',
-                    'este mês': 'this_month',
-                    'mês passado': 'last_month',
-                    'este ano': 'this_year',
-                    'último trimestre': 'last_quarter'
-                };
-
-                for (const [pattern, value] of Object.entries(timePatterns)) {
-                    if (query.includes(pattern)) return value;
-                }
-
-                return 'all_time';
-            }
-
-            extractCategories(query) {
-                const categories = [];
-                const knownCategories = [
-                    'consultoria', 'desenvolvimento', 'impostos',
-                    'salários', 'pró-labore', 'marketing', 'terceiros'
-                ];
-
-                for (const cat of knownCategories) {
-                    if (query.toLowerCase().includes(cat)) {
-                        categories.push(cat);
-                    }
-                }
-
-                return categories;
-            }
-
-            extractMetrics(nouns) {
-                const metricKeywords = {
-                    'receita': 'revenue',
-                    'despesa': 'expense',
-                    'lucro': 'profit',
-                    'margem': 'margin',
-                    'resultado': 'result'
-                };
-
-                const metrics = [];
-                for (const noun of nouns) {
-                    const lowerNoun = noun.toLowerCase();
-                    for (const [key, value] of Object.entries(metricKeywords)) {
-                        if (lowerNoun.includes(key)) {
-                            metrics.push(value);
-                        }
-                    }
-                }
-
-                return metrics;
-            }
-
-            generateResponse(intent, entities) {
-                // Gera resposta baseada na intenção e entidades
-                switch (intent) {
-                    case 'quantitative_analysis':
-                        return this.handleQuantitativeQuery(entities);
-                    case 'temporal_analysis':
-                        return this.handleTemporalQuery(entities);
-                    case 'status_check':
-                        return analyzeFinancialHealth();
-                    case 'expense_analysis':
-                        return this.handleExpenseQuery(entities);
-                    default:
-                        return processBasicQuery(intent);
-                }
-            }
-
-            handleQuantitativeQuery(entities) {
-                if (entities.metrics.includes('expense')) {
-                    return findBiggestExpense();
-                } else if (entities.metrics.includes('revenue')) {
-                    return analyzeRevenueTrends();
-                } else {
-                    return analyzeFinancialHealth();
-                }
-            }
-
-            handleTemporalQuery(entities) {
-                const timeframe = entities.timeframe;
-                return `Análise temporal para ${timeframe}: ${currentMonthSummary()}`;
-            }
-
-            handleExpenseQuery(entities) {
-                if (entities.categories.length > 0) {
-                    return this.analyzeCategoryExpenses(entities.categories);
-                }
-                return expenseBreakdown();
-            }
-
-            analyzeCategoryExpenses(categories) {
-                const categoryData = categories.map(cat => {
-                    const total = transactions
-                        .filter(t => t.tipo === 'despesa' && t.categoria.toLowerCase() === cat)
-                        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
-                    
-                    return `${cat}: ${formatCurrency(total)}`;
-                });
-
-                return `<strong>Análise de Categorias Específicas:</strong><br><br>${categoryData.join('<br>')}`;
-            }
-        }
-
-        // ML Avançado com TensorFlow.js
-        class AdvancedMLChat {
-            constructor() {
-                this.model = null;
-                this.intents = {};
-                this.embeddings = {};
-            }
-
-            async initialize() {
-                // Carrega o modelo Universal Sentence Encoder
-                this.model = await use.load();
-                await this.trainModel();
-            }
-
-            async trainModel() {
-                // Dados de treinamento expandidos
-                const trainingData = {
-                    'financial_health': [
-                        'como está minha saúde financeira',
-                        'qual é minha situação financeira atual',
-                        'estou indo bem financeiramente',
-                        'análise completa da minha condição financeira',
-                        'meu negócio está saudável',
-                        'preciso me preocupar com as finanças'
-                    ],
-                    'expense_analysis': [
-                        'qual foi minha maior despesa',
-                        'onde estou gastando mais dinheiro',
-                        'análise detalhada dos gastos',
-                        'quais categorias consomem mais recursos',
-                        'preciso cortar gastos onde',
-                        'despesas estão sob controle'
-                    ],
-                    'revenue_optimization': [
-                        'como aumentar minha receita',
-                        'estratégias para faturar mais',
-                        'análise de oportunidades de crescimento',
-                        'onde posso melhorar o faturamento',
-                        'potencial de crescimento da empresa'
-                    ],
-                    'predictive_analysis': [
-                        'previsão para os próximos meses',
-                        'como estarei daqui 6 meses',
-                        'projeção de crescimento',
-                        'análise preditiva do negócio',
-                        'tendências futuras do meu negócio'
-                    ]
-                };
-
-                // Cria embeddings para cada exemplo
-                for (const [intent, examples] of Object.entries(trainingData)) {
-                    const embeddings = await this.model.embed(examples);
-                    this.embeddings[intent] = await embeddings.array();
-                    this.intents[intent] = {
-                        examples,
-                        action: this.getActionForIntent(intent)
-                    };
-                }
-            }
-
-            async process(query) {
-                if (!this.model) return "IA ainda carregando...";
-
-                // Cria embedding da query
-                const queryEmbedding = await this.model.embed([query]);
-                const queryVector = await queryEmbedding.array();
-
-                // Calcula similaridade com todas as intenções
-                const similarities = this.calculateSimilarities(queryVector[0]);
-                
-                // Pega a melhor correspondência
-                const bestMatch = similarities[0];
-
-                // Se confiança alta, executa ação
-                if (bestMatch.score > 0.7) {
-                    const response = await this.intents[bestMatch.intent].action(query);
-                    return this.enhanceResponse(response, bestMatch.score);
-                } else if (bestMatch.score > 0.4) {
-                    return this.clarifyIntent(bestMatch.intent, similarities.slice(0, 3));
-                } else {
-                    return this.handleLowConfidence(query, similarities);
-                }
-            }
-
-            calculateSimilarities(queryVector) {
-                const similarities = [];
-
-                for (const [intent, embeddings] of Object.entries(this.embeddings)) {
-                    let maxSimilarity = -1;
-                    
-                    for (const embedding of embeddings) {
-                        const similarity = this.cosineSimilarity(queryVector, embedding);
-                        maxSimilarity = Math.max(maxSimilarity, similarity);
-                    }
-
-                    similarities.push({
-                        intent,
-                        score: maxSimilarity
-                    });
-                }
-
-                return similarities.sort((a, b) => b.score - a.score);
-            }
-
-            cosineSimilarity(a, b) {
-                const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-                const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-                const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
-                return dotProduct / (magnitudeA * magnitudeB);
-            }
-
-            getActionForIntent(intent) {
-                const actions = {
-                    'financial_health': () => this.advancedHealthAnalysis(),
-                    'expense_analysis': () => this.advancedExpenseAnalysis(),
-                    'revenue_optimization': () => this.revenueOptimizationAnalysis(),
-                    'predictive_analysis': () => this.predictiveAnalysis()
-                };
-
-                return actions[intent] || (() => analyzeFinancialHealth());
-            }
-
-            async advancedHealthAnalysis() {
-                // Análise com ML insights
-                const monthlyData = getMonthlyData();
-                const trends = this.analyzeTrends(monthlyData);
-                const anomalies = this.detectAnomalies(transactions);
-                const score = this.calculateHealthScore(monthlyData);
-
-                return `
-                    <strong>🤖 Análise Avançada de Saúde Financeira</strong>
-                    <br><br>
-                    <strong>Score de Saúde:</strong> ${score}/100
-                    <br><br>
-                    <strong>Tendências Detectadas:</strong>
-                    ${trends.map(t => `<br>• ${t}`).join('')}
-                    <br><br>
-                    <strong>Anomalias Identificadas:</strong>
-                    ${anomalies.length > 0 ? anomalies.map(a => `<br>⚠️ ${a}`).join('') : '<br>✅ Nenhuma anomalia detectada'}
-                    <br><br>
-                    <strong>Recomendações Personalizadas:</strong>
-                    ${this.generateRecommendations(score, trends, anomalies)}
-                `;
-            }
-
-            analyzeTrends(monthlyData) {
-                const trends = [];
-                
-                // Análise de tendência de receita
-                const revenueGrowth = this.calculateGrowthRate(monthlyData.map(m => m.receitas));
-                if (revenueGrowth > 0.1) {
-                    trends.push(`📈 Receita crescendo ${(revenueGrowth * 100).toFixed(1)}% ao mês`);
-                } else if (revenueGrowth < -0.1) {
-                    trends.push(`📉 Receita declinando ${Math.abs(revenueGrowth * 100).toFixed(1)}% ao mês`);
-                }
-
-                // Análise de sazonalidade
-                const seasonality = this.detectSeasonality(monthlyData);
-                if (seasonality) {
-                    trends.push(`📅 Padrão sazonal detectado: ${seasonality}`);
-                }
-
-                return trends;
-            }
-
-            detectAnomalies(transactions) {
-                const anomalies = [];
-                
-                // Detecta gastos anormalmente altos
-                const expenses = transactions.filter(t => t.tipo === 'despesa');
-                const avgExpense = expenses.reduce((sum, t) => sum + parseFloat(t.valor), 0) / expenses.length;
-                const stdDev = this.calculateStdDev(expenses.map(t => parseFloat(t.valor)));
-                
-                expenses.forEach(t => {
-                    if (parseFloat(t.valor) > avgExpense + (2 * stdDev)) {
-                        anomalies.push(`Gasto incomum: ${t.descricao} - ${formatCurrency(t.valor)}`);
-                    }
-                });
-
-                return anomalies;
-            }
-
-            calculateHealthScore(monthlyData) {
-                let score = 50; // Base
-
-                // Fator: Margem de lucro
-                const avgMargin = monthlyData.reduce((sum, m) => sum + m.margem, 0) / monthlyData.length;
-                score += avgMargin * 100;
-
-                // Fator: Consistência
-                const consistency = this.calculateConsistency(monthlyData);
-                score += consistency * 20;
-
-                // Fator: Crescimento
-                const growth = this.calculateGrowthRate(monthlyData.map(m => m.receitas));
-                score += growth * 30;
-
-                return Math.max(0, Math.min(100, Math.round(score)));
-            }
-
-            enhanceResponse(response, confidence) {
-                return `
-                    <div style="position: relative;">
-                        <div style="position: absolute; top: 0; right: 0; font-size: 0.75rem; color: var(--text-secondary);">
-                            🤖 Confiança: ${(confidence * 100).toFixed(0)}%
-                        </div>
-                        ${response}
-                    </div>
-                `;
-            }
-
-            clarifyIntent(bestIntent, topIntents) {
-                return `
-                    Hmm, não tenho certeza se entendi. Você quis dizer:
-                    <br><br>
-                    ${topIntents.map((intent, i) => `
-                        <button onclick="executeIntent('${intent.intent}')" 
-                                class="btn btn-secondary" 
-                                style="margin: 5px; padding: 8px 12px; font-size: 0.875rem;">
-                            ${this.getIntentLabel(intent.intent)} (${(intent.score * 100).toFixed(0)}%)
-                        </button>
-                    `).join('')}
-                `;
-            }
-
-            getIntentLabel(intent) {
-                const labels = {
-                    'financial_health': '📊 Análise de Saúde Financeira',
-                    'expense_analysis': '💸 Análise de Despesas',
-                    'revenue_optimization': '📈 Otimização de Receita',
-                    'predictive_analysis': '🔮 Análise Preditiva'
-                };
-                return labels[intent] || intent;
-            }
-
-            calculateGrowthRate(values) {
-                if (values.length < 2) return 0;
-                const firstHalf = values.slice(0, Math.floor(values.length / 2));
-                const secondHalf = values.slice(Math.floor(values.length / 2));
-                const avgFirst = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
-                const avgSecond = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-                return (avgSecond - avgFirst) / avgFirst;
-            }
-
-            calculateStdDev(values) {
-                const avg = values.reduce((a, b) => a + b, 0) / values.length;
-                const squareDiffs = values.map(value => Math.pow(value - avg, 2));
-                const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / values.length;
-                return Math.sqrt(avgSquareDiff);
-            }
-
-            calculateConsistency(monthlyData) {
-                const revenues = monthlyData.map(m => m.receitas);
-                const stdDev = this.calculateStdDev(revenues);
-                const avg = revenues.reduce((a, b) => a + b, 0) / revenues.length;
-                const cv = stdDev / avg; // Coefficient of variation
-                return Math.max(0, 1 - cv);
-            }
-
-            detectSeasonality(monthlyData) {
-                // Implementação simplificada
-                if (monthlyData.length < 12) return null;
-                
-                // Agrupa por mês do ano
-                const monthlyAverages = {};
-                monthlyData.forEach(data => {
-                    const month = new Date(data.month + '-01').getMonth();
-                    if (!monthlyAverages[month]) {
-                        monthlyAverages[month] = [];
-                    }
-                    monthlyAverages[month].push(data.receitas);
-                });
-
-                // Encontra padrões
-                let maxMonth = -1, maxAvg = 0;
-                for (const [month, values] of Object.entries(monthlyAverages)) {
-                    const avg = values.reduce((a, b) => a + b, 0) / values.length;
-                    if (avg > maxAvg) {
-                        maxAvg = avg;
-                        maxMonth = parseInt(month);
-                    }
-                }
-
-                if (maxMonth >= 0) {
-                    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-                    return `Pico em ${monthNames[maxMonth]}`;
-                }
-
-                return null;
-            }
-
-            generateRecommendations(score, trends, anomalies) {
-                const recommendations = [];
-
-                if (score < 50) {
-                    recommendations.push('🚨 Revisar urgentemente estrutura de custos');
-                    recommendations.push('📊 Implementar controle de fluxo de caixa diário');
-                } else if (score < 70) {
-                    recommendations.push('💡 Buscar novas fontes de receita');
-                    recommendations.push('✂️ Otimizar despesas recorrentes');
-                } else {
-                    recommendations.push('🎯 Manter estratégia atual');
-                    recommendations.push('🚀 Explorar oportunidades de expansão');
-                }
-
-                if (anomalies.length > 0) {
-                    recommendations.push('🔍 Investigar gastos anormais identificados');
-                }
-
-                return recommendations.map(r => `<br>• ${r}`).join('');
-            }
-        }
-
-        // Função para inicializar o sistema NLP
-        async function initializeNLPSystem() {
-            nlpSystem = new HybridNLPSystem();
-            await nlpSystem.initialize();
-        }
-
-        // Modifica processUserQuery para usar o sistema híbrido
         async function processUserQuery(query) {
-            // Se o sistema NLP estiver disponível, usa ele
-            if (nlpSystem) {
-                return await nlpSystem.processQuery(query);
-            }
-            
-            // Fallback para o sistema básico
-            return processBasicQuery(query);
-        }
-
-        // Mantém a função original como fallback
-        function processBasicQuery(query) {
             const lowerQuery = query.toLowerCase();
-            
-            // Financial health check
-            if (lowerQuery.includes('health') || lowerQuery.includes('status') || lowerQuery.includes('how am i doing')) {
-                return analyzeFinancialHealth();
-            }
-            
-            // Biggest expense
-            if (lowerQuery.includes('biggest expense') || lowerQuery.includes('largest expense')) {
-                return findBiggestExpense();
-            }
-            
-            // Revenue trends
-            if (lowerQuery.includes('revenue trend') || lowerQuery.includes('income trend')) {
-                return analyzeRevenueTrends();
-            }
-            
-            // Margin evolution
-            if (lowerQuery.includes('margin') || lowerQuery.includes('profit')) {
-                return analyzeMargin();
-            }
-            
-            // Monthly summary
-            if (lowerQuery.includes('this month') || lowerQuery.includes('current month')) {
-                return currentMonthSummary();
-            }
-            
-            // Best month
-            if (lowerQuery.includes('best month') || lowerQuery.includes('highest revenue')) {
-                return findBestMonth();
-            }
-            
-            // Expense breakdown
-            if (lowerQuery.includes('expense breakdown') || lowerQuery.includes('where money goes')) {
-                return expenseBreakdown();
-            }
-            
-            // Default response
-            return `I can help you analyze your financial data! Try asking about:
-                <br><br>
-                • Your financial health<br>
-                • Biggest expenses<br>
-                • Revenue trends<br>
-                • Profit margins<br>
-                • Monthly summaries<br>
-                • Expense breakdowns`;
-        }
             
             // Financial health check
             if (lowerQuery.includes('health') || lowerQuery.includes('status') || lowerQuery.includes('how am i doing')) {
@@ -4544,73 +3509,6 @@ USING (auth.uid() = user_id);`;
             document.body.removeChild(textarea);
         }
 
-        // Toggle ML Features
-        function toggleMLFeatures() {
-            const checkbox = document.getElementById('enableMLCheckbox');
-            const enabled = checkbox.checked;
-            
-            localStorage.setItem('vitexai_enable_ml', enabled);
-            
-            if (enabled) {
-                showNotification('🤖 AI avançada será ativada na próxima vez que abrir o chat', 'info');
-            } else {
-                showNotification('💬 Usando chat básico', 'info');
-            }
-        }
-
-        // Execute specific intent (for ML clarification)
-        async function executeIntent(intent) {
-            const actions = {
-                'financial_health': analyzeFinancialHealth,
-                'expense_analysis': findBiggestExpense,
-                'revenue_optimization': () => {
-                    return `<strong>Análise de Otimização de Receita:</strong><br><br>
-                            Baseado nos seus dados, aqui estão oportunidades de crescimento:<br>
-                            ${analyzeRevenueTrends()}`;
-                },
-                'predictive_analysis': () => {
-                    const monthlyData = getMonthlyData();
-                    const trend = monthlyData.length > 1 ? 
-                        (monthlyData[monthlyData.length-1].receitas - monthlyData[0].receitas) / monthlyData[0].receitas : 0;
-                    
-                    return `<strong>Análise Preditiva:</strong><br><br>
-                            Com base na tendência atual de ${formatPercent(trend)} de crescimento,<br>
-                            suas projeções para os próximos meses são:<br><br>
-                            ${updateProjections()}`;
-                }
-            };
-            
-            const response = actions[intent] ? await actions[intent]() : 'Função não encontrada';
-            addChatMessage(response, 'assistant');
-        }
-
-        // Limpar credenciais armazenadas
-        function clearStoredCredentials() {
-            if (confirm('Isso apagará suas credenciais salvas. Continuar?')) {
-                localStorage.removeItem('vitexai_supabase_url');
-                localStorage.removeItem('vitexai_supabase_key');
-                localStorage.removeItem('vitexai_enable_ml');
-                
-                document.getElementById('setupSupabaseUrl').value = '';
-                document.getElementById('setupSupabaseKey').value = '';
-                
-                supabase = null;
-                currentUser = null;
-                
-                showAuthAlert('✅ Credenciais removidas. Configure novamente.', 'success');
-                showAuthTab('setup');
-            }
-        }
-
-        // Initialize ML checkbox state
-        document.addEventListener('DOMContentLoaded', function() {
-            const mlEnabled = localStorage.getItem('vitexai_enable_ml') === 'true';
-            const checkbox = document.getElementById('enableMLCheckbox');
-            if (checkbox) {
-                checkbox.checked = mlEnabled;
-            }
-        });
-
         // Estrutura do banco de dados Supabase (para referência)
         /*
         ESTRUTURA DO BANCO DE DADOS SIMPLIFICADA
@@ -4627,90 +3525,6 @@ USING (auth.uid() = user_id);`;
         
         CREATE INDEX idx_transactions_data ON transactions(data DESC);
         */
-
-        // Função de diagnóstico global
-        window.vitexDiagnostic = function() {
-            console.log('=== VitexAI Diagnostic ===');
-            console.log('Supabase loaded:', !!window.supabase);
-            console.log('Supabase client:', !!supabase);
-            console.log('Current user:', currentUser);
-            console.log('Demo mode:', demoMode);
-            console.log('Stored URL:', localStorage.getItem('vitexai_supabase_url'));
-            console.log('Stored key exists:', !!localStorage.getItem('vitexai_supabase_key'));
-            console.log('Auth container visible:', document.getElementById('authContainer')?.style.display);
-            console.log('Main container visible:', document.getElementById('mainContainer')?.style.display);
-            console.log('Active form:', document.querySelector('.auth-form.active')?.id);
-            console.log('Transactions count:', transactions.length);
-            console.log('=========================');
-            
-            return {
-                supabaseLoaded: !!window.supabase,
-                clientInitialized: !!supabase,
-                userLoggedIn: !!currentUser,
-                demoMode,
-                hasStoredCredentials: !!localStorage.getItem('vitexai_supabase_url')
-            };
-        };
-        
-        // Função de diagnóstico visual
-        function runDiagnostic() {
-            const result = vitexDiagnostic();
-            let message = '🔍 Diagnóstico VitexAI\n\n';
-            
-            if (!result.supabaseLoaded) {
-                message += '❌ Supabase não carregado\n';
-                message += '   → Recarregue a página\n\n';
-            } else {
-                message += '✅ Supabase carregado\n\n';
-            }
-            
-            if (!result.clientInitialized && result.hasStoredCredentials) {
-                message += '⚠️ Cliente não inicializado\n';
-                message += '   → Limpe as credenciais e reconfigure\n\n';
-            }
-            
-            if (!result.hasStoredCredentials) {
-                message += 'ℹ️ Nenhuma credencial salva\n';
-                message += '   → Configure o Supabase primeiro\n\n';
-            }
-            
-            message += 'Status atual:\n';
-            message += `• Biblioteca Supabase: ${result.supabaseLoaded ? '✅' : '❌'}\n`;
-            message += `• Cliente configurado: ${result.clientInitialized ? '✅' : '❌'}\n`;
-            message += `• Usuário logado: ${result.userLoggedIn ? '✅' : '❌'}\n`;
-            message += `• Modo demo: ${result.demoMode ? '✅' : '❌'}\n`;
-            
-            alert(message);
-        }
-
-        console.log('💡 Dica: Execute vitexDiagnostic() no console para diagnóstico completo');
-        
-        // Expor funções globalmente para garantir acesso
-        window.loginUser = loginUser;
-        window.registerUser = registerUser;
-        window.resetPassword = resetPassword;
-        window.loadDemoMode = loadDemoMode;
-        window.setupConnection = setupConnection;
-        window.testConnection = testConnection;
-        window.clearStoredCredentials = clearStoredCredentials;
-        window.showAuthTab = showAuthTab;
-        window.runDiagnostic = runDiagnostic;
-        window.toggleMLFeatures = toggleMLFeatures;
-        window.executeIntent = executeIntent;
-        window.removerLancamento = removerLancamento;
-        window.adicionarLancamento = adicionarLancamento;
-        window.sincronizarDados = sincronizarDados;
-        window.importarDadosExemplo = importarDadosExemplo;
-        window.showTab = showTab;
-        window.calcularCenario = calcularCenario;
-        window.exportarCSV = exportarCSV;
-        window.exportarJSON = exportarJSON;
-        window.gerarRelatorioMensal = gerarRelatorioMensal;
-        window.logoutUser = logoutUser;
-        window.copyToClipboard = copyToClipboard;
-        window.toggleChat = toggleChat;
-        window.sendChatMessage = sendChatMessage;
-        window.handleChatKeyPress = handleChatKeyPress;
     </script>
 </body>
 </html>
