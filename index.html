@@ -6,9 +6,28 @@
     <meta name="description" content="VitexAI - Financial Intelligence Dashboard with Advanced Analytics">
     <title>VitexAI | Financial Intelligence Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2.39.1/dist/umd/supabase.js"></script>
     <!-- NLP Libraries (opcional - carrega sob demanda) -->
     <script>
+        // Verificar carregamento do Supabase imediatamente
+        setTimeout(() => {
+            console.log('🔍 Verificação inicial - Supabase disponível?', !!window.supabase);
+            if (!window.supabase) {
+                console.error('❌ Supabase não carregou após 1 segundo!');
+            }
+        }, 1000);
+        
+        // Aguardar Supabase carregar
+        function waitForSupabase(callback) {
+            if (window.supabase && window.supabase.createClient) {
+                console.log('✅ Supabase disponível');
+                callback();
+            } else {
+                console.log('⏳ Aguardando Supabase carregar...');
+                setTimeout(() => waitForSupabase(callback), 100);
+            }
+        }
+        
         // Carregamento progressivo de bibliotecas NLP
         window.nlpLibraries = {
             compromise: 'https://unpkg.com/compromise@latest/builds/compromise.min.js',
@@ -976,18 +995,36 @@
             <div id="loginForm" class="auth-form active">
                 <div class="input-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email">
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
-                <button class="btn" onclick="loginUser()" id="loginBtn">
+                <button class="btn" type="button" onclick="window.loginUser ? window.loginUser() : alert('Sistema carregando...')" id="loginBtn">
                     Sign In
                 </button>
-                <button class="btn btn-secondary" onclick="resetPassword()">
+                <button class="btn btn-secondary" type="button" onclick="window.resetPassword ? window.resetPassword() : alert('Sistema carregando...')">
                     Forgot Password?
                 </button>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px;">
+                        Having login issues? Try these options:
+                    </p>
+                    <button class="btn btn-secondary" type="button" onclick="window.loadDemoMode ? window.loadDemoMode() : alert('Sistema carregando...')" style="font-size: 0.875rem;">
+                        Use Demo Mode
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="window.showAuthTab ? window.showAuthTab('setup') : alert('Sistema carregando...')" style="font-size: 0.875rem; margin-top: 8px;">
+                        Reconfigure Connection
+                    </button>
+                    <button type="button" onclick="window.testSupabase ? window.testSupabase() : alert('Sistema carregando...')" style="font-size: 0.75rem; padding: 4px 8px; margin-top: 8px; cursor: pointer;">
+                        Test Supabase
+                    </button>
+                    <button type="button" onclick="window.vitexDiagnostic ? console.log(window.vitexDiagnostic()) : alert('Sistema carregando...')" style="font-size: 0.75rem; padding: 4px 8px; margin-top: 8px; margin-left: 8px; cursor: pointer;">
+                        Check Console (F12)
+                    </button>
+                </div>
             </div>
             
             <!-- Register Form -->
@@ -1042,6 +1079,13 @@
                 <button class="btn btn-danger" onclick="clearStoredCredentials()" style="margin-top: 20px;">
                     Clear Saved Credentials
                 </button>
+                
+                <div style="margin-top: 20px; font-size: 0.75rem; color: var(--text-secondary);">
+                    <p>Having issues? Press F12 and check the console for errors.</p>
+                    <button onclick="runDiagnostic()" style="font-size: 0.75rem; padding: 4px 8px; cursor: pointer;">
+                        Run Diagnostic
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1542,18 +1586,73 @@ USING (auth.uid() = user_id);</pre>
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se Supabase está carregado
-            if (!window.supabase) {
-                console.error('❌ Biblioteca Supabase não carregada!');
-                showAuthAlert('❌ Erro ao carregar bibliotecas. Recarregue a página.', 'danger');
-                return;
-            }
+            console.log('📄 DOM carregado, aguardando Supabase...');
             
-            console.log('✅ Biblioteca Supabase carregada');
-            
+            // Aguardar Supabase carregar
+            waitForSupabase(() => {
+                console.log('✅ Supabase carregado!');
+                
+                // Verificar se Supabase está carregado
+                if (!window.supabase || !window.supabase.createClient) {
+                    console.error('❌ Biblioteca Supabase não carregada corretamente!');
+                    showAuthAlert('❌ Erro ao carregar bibliotecas. Recarregue a página.', 'danger');
+                    
+                    // Tentar carregar manualmente
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                    script.onload = () => {
+                        console.log('✅ Supabase carregado manualmente');
+                        initializeApp();
+                    };
+                    script.onerror = () => {
+                        console.error('❌ Falha ao carregar Supabase manualmente');
+                        showAuthAlert('❌ Erro crítico. Verifique sua conexão com a internet.', 'danger');
+                    };
+                    document.head.appendChild(script);
+                    return;
+                }
+                
+                console.log('✅ Biblioteca Supabase verificada');
+                initializeApp();
+            });
+        });
+        
+        // Função principal de inicialização
+        function initializeApp() {
+            console.log('🚀 Inicializando VitexAI...');
             checkStoredCredentials();
             setupDefaults();
-        });
+            
+            // Adicionar event listeners
+            setupEventListeners();
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Garantir que os botões funcionem
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.onclick = loginUser;
+                console.log('✅ Botão de login configurado');
+            }
+            
+            const registerBtn = document.getElementById('registerBtn');
+            if (registerBtn) {
+                registerBtn.onclick = registerUser;
+                console.log('✅ Botão de registro configurado');
+            }
+            
+            // Adicionar listener para Enter no formulário de login
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        loginUser();
+                    }
+                });
+            }
+        }
 
         // Verificar credenciais armazenadas
         function checkStoredCredentials() {
@@ -1571,8 +1670,13 @@ USING (auth.uid() = user_id);</pre>
             
             if (url && key) {
                 console.log('✅ Credenciais encontradas, inicializando...');
-                document.getElementById('setupSupabaseUrl').value = url;
-                document.getElementById('setupSupabaseKey').value = key;
+                // Só preencher os campos de setup, não os de login
+                const setupUrlField = document.getElementById('setupSupabaseUrl');
+                const setupKeyField = document.getElementById('setupSupabaseKey');
+                
+                if (setupUrlField) setupUrlField.value = url;
+                if (setupKeyField) setupKeyField.value = key;
+                
                 initializeSupabase(url, key);
             } else {
                 console.log('ℹ️ Nenhuma credencial encontrada, mostrando setup');
@@ -1608,6 +1712,7 @@ USING (auth.uid() = user_id);</pre>
             showNotification('🎮 Modo demonstração ativado!', 'info');
             setTimeout(() => importarDadosExemplo(), 500);
         }
+        window.loadDemoMode = loadDemoMode; // Expor imediatamente
 
         // Configurar conexão inicial
         async function setupConnection() {
@@ -1719,6 +1824,8 @@ USING (auth.uid() = user_id);</pre>
                 showAuthAlert(`❌ Erro no teste: ${error.message}`, 'danger');
             }
         }
+        window.testConnection = testConnection; // Expor imediatamente
+        window.setupConnection = setupConnection; // Expor setupConnection também
 
         // Inicializar Supabase
         async function initializeSupabase(url, key) {
@@ -1748,6 +1855,10 @@ USING (auth.uid() = user_id);</pre>
                     showMainApp();
                 } else {
                     console.log('ℹ️ Nenhuma sessão ativa');
+                    // Se tem credenciais mas não tem sessão, mostrar tela de login
+                    if (url && key) {
+                        showAuthTab('login');
+                    }
                 }
                 
                 // Escutar mudanças de autenticação
@@ -1782,12 +1893,37 @@ USING (auth.uid() = user_id);</pre>
             const form = document.getElementById(tabName === 'login' ? 'loginForm' : 
                                                tabName === 'register' ? 'registerForm' : 'setupForm');
             if (form) form.classList.add('active');
+            
+            // Limpar campos de login se estiver mostrando login
+            if (tabName === 'login') {
+                const emailField = document.getElementById('loginEmail');
+                const passwordField = document.getElementById('loginPassword');
+                
+                // Só limpar se o email parecer ser uma URL
+                if (emailField && emailField.value.includes('supabase.co')) {
+                    emailField.value = '';
+                }
+                if (passwordField) {
+                    passwordField.value = '';
+                }
+            }
         }
+        window.showAuthTab = showAuthTab; // Expor imediatamente
 
         // Login do usuário
         async function loginUser() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
+            console.log('🔐 Função loginUser chamada');
+            
+            // Verificar se o Supabase está disponível
+            if (!window.supabase) {
+                console.error('❌ Supabase não está carregado!');
+                alert('Erro: Sistema ainda carregando. Por favor, aguarde e tente novamente.');
+                location.reload(); // Recarregar página
+                return;
+            }
+            
+            const email = document.getElementById('loginEmail')?.value.trim();
+            const password = document.getElementById('loginPassword')?.value;
             
             console.log('🔐 Tentando login com:', email);
             
@@ -1805,8 +1941,10 @@ USING (auth.uid() = user_id);</pre>
             
             try {
                 const btn = document.getElementById('loginBtn');
-                btn.disabled = true;
-                btn.innerHTML = '<span class="loading"></span> Entrando...';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="loading"></span> Entrando...';
+                }
                 
                 console.log('📡 Enviando requisição para Supabase...');
                 
@@ -1846,10 +1984,13 @@ USING (auth.uid() = user_id);</pre>
                 showAuthAlert(`❌ ${errorMessage}`, 'danger');
             } finally {
                 const btn = document.getElementById('loginBtn');
-                btn.disabled = false;
-                btn.innerHTML = 'Sign In';
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Sign In';
+                }
             }
         }
+        window.loginUser = loginUser; // Expor imediatamente
 
         // Cadastro do usuário
         async function registerUser() {
@@ -2056,10 +2197,21 @@ USING (auth.uid() = user_id);</pre>
         // Mostrar alertas de auth
         function showAuthAlert(message, type) {
             const container = document.getElementById('authAlerts');
+            if (!container) {
+                console.error('❌ Container de alertas não encontrado:', message);
+                // Fallback para alert do navegador
+                if (type === 'danger' || type === 'warning') {
+                    alert('⚠️ ' + message);
+                }
+                return;
+            }
+            
             container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
             
             setTimeout(() => {
-                container.innerHTML = '';
+                if (container) {
+                    container.innerHTML = '';
+                }
             }, 5000);
         }
 
@@ -4499,8 +4651,66 @@ USING (auth.uid() = user_id);`;
                 hasStoredCredentials: !!localStorage.getItem('vitexai_supabase_url')
             };
         };
+        
+        // Função de diagnóstico visual
+        function runDiagnostic() {
+            const result = vitexDiagnostic();
+            let message = '🔍 Diagnóstico VitexAI\n\n';
+            
+            if (!result.supabaseLoaded) {
+                message += '❌ Supabase não carregado\n';
+                message += '   → Recarregue a página\n\n';
+            } else {
+                message += '✅ Supabase carregado\n\n';
+            }
+            
+            if (!result.clientInitialized && result.hasStoredCredentials) {
+                message += '⚠️ Cliente não inicializado\n';
+                message += '   → Limpe as credenciais e reconfigure\n\n';
+            }
+            
+            if (!result.hasStoredCredentials) {
+                message += 'ℹ️ Nenhuma credencial salva\n';
+                message += '   → Configure o Supabase primeiro\n\n';
+            }
+            
+            message += 'Status atual:\n';
+            message += `• Biblioteca Supabase: ${result.supabaseLoaded ? '✅' : '❌'}\n`;
+            message += `• Cliente configurado: ${result.clientInitialized ? '✅' : '❌'}\n`;
+            message += `• Usuário logado: ${result.userLoggedIn ? '✅' : '❌'}\n`;
+            message += `• Modo demo: ${result.demoMode ? '✅' : '❌'}\n`;
+            
+            alert(message);
+        }
 
         console.log('💡 Dica: Execute vitexDiagnostic() no console para diagnóstico completo');
+        
+        // Expor funções globalmente para garantir acesso
+        window.loginUser = loginUser;
+        window.registerUser = registerUser;
+        window.resetPassword = resetPassword;
+        window.loadDemoMode = loadDemoMode;
+        window.setupConnection = setupConnection;
+        window.testConnection = testConnection;
+        window.clearStoredCredentials = clearStoredCredentials;
+        window.showAuthTab = showAuthTab;
+        window.runDiagnostic = runDiagnostic;
+        window.toggleMLFeatures = toggleMLFeatures;
+        window.executeIntent = executeIntent;
+        window.removerLancamento = removerLancamento;
+        window.adicionarLancamento = adicionarLancamento;
+        window.sincronizarDados = sincronizarDados;
+        window.importarDadosExemplo = importarDadosExemplo;
+        window.showTab = showTab;
+        window.calcularCenario = calcularCenario;
+        window.exportarCSV = exportarCSV;
+        window.exportarJSON = exportarJSON;
+        window.gerarRelatorioMensal = gerarRelatorioMensal;
+        window.logoutUser = logoutUser;
+        window.copyToClipboard = copyToClipboard;
+        window.toggleChat = toggleChat;
+        window.sendChatMessage = sendChatMessage;
+        window.handleChatKeyPress = handleChatKeyPress;
     </script>
 </body>
 </html>
