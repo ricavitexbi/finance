@@ -353,7 +353,6 @@
         
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s ease-out;
         }
         
         .tab-content.active {
@@ -409,30 +408,12 @@
             border-radius: 12px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .metric-card:hover {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            transform: translateY(-4px);
-        }
-        
-        .metric-card:hover::before {
-            transform: translateX(0);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
         
         .metric-title {
@@ -450,11 +431,6 @@
             color: var(--dark-gray);
             margin-bottom: 4px;
             letter-spacing: -0.025em;
-            transition: all 0.3s ease;
-        }
-        
-        .metric-card:hover .metric-value {
-            transform: scale(1.05);
         }
         
         .metric-trend {
@@ -512,10 +488,6 @@
             color: var(--text-primary);
         }
         
-        tr {
-            transition: background-color 0.2s ease;
-        }
-        
         tr:hover {
             background: var(--bg-light);
         }
@@ -528,11 +500,6 @@
             margin-bottom: 24px;
             border: 1px solid var(--border-color);
             position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .chart-container:hover {
-            box-shadow: var(--shadow-md);
         }
         
         .chart-container h4 {
@@ -609,235 +576,6 @@
         .footer strong {
             color: var(--dark-gray);
         }
-
-        /* Chat Interface Styles */
-        .chat-widget {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1000;
-        }
-
-        .chat-toggle {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: var(--shadow-xl);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .chat-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-
-        .chat-panel {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 380px;
-            max-height: 500px;
-            background: var(--bg-white);
-            border-radius: 16px;
-            box-shadow: var(--shadow-xl);
-            display: none;
-            flex-direction: column;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .chat-panel.active {
-            display: flex;
-        }
-
-        .chat-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-header h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--dark-gray);
-            margin: 0;
-        }
-
-        .chat-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .chat-close:hover {
-            color: var(--dark-gray);
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 300px;
-        }
-
-        .chat-message {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .chat-message.user {
-            background: var(--primary-blue);
-            color: white;
-            margin-left: 40px;
-            align-self: flex-end;
-        }
-
-        .chat-message.assistant {
-            background: var(--bg-light);
-            color: var(--text-primary);
-            margin-right: 40px;
-            align-self: flex-start;
-        }
-
-        .chat-input-container {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
-        }
-
-        .chat-send {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .chat-send:hover {
-            background: #246a8a;
-        }
-
-        .chat-send:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Loading Skeleton */
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: 4px;
-            height: 20px;
-            margin-bottom: 8px;
-        }
-
-        @keyframes loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Transaction animation */
-        .transaction-row {
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Pulse animation for important values */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Smooth number transitions */
-        .metric-value {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
         
         /* Responsivo */
         @media (max-width: 768px) {
@@ -891,11 +629,6 @@
             th, td {
                 padding: 8px 12px;
             }
-
-            .chat-panel {
-                width: calc(100vw - 40px);
-                right: -24px;
-            }
         }
         
         /* Utilitários */
@@ -927,6 +660,18 @@
         :focus-visible {
             outline: 2px solid var(--primary-blue);
             outline-offset: 2px;
+        }
+        
+        /* Animações suaves */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        /* Remove transições desnecessárias */
+        input, select, textarea {
+            transition-property: border-color, box-shadow;
         }
     </style>
 </head>
@@ -1469,33 +1214,6 @@ USING (auth.uid() = user_id);</pre>
         </div>
     </div>
 
-    <!-- Chat Widget -->
-    <div class="chat-widget" id="chatWidget" style="display: none;">
-        <button class="chat-toggle" onclick="toggleChat()">
-            💬 Ask the Data
-        </button>
-        <div class="chat-panel" id="chatPanel">
-            <div class="chat-header">
-                <h3>VitexAI Assistant</h3>
-                <button class="chat-close" onclick="toggleChat()">×</button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="chat-message assistant">
-                    Hi! I can help you analyze your financial data. Try asking:
-                    <br><br>
-                    • "What was my biggest expense this month?"<br>
-                    • "Show me revenue trends"<br>
-                    • "How is my margin evolving?"<br>
-                    • "What's my current financial health?"
-                </div>
-            </div>
-            <div class="chat-input-container">
-                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your data..." onkeypress="handleChatKeyPress(event)">
-                <button class="chat-send" onclick="sendChatMessage()" id="chatSendBtn">Send</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Variáveis globais
         let supabase = null;
@@ -1509,7 +1227,6 @@ USING (auth.uid() = user_id);</pre>
         let demoMode = false;
         let lastTransactionTime = 0; // Prevenir duplos cliques
         let updateDashboardTimeout = null; // Debounce para dashboards
-        let chatOpen = false;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -1806,7 +1523,6 @@ USING (auth.uid() = user_id);</pre>
         function showMainApp() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('mainContainer').style.display = 'block';
-            document.getElementById('chatWidget').style.display = 'block';
             
             // Atualizar info do usuário
             const userInfo = document.getElementById('userInfo');
@@ -1858,7 +1574,6 @@ USING (auth.uid() = user_id);</pre>
         function showAuthApp() {
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('mainContainer').style.display = 'none';
-            document.getElementById('chatWidget').style.display = 'none';
             
             // Limpar formulários
             clearAuthForms();
@@ -2337,13 +2052,13 @@ USING (auth.uid() = user_id);</pre>
             const despesaMedia = monthlyData.length > 0 ? monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
             const margemMedia = receitaTotal > 0 ? (resultadoTotal / receitaTotal) : 0;
             
-            // Atualizar elementos com animação suave
-            animateValue('receitaAcumulada', receitaTotal, 'currency');
-            animateValue('despesasAcumuladas', despesaTotal, 'currency');
-            animateValue('resultadoAcumulado', resultadoTotal, 'currency');
-            animateValue('margemMedia', margemMedia, 'percent');
-            animateValue('receitaMedia', receitaMedia, 'currency');
-            animateValue('burnrateMedia', despesaMedia, 'currency');
+            // Atualizar elementos
+            updateElement('receitaAcumulada', formatCurrency(receitaTotal));
+            updateElement('despesasAcumuladas', formatCurrency(despesaTotal));
+            updateElement('resultadoAcumulado', formatCurrency(resultadoTotal));
+            updateElement('margemMedia', formatPercent(margemMedia));
+            updateElement('receitaMedia', formatCurrency(receitaMedia));
+            updateElement('burnrateMedia', formatCurrency(despesaMedia));
             
             // Cores
             setElementColor('resultadoAcumulado', resultadoTotal >= 0 ? 'var(--success)' : 'var(--danger)');
@@ -2382,9 +2097,9 @@ USING (auth.uid() = user_id);</pre>
             const desenvolvimentoTotal = transactions.filter(t => t.tipo === 'receita' && t.categoria === 'Desenvolvimento').reduce((sum, t) => sum + parseFloat(t.valor), 0);
             const outrasTotal = totalReceitas - consultoriaTotal - desenvolvimentoTotal;
             
-            animateValue('mixConsultoria', consultoriaTotal / totalReceitas, 'percent');
-            animateValue('mixDesenvolvimento', desenvolvimentoTotal / totalReceitas, 'percent');
-            animateValue('mixOutras', outrasTotal / totalReceitas, 'percent');
+            updateElement('mixConsultoria', formatPercent(consultoriaTotal / totalReceitas));
+            updateElement('mixDesenvolvimento', formatPercent(desenvolvimentoTotal / totalReceitas));
+            updateElement('mixOutras', formatPercent(outrasTotal / totalReceitas));
             
             updateElement('consultoriaValue', formatCurrency(consultoriaTotal));
             updateElement('desenvolvimentoValue', formatCurrency(desenvolvimentoTotal));
@@ -2398,8 +2113,837 @@ USING (auth.uid() = user_id);</pre>
             
             // ROI Acumulado
             const roi = totalDespesas > 0 ? ((totalReceitas / totalDespesas) - 1) : 0;
-            animateValue('roiAcumulado', roi, 'percent');
+            updateElement('roiAcumulado', formatPercent(roi));
             setElementColor('roiAcumulado', roi >= 0 ? 'var(--success)' : 'var(--danger)');
             
             // Carga Tributária
-            const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.
+            const impostosTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Impostos').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const cargaTributaria = totalReceitas > 0 ? (impostosTotal / totalReceitas) : 0;
+            updateElement('cargaTributaria', formatPercent(cargaTributaria));
+            
+            // Custos Fixos
+            const prolaboreTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Pró-labore').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const assinaturasTotal = transactions.filter(t => t.tipo === 'despesa' && t.categoria === 'Assinaturas').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const custosFixos = totalDespesas > 0 ? ((prolaboreTotal + assinaturasTotal) / totalDespesas) : 0;
+            updateElement('custosFixes', formatPercent(custosFixos));
+        }
+
+        // Atualizar tendências
+        function updateTrends() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length < 2) {
+                updateElement('crescimentoMedio', '0%');
+                updateElement('volatilidadeReceita', '0%');
+                updateElement('mesesPositivos', '0');
+                updateElement('percentualPositivos', '0%');
+                updateElement('maiorResultado', formatCurrency(0));
+                updateElement('maiorResultadoMes', '-');
+                return;
+            }
+            
+            // Crescimento MoM
+            let crescimentos = [];
+            for (let i = 1; i < monthlyData.length; i++) {
+                const anterior = monthlyData[i-1].receitas;
+                const atual = monthlyData[i].receitas;
+                if (anterior > 0) {
+                    crescimentos.push((atual - anterior) / anterior);
+                }
+            }
+            
+            const crescimentoMedio = crescimentos.length > 0 ? crescimentos.reduce((sum, val) => sum + val, 0) / crescimentos.length : 0;
+            updateElement('crescimentoMedio', formatPercent(crescimentoMedio));
+            
+            // Volatilidade
+            const receitas = monthlyData.map(data => data.receitas);
+            const media = receitas.reduce((sum, val) => sum + val, 0) / receitas.length;
+            const variancia = receitas.reduce((sum, val) => sum + Math.pow(val - media, 2), 0) / receitas.length;
+            const desvio = Math.sqrt(variancia);
+            const volatilidade = media > 0 ? desvio / media : 0;
+            updateElement('volatilidadeReceita', formatPercent(volatilidade));
+            
+            // Meses positivos
+            const mesesPositivos = monthlyData.filter(data => data.resultado > 0).length;
+            const percentualPositivos = monthlyData.length > 0 ? mesesPositivos / monthlyData.length : 0;
+            updateElement('mesesPositivos', mesesPositivos);
+            updateElement('percentualPositivos', formatPercent(percentualPositivos));
+            
+            // Maior resultado
+            const resultados = monthlyData.map(data => data.resultado);
+            const maiorResultado = Math.max(...resultados);
+            const maiorResultadoIndex = resultados.indexOf(maiorResultado);
+            const maiorResultadoMes = monthlyData[maiorResultadoIndex]?.month;
+            
+            updateElement('maiorResultado', formatCurrency(maiorResultado));
+            if (maiorResultadoMes) {
+                updateElement('maiorResultadoMes', new Date(maiorResultadoMes + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'}));
+            }
+            
+            // Atualizar tabela de tendências
+            updateTrendsTable();
+        }
+
+        // Atualizar tabela de tendências
+        function updateTrendsTable() {
+            const tbody = document.getElementById('trendsTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No data available</td></tr>';
+                return;
+            }
+            
+            monthlyData.forEach((data, index) => {
+                let crescimentoMoM = '';
+                if (index > 0) {
+                    const anterior = monthlyData[index-1].receitas;
+                    if (anterior > 0) {
+                        const crescimento = (data.receitas - anterior) / anterior;
+                        crescimentoMoM = formatPercent(crescimento);
+                    }
+                }
+                
+                const status = data.resultado > 0 ? '✓ Positive' : '✗ Negative';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${new Date(data.month + '-01').toLocaleDateString('en-US', {month: 'long', year: 'numeric'})}</td>
+                    <td>${formatCurrency(data.receitas)}</td>
+                    <td>${formatCurrency(data.despesas)}</td>
+                    <td style="color: ${data.resultado >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatCurrency(data.resultado)}</td>
+                    <td>${crescimentoMoM || '-'}</td>
+                    <td style="color: ${data.margem >= 0 ? 'var(--success)' : 'var(--danger)'}">${formatPercent(data.margem)}</td>
+                    <td>${status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Atualizar projeções
+        function updateProjections() {
+            const monthlyData = getMonthlyData();
+            
+            if (monthlyData.length === 0) {
+                updateElement('receitaProjetada', formatCurrency(0));
+                updateElement('breakEven', formatCurrency(0));
+                updateElement('runway', '0');
+                updateElement('runwayTrend', 'No historical data');
+                updateElement('metaMargem', 'Configure data');
+                return;
+            }
+            
+            // Receita projetada (média móvel dos últimos 3 meses)
+            const ultimosMeses = monthlyData.slice(-3);
+            const receitaMedia = ultimosMeses.reduce((sum, data) => sum + data.receitas, 0) / ultimosMeses.length;
+            updateElement('receitaProjetada', formatCurrency(receitaMedia));
+            
+            // Break-even
+            const despesaMedia = monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length;
+            updateElement('breakEven', formatCurrency(despesaMedia));
+            
+            // Runway
+            const ultimoResultado = monthlyData[monthlyData.length - 1];
+            const resultadoMedio = monthlyData.reduce((sum, data) => sum + data.resultado, 0) / monthlyData.length;
+            
+            if (ultimoResultado.resultado > 0) {
+                updateElement('runway', '∞');
+                updateElement('runwayTrend', 'Sustainable');
+            } else {
+                const caixaDefault = 50000; // Valor padrão
+                const runway = Math.abs(resultadoMedio) > 0 ? Math.floor(caixaDefault / Math.abs(resultadoMedio)) : 0;
+                updateElement('runway', runway);
+                updateElement('runwayTrend', `With ${formatCurrency(caixaDefault)} in cash`);
+            }
+            
+            // Meta margem
+            const margemAtual = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
+            const metaMargem = 0.20;
+            const statusMeta = margemAtual >= metaMargem ? '✓ Achieving' : '✗ Below target';
+            updateElement('metaMargem', statusMeta);
+        }
+
+        // Atualizar alertas
+        function updateAlerts() {
+            const alertsContainer = document.getElementById('alertsContainer');
+            alertsContainer.innerHTML = '';
+            
+            if (transactions.length === 0) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const margemMedia = monthlyData.reduce((sum, data) => sum + data.margem, 0) / monthlyData.length;
+            
+            // Alert para resultado negativo
+            if (ultimoMes.resultado < 0) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        <strong>Negative Result:</strong> Last month showed a loss of ${formatCurrency(Math.abs(ultimoMes.resultado))}
+                    </div>
+                `;
+            }
+            
+            // Alert para margem baixa
+            if (margemMedia < 0.15) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-warning">
+                        <strong>Low Margin:</strong> Average margin of ${formatPercent(margemMedia)} is below recommended (20%+)
+                    </div>
+                `;
+            }
+            
+            // Alert para performance positiva
+            if (ultimoMes.resultado > 0 && margemMedia > 0.20) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-success">
+                        <strong>Positive Performance:</strong> Company shows healthy results with ${formatPercent(margemMedia)} margin
+                    </div>
+                `;
+            }
+            
+            // Alert para concentração de receita
+            const receitaTotal = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const outrasReceitas = transactions.filter(t => t.tipo === 'receita' && (t.categoria === 'Outras' || t.categoria === 'Licenciamento')).reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            if (receitaTotal > 0 && outrasReceitas / receitaTotal > 0.5) {
+                alertsContainer.innerHTML += `
+                    <div class="alert alert-info">
+                        <strong>Diversification:</strong> ${formatPercent(outrasReceitas/receitaTotal)} of revenue comes from non-core categories
+                    </div>
+                `;
+            }
+        }
+
+        // Calcular cenário
+        function calcularCenario() {
+            const metaReceita = parseFloat(document.getElementById('metaReceita').value);
+            const aumentoDespesas = parseFloat(document.getElementById('aumentoDespesas').value) || 0;
+            const caixaDisponivel = parseFloat(document.getElementById('caixaDisponivel').value) || 50000;
+            
+            if (!metaReceita) {
+                showNotification('❌ Digite uma meta de receita', 'danger');
+                return;
+            }
+            
+            const monthlyData = getMonthlyData();
+            const despesaMedia = monthlyData.length > 0 ? 
+                monthlyData.reduce((sum, data) => sum + data.despesas, 0) / monthlyData.length : 0;
+            
+            const novaDespesa = despesaMedia * (1 + aumentoDespesas / 100);
+            const novoResultado = metaReceita - novaDespesa;
+            const novaMargem = metaReceita > 0 ? novoResultado / metaReceita : 0;
+            const novoRunway = novoResultado < 0 ? Math.floor(caixaDisponivel / Math.abs(novoResultado)) : '∞';
+            
+            const resultHtml = `
+                <div class="metric-card">
+                    <h4>📊 Resultado do Cenário</h4>
+                    <p><strong>Receita Meta:</strong> ${formatCurrency(metaReceita)}</p>
+                    <p><strong>Despesa Estimada:</strong> ${formatCurrency(novaDespesa)} (+${aumentoDespesas}%)</p>
+                    <p><strong>Resultado Projetado:</strong> <span style="color: ${novoResultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(novoResultado)}</span></p>
+                    <p><strong>Margem Projetada:</strong> <span style="color: ${novaMargem >= 0.2 ? '#4CAF50' : novaMargem >= 0 ? '#FFA500' : '#f44336'}">${formatPercent(novaMargem)}</span></p>
+                    <p><strong>Runway:</strong> ${novoRunway} ${novoRunway !== '∞' ? 'meses' : '(sustentável)'}</p>
+                    <p><strong>Status:</strong> ${novaMargem >= 0.2 ? '✅ Excelente' : novaMargem >= 0.1 ? '⚠️ Aceitável' : '❌ Abaixo do ideal'}</p>
+                </div>
+            `;
+            
+            document.getElementById('cenarioResult').innerHTML = resultHtml;
+        }
+
+        // Criar gráficos
+        function createCharts() {
+            if (transactions.length === 0) {
+                showNotification('📊 Adicione lançamentos para visualizar os gráficos', 'info');
+                return;
+            }
+            
+            // Destruir gráficos existentes
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            
+            createEvolutionChart();
+            createRevenueChart();
+            createExpenseChart();
+            createMarginChart();
+            createTrendsChart();
+        }
+
+        // Gráfico de evolução
+        function createEvolutionChart() {
+            const ctx = document.getElementById('evolutionChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.evolution = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyData.map(data => data.receitas),
+                            borderColor: '#4CAF50',
+                            backgroundColor: '#4CAF5020',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyData.map(data => data.despesas),
+                            borderColor: '#f44336',
+                            backgroundColor: '#f4433620',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de receitas
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const revenueByCategory = getCategoryData('receita');
+            if (Object.keys(revenueByCategory).length === 0) return;
+            
+            const labels = Object.keys(revenueByCategory);
+            const data = Object.values(revenueByCategory);
+            const colors = ['#4facfe', '#00f2fe', '#4CAF50', '#2196f3', '#9c27b0', '#ff9800'];
+            
+            charts.revenue = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de despesas
+        function createExpenseChart() {
+            const ctx = document.getElementById('expenseChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const expenseByCategory = getCategoryData('despesa');
+            if (Object.keys(expenseByCategory).length === 0) return;
+            
+            const labels = Object.keys(expenseByCategory);
+            const data = Object.values(expenseByCategory);
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3'];
+            
+            charts.expense = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.label + ': ' + formatCurrency(context.parsed) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de margem
+        function createMarginChart() {
+            const ctx = document.getElementById('marginChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.margin = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Margem (%)',
+                        data: monthlyData.map(data => data.margem * 100),
+                        backgroundColor: monthlyData.map(data => data.margem >= 0.2 ? '#4CAF50' : data.margem >= 0 ? '#FFA500' : '#f44336'),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Margem: ' + context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de tendências
+        function createTrendsChart() {
+            const ctx = document.getElementById('trendsChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) return;
+            
+            const labels = monthlyData.map(data => 
+                new Date(data.month + '-01').toLocaleDateString('pt-BR', {month: 'short', year: 'numeric'})
+            );
+            
+            charts.trends = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyData.map(data => data.receitas),
+                            backgroundColor: '#4CAF5080',
+                            borderColor: '#4CAF50',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyData.map(data => data.despesas),
+                            backgroundColor: '#f4433680',
+                            borderColor: '#f44336',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dados auxiliares
+        function getMonthlyData() {
+            const monthlyMap = new Map();
+            
+            transactions.forEach(transaction => {
+                const date = new Date(transaction.data);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                
+                if (!monthlyMap.has(monthKey)) {
+                    monthlyMap.set(monthKey, { 
+                        month: monthKey, 
+                        receitas: 0, 
+                        despesas: 0,
+                        resultado: 0,
+                        margem: 0
+                    });
+                }
+                
+                const monthData = monthlyMap.get(monthKey);
+                const valor = parseFloat(transaction.valor);
+                
+                if (transaction.tipo === 'receita') {
+                    monthData.receitas += valor;
+                } else {
+                    monthData.despesas += valor;
+                }
+            });
+            
+            // Calcular resultado e margem
+            monthlyMap.forEach(data => {
+                data.resultado = data.receitas - data.despesas;
+                data.margem = data.receitas > 0 ? data.resultado / data.receitas : 0;
+            });
+            
+            return Array.from(monthlyMap.values()).sort((a, b) => a.month.localeCompare(b.month));
+        }
+
+        function getCategoryData(tipo) {
+            const categoryMap = {};
+            
+            transactions
+                .filter(t => t.tipo === tipo)
+                .forEach(transaction => {
+                    if (!categoryMap[transaction.categoria]) {
+                        categoryMap[transaction.categoria] = 0;
+                    }
+                    categoryMap[transaction.categoria] += parseFloat(transaction.valor);
+                });
+            
+            return categoryMap;
+        }
+
+        // Exportação de dados
+        function exportarCSV() {
+            if (transactions.length === 0) {
+                showNotification('No data to export', 'danger');
+                return;
+            }
+            
+            const headers = ['Date', 'Type', 'Category', 'Description', 'Amount'];
+            const csvContent = [
+                headers.join(','),
+                ...transactions.map(t => [
+                    t.data,
+                    t.tipo,
+                    t.categoria,
+                    `"${t.descricao.replace(/"/g, '""')}"`, // Escapar aspas duplas
+                    parseFloat(t.valor).toFixed(2)
+                ].join(','))
+            ].join('\n');
+            
+            downloadFile(csvContent, 'vitexai_financial_data.csv', 'text/csv');
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function exportarJSON() {
+            const dataToExport = {
+                user: currentUser?.email || 'demo@vitexai.com',
+                transactions,
+                categories,
+                exportDate: new Date().toISOString(),
+                source: 'vitexai_dashboard_v3',
+                version: '3.0',
+                summary: {
+                    totalTransactions: transactions.length,
+                    totalReceitas: transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0),
+                    totalDespesas: transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0)
+                }
+            };
+            
+            const jsonContent = JSON.stringify(dataToExport, null, 2);
+            downloadFile(jsonContent, 'vitexai_backup.json', 'application/json');
+            showNotification('Backup created successfully!', 'success');
+        }
+
+        // Gerar relatório mensal
+        function gerarRelatorioMensal() {
+            const monthlyData = getMonthlyData();
+            if (monthlyData.length === 0) {
+                showNotification('❌ Sem dados para gerar relatório', 'danger');
+                return;
+            }
+            
+            const ultimoMes = monthlyData[monthlyData.length - 1];
+            const totalReceitas = transactions.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            const totalDespesas = transactions.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+            
+            const relatorioHtml = `
+                <div class="input-section">
+                    <h4>📊 Relatório Executivo - VitexAI</h4>
+                    <p><strong>Período:</strong> ${new Date().toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})}</p>
+                    
+                    <h5>Resumo Geral</h5>
+                    <ul>
+                        <li><strong>Total de Transações:</strong> ${transactions.length}</li>
+                        <li><strong>Receita Total Acumulada:</strong> ${formatCurrency(totalReceitas)}</li>
+                        <li><strong>Despesa Total Acumulada:</strong> ${formatCurrency(totalDespesas)}</li>
+                        <li><strong>Resultado Acumulado:</strong> <span style="color: ${totalReceitas - totalDespesas >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(totalReceitas - totalDespesas)}</span></li>
+                    </ul>
+                    
+                    <h5>Último Mês (${new Date(ultimoMes.month + '-01').toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'})})</h5>
+                    <ul>
+                        <li><strong>Receitas:</strong> ${formatCurrency(ultimoMes.receitas)}</li>
+                        <li><strong>Despesas:</strong> ${formatCurrency(ultimoMes.despesas)}</li>
+                        <li><strong>Resultado:</strong> <span style="color: ${ultimoMes.resultado >= 0 ? '#4CAF50' : '#f44336'}">${formatCurrency(ultimoMes.resultado)}</span></li>
+                        <li><strong>Margem:</strong> ${formatPercent(ultimoMes.margem)}</li>
+                    </ul>
+                    
+                    <h5>Indicadores Chave</h5>
+                    <ul>
+                        <li><strong>Margem Média:</strong> ${formatPercent(totalReceitas > 0 ? (totalReceitas - totalDespesas) / totalReceitas : 0)}</li>
+                        <li><strong>ROI:</strong> ${formatPercent(totalDespesas > 0 ? (totalReceitas / totalDespesas) - 1 : 0)}</li>
+                        <li><strong>Meses Positivos:</strong> ${monthlyData.filter(m => m.resultado > 0).length} de ${monthlyData.length}</li>
+                    </ul>
+                    
+                    <button class="btn" onclick="window.print()" style="width: auto;">🖨️ Imprimir Relatório</button>
+                </div>
+            `;
+            
+            document.getElementById('relatorioContainer').innerHTML = relatorioHtml;
+            showNotification('📋 Relatório gerado com sucesso!', 'success');
+        }
+
+        // Funções utilitárias
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function formatPercent(value) {
+            return (value * 100).toFixed(1) + '%';
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type}`;
+            notification.innerHTML = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.style.maxWidth = '400px';
+            notification.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+            notification.style.animation = 'slideIn 0.3s ease-out';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s';
+                setTimeout(() => notification.remove(), 500);
+            }, 4000);
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+
+        function setElementColor(id, color) {
+            const element = document.getElementById(id);
+            if (element) element.style.color = color;
+        }
+
+        function resetAllMetrics() {
+            const metrics = [
+                'receitaAcumulada', 'despesasAcumuladas', 'resultadoAcumulado', 'margemMedia',
+                'receitaMedia', 'burnrateMedia', 'mixConsultoria', 'mixDesenvolvimento', 'mixOutras',
+                'roiAcumulado', 'cargaTributaria', 'custosFixes', 'crescimentoMedio', 'volatilidadeReceita',
+                'mesesPositivos', 'maiorResultado', 'receitaProjetada', 'breakEven', 'runway',
+                'consultoriaValue', 'desenvolvimentoValue', 'outrasValue'
+            ];
+            
+            metrics.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (id.includes('mix') || id.includes('margem') || id.includes('roi') || 
+                        id.includes('carga') || id.includes('custos') || id.includes('crescimento') || 
+                        id.includes('volatilidade')) {
+                        element.textContent = '0%';
+                    } else if (id === 'mesesPositivos' || id === 'runway') {
+                        element.textContent = '0';
+                    } else {
+                        element.textContent = 'R$ 0.00';
+                    }
+                }
+            });
+            
+            // Reset trends
+            updateElement('percentualPositivos', '0%');
+            updateElement('maiorResultadoMes', '-');
+            updateElement('runwayTrend', 'No historical data');
+            updateElement('metaMargem', 'Configure data');
+        }
+
+        // Adicionar animação de entrada
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Copiar estrutura SQL para clipboard
+        function copyToClipboard(type) {
+            let sql = '';
+            
+            if (type === 'simple') {
+                sql = `CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    data DATE NOT NULL,
+    tipo VARCHAR(10) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Optional: Create index for better performance
+CREATE INDEX idx_transactions_data ON transactions(data DESC);`;
+            } else {
+                sql = `CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    data DATE NOT NULL,
+    tipo VARCHAR(10) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    descricao TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+
+-- Create policy
+CREATE POLICY "Users can only see own transactions" 
+ON transactions FOR ALL 
+USING (auth.uid() = user_id);`;
+            }
+            
+            // Criar elemento temporário para copiar
+            const textarea = document.createElement('textarea');
+            textarea.value = sql;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification('SQL copied to clipboard!', 'success');
+            } catch (err) {
+                showNotification('Error copying SQL', 'danger');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // Estrutura do banco de dados Supabase (para referência)
+        /*
+        ESTRUTURA DO BANCO DE DADOS SIMPLIFICADA
+        
+        CREATE TABLE transactions (
+            id SERIAL PRIMARY KEY,
+            data DATE NOT NULL,
+            tipo VARCHAR(10) NOT NULL CHECK (tipo IN ('receita', 'despesa')),
+            categoria VARCHAR(50) NOT NULL,
+            valor DECIMAL(10,2) NOT NULL,
+            descricao TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+        
+        CREATE INDEX idx_transactions_data ON transactions(data DESC);
+        */
+    </script>
+</body>
+</html>
